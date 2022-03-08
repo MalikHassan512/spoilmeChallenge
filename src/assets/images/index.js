@@ -6,4 +6,5 @@ export default {
     yoga:require('./yoga.png'),
     coin:require('./coin.png'),
     burger:require('./hamburger.png'),
+    people1:require('./people1.png'),
 }

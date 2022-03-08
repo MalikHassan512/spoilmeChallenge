@@ -9,9 +9,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 //Molecules
-import {Heading, NotificationBox, ImagesContainer} from './Molecules';
+import {Heading, Box, ImagesContainer,OpportunityBox} from './Molecules';
 import Images from 'assets/images';
 import Colors from 'util/colors';
+import CustomText from 'components/CustomText'
 
 const Home = () => {
   return (
@@ -29,12 +30,14 @@ const Home = () => {
           containerStyle={styles.opportunityContainer}
           label="Spoil Opportunities"
         />
-        <NotificationBox
+        <Box
           containerStyle={styles.opportunityBox}
-          label={
-            'It’s David’s birthday today. You can make his day better. You can surprise him. You'
-          }
-        />
+          
+        >
+        {/* <OpportunityBox />
+        <OpportunityBox /> */}
+        <OpportunityBox />
+          </Box>
         <Heading containerStyle={styles.opportunityBox} label="Map" />
         <ImagesContainer
           containerStyle={styles.opportunityBox}
@@ -71,19 +74,19 @@ const Home = () => {
         />
         <Heading containerStyle={styles.opportunityBox} label="Wallet" />
         <View style={[styles.opportunityBox, {flexDirection: 'row'}]}>
-          <NotificationBox
+          <Box
             containerStyle={{paddingVertical: 20}}
             labelStyle2={{color: Colors.primary}}
             label2={'200$'}
             label={'FIAT: '}
           />
-          <NotificationBox
+          <Box
             labelStyle2={{color: Colors.primary}}
             containerStyle={{marginHorizontal: 7, paddingVertical: 21}}
             label2={'200$'}
             label={'Crypto: '}
           />
-          <NotificationBox
+          <Box
             containerStyle={{paddingVertical: 20}}
             labelStyle2={{color: Colors.primary}}
             label2={'10'}
@@ -91,7 +94,7 @@ const Home = () => {
           />
         </View>
         <Heading containerStyle={styles.opportunityBox} label="Key Stats" />
-        <NotificationBox
+        <Box
           containerStyle={styles.opportunityBox}
           label={
             'You last spoiled X with Y on Z. You have been last spoiled X with Y on Z. Your most intense relationship is with X.  The most'
@@ -129,6 +132,7 @@ const styles = ScaledSheet.create({
   opportunityBox: {
     marginStart: '25@vs',
     marginEnd: '27@vs',
+    flexDirection:'column'
   },
   headerIconContainer: {
     flexDirection: 'row',

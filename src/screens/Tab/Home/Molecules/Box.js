@@ -3,11 +3,12 @@ import React from 'react'
 import CustomText from 'components/CustomText'
 import {ScaledSheet} from 'react-native-size-matters'
 import Colors from 'util/colors'
-export const NotificationBox = (props) => {
+export const Box = (props) => {
   return (
     <View style={[styles.container,props.containerStyle]}>
         <CustomText fontSize={16} textStyle={props.labelStyle} label={props.label}  />
         {props.label2 && <CustomText fontSize={16} textStyle={props.labelStyle2} label={props.label2}  /> }
+        {props.children}
     </View>
   )
 }
