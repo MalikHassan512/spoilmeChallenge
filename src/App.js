@@ -14,6 +14,8 @@ import {signout} from './firebase/auth/signout';
 import {Loading} from './components/Common/Loading';
 import {TabStack} from './components/TabStack';
 import {CreateRelationship} from './screens/CreateRelationship';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
 
 const App = () => {
   return (
@@ -30,6 +32,7 @@ const Main = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  
     setTimeout(() => {
       setLoading(false);
     }, 500);

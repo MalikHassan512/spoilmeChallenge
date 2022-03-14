@@ -57,6 +57,7 @@ export const Signin = ({navigation}) => {
       const userId = await signinWithGoogle();
       dispatch(changeUser(userId));
     } catch (error) {
+      console.log('userId',error)
       if (error === 'SIGN_IN_CANCELLED') {
         alert('Cancel');
       } else if (error === 'IN_PROGRESS') {

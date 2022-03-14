@@ -1,3 +1,5 @@
+import auth from '@react-native-firebase/auth';
+
 export const deleteAccount = async userId => {
   try {
     await auth().currentUser.delete();

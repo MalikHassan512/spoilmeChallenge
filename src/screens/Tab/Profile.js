@@ -106,7 +106,7 @@ export const Profile = () => {
                   <Pressable onPress={() => setShowDate(true)}>
                     <MyText text="Change Date of birth" color="#FF8112" />
                   </Pressable>
-                  <MyText text={dob.toLocaleDateString()} />
+                  <MyText text={dob?.toLocaleDateString()} />
                 </View>
 
                 {showDate && (
