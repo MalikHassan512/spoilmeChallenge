@@ -2,16 +2,26 @@ import { Pressable } from "react-native";
 import CustomText from "./CustomText";
 import { ScaledSheet } from "react-native-size-matters";
 import React from "react";
-import * as Progress from 'react-native-progress';
+import * as Progress from "react-native-progress";
 
-const CustomButton = ({ label, onPress,disabled,loading, btnContainer }) => {
+const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
   return (
-    <Pressable disabled={disabled} style={[styles.signUpBtn, btnContainer,{backgroundColor: !disabled ? '#C71F1E' : 'rgba(200,200,200,0.5)'}]} onPress={onPress}>
-     {!loading ? ( <CustomText textStyle={styles.signUpText} label={label} />) : (
+    <Pressable
+      disabled={disabled}
+      style={[
+        styles.signUpBtn,
+        btnContainer,
+        { backgroundColor: !disabled ? "#C71F1E" : "rgba(200,200,200,0.5)" },
+      ]}
+      onPress={onPress}
+    >
+      {!loading ? (
+        <CustomText textStyle={styles.signUpText} label={label} />
+      ) : (
         <Progress.Circle
           indeterminate
           size={30}
-          style={{alignSelf: 'center'}}
+          style={{ alignSelf: "center" }}
         />
       )}
     </Pressable>

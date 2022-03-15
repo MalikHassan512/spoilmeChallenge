@@ -1,20 +1,24 @@
 /* eslint-disable react-native/no-inline-styles */
-import {SafeAreaView, View, ScrollView} from 'react-native';
-import {ScaledSheet} from 'react-native-size-matters';
-import React from 'react';
+import { SafeAreaView, View, ScrollView } from "react-native";
+import { ScaledSheet } from "react-native-size-matters";
+import React from "react";
 //components
-import Logo from 'components/Logo';
+import Logo from "components/Logo";
+import Map from "../../../components/Common/Map";
+import TextWithIcon from "../../../components/Common/TextWithIcon";
 //icons
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from "react-native-vector-icons/AntDesign";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 //Molecules
-import {Heading, Box, ImagesContainer,OpportunityBox} from './Molecules';
-import Images from 'assets/images';
-import Colors from 'util/colors';
-import CustomText from 'components/CustomText'
+import { Heading, Box, ImagesContainer, OpportunityBox } from "./Molecules";
+import Images from "assets/images";
+import Colors from "util/colors";
+import CustomText from "components/CustomText";
+import OtherImages from "../../../components/Common/OtherImages";
 
 const Home = () => {
+  let three = [0, 1, 2];
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -31,20 +35,30 @@ const Home = () => {
           label="Spoil Opportunities"
         />
         <Box
-          containerStyle={styles.opportunityBox}
-          
+          containerStyle={[styles.opportunityBox, { flexDirection: "column" }]}
         >
-        {/* <OpportunityBox />
-        <OpportunityBox /> */}
-        <OpportunityBox />
-          </Box>
+          <OpportunityBox />
+          <OpportunityBox />
+          <OpportunityBox />
+        </Box>
         <Heading containerStyle={styles.opportunityBox} label="Map" />
-        <ImagesContainer
+        {/* <ImagesContainer
           containerStyle={styles.opportunityBox}
           imageStyle={styles.mapImages}
           gutter={7}
           images={[Images.mapIstanbul, Images.mapIstanbul, Images.mapIstanbul]}
-        />
+        /> */}
+        <Box
+          containerStyle={{
+            flexDirection: "row",
+            // justifyContent: "space-between",
+            padding: 12,
+            marginHorizontal: 25,
+          }}
+        >
+          <Map mainContainer={{ marginRight: 12 }} />
+          <Map />
+        </Box>
         <Heading containerStyle={styles.opportunityBox} label="Spoils" />
         <ImagesContainer
           containerStyle={styles.spoilBox}
@@ -73,33 +87,76 @@ const Home = () => {
           ]}
         />
         <Heading containerStyle={styles.opportunityBox} label="Wallet" />
-        <View style={[styles.opportunityBox, {flexDirection: 'row'}]}>
+        <View
+          style={[
+            styles.opportunityBox,
+            { flexDirection: "row", justifyContent: "space-between" },
+          ]}
+        >
           <Box
-            containerStyle={{paddingVertical: 20}}
-            labelStyle2={{color: Colors.primary}}
-            label2={'200$'}
-            label={'FIAT: '}
-          />
+            containerStyle={{
+              paddingVertical: 15,
+              paddingHorizontal: 5,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flexDirection: "row", marginLeft: 8 }}>
+              {three.map((item) => (
+                <OtherImages />
+              ))}
+            </View>
+            <View>
+              <CustomText textStyle={styles.text200} label="200$" />
+            </View>
+          </Box>
           <Box
-            labelStyle2={{color: Colors.primary}}
-            containerStyle={{marginHorizontal: 7, paddingVertical: 21}}
-            label2={'200$'}
-            label={'Crypto: '}
-          />
+            containerStyle={{
+              paddingVertical: 15,
+              paddingHorizontal: 5,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flexDirection: "row", marginLeft: 8 }}>
+              {three.map((item) => (
+                <OtherImages />
+              ))}
+            </View>
+            <View>
+              <CustomText textStyle={styles.text200} label="200$" />
+            </View>
+          </Box>
           <Box
-            containerStyle={{paddingVertical: 20}}
-            labelStyle2={{color: Colors.primary}}
-            label2={'10'}
-            label={'Spoils: '}
-          />
+            containerStyle={{
+              paddingVertical: 15,
+              paddingHorizontal: 5,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flexDirection: "row", marginLeft: 8 }}>
+              {three.map((item) => (
+                <OtherImages />
+              ))}
+            </View>
+            <View>
+              <CustomText textStyle={styles.text200} label="200$" />
+            </View>
+          </Box>
         </View>
         <Heading containerStyle={styles.opportunityBox} label="Key Stats" />
         <Box
-          containerStyle={styles.opportunityBox}
-          label={
-            'You last spoiled X with Y on Z. You have been last spoiled X with Y on Z. Your most intense relationship is with X.  The most'
-          }
-        />
+          containerStyle={{
+            flexDirection: "column",
+            marginHorizontal: 25,
+            marginBottom: 30,
+          }}
+        >
+          <TextWithIcon label="Trendy spoils in the platform" />
+          <TextWithIcon
+            container={{ marginVertical: 12 }}
+            label="Most expensive spoil in the platform"
+          />
+          <TextWithIcon label="Last spoil I made" />
+        </Box>
       </ScrollView>
     </SafeAreaView>
   );
@@ -110,46 +167,50 @@ export default Home;
 const styles = ScaledSheet.create({
   mainContainer: {
     flex: 1,
-    paddingVertical: '16@vs',
-    backgroundColor: 'white',
+    paddingVertical: "16@vs",
+    backgroundColor: "white",
   },
   headerContainer: {
-    marginTop: '12@vs',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: '26@ms',
+    marginTop: "12@vs",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: "26@ms",
   },
   opportunityContainer: {
-    marginTop: '21@vs',
-    marginStart: '23@vs',
-    marginEnd: '27@vs',
+    marginTop: "21@vs",
+    marginStart: "23@vs",
+    marginEnd: "27@vs",
   },
   spoilBox: {
-    marginStart: '22@vs',
-    marginEnd: '25@vs',
+    marginStart: "22@vs",
+    marginEnd: "25@vs",
   },
   opportunityBox: {
-    marginStart: '25@vs',
-    marginEnd: '27@vs',
-    flexDirection:'column'
+    marginHorizontal: "25@s",
+    flexDirection: "row",
   },
   headerIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
-    fontSize: '22@ms',
-    marginStart: '23@ms',
+    fontSize: "22@ms",
+    marginStart: "23@ms",
   },
   mapImages: {
-    width: '97@s',
-    height: '54@vs',
+    width: "97@s",
+    height: "54@vs",
   },
   spoilImages: {
-    width: '55@s',
-    height: '55@vs',
-    resizeMode: 'contain',
-    overflow: 'hidden',
+    width: "55@s",
+    height: "55@vs",
+    resizeMode: "contain",
+    overflow: "hidden",
+  },
+  text200: {
+    fontSize: "14@ms",
+    fontWeight: "bold",
+    marginLeft: "5@s",
   },
 });

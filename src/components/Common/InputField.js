@@ -1,10 +1,13 @@
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
 import { ScaledSheet } from "react-native-size-matters";
+import CustomText from "./CustomText";
 
 import React from "react";
 
-const InputField = ({label,
+const InputField = ({
+  label,
+  withLabel,
   refer,
   value,
   inputStyle,
@@ -17,9 +20,11 @@ const InputField = ({label,
   onSubmitEditing = () => {},
   onFocus = () => {},
   blurOnSubmit = false,
-  secureTextEntry = false,}) => {
+  secureTextEntry = false,
+}) => {
   return (
     <View>
+      <CustomText label={withLabel} textStyle={styles.withLabel} />
       <TextInput
         underlineColor={"transparent"}
         outline={"transparent"}
@@ -43,9 +48,7 @@ const InputField = ({label,
             primary: "#FF8112",
           },
         }}
-        
       />
-      
     </View>
   );
 };
@@ -66,5 +69,10 @@ const styles = ScaledSheet.create({
     width: "300@s",
     height: "55@vs",
     paddingHorizontal: "20@s",
+  },
+  withLabel: {
+    fontSize: "16@ms",
+    fontWeight: "bold",
+    marginBottom: "5@vs",
   },
 });

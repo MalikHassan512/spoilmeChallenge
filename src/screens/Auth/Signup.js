@@ -21,7 +21,7 @@ import LogoButton from "../../components/Common/LogoButton";
 import images from "../../assets/images";
 import { useDispatch } from "react-redux";
 import Geolocation from "react-native-geolocation-service";
-import {signupWithEmail} from '../../firebase/auth/signup'
+import { signupWithEmail } from "../../firebase/auth/signup";
 import UploadPhoto from "components/UploadPhoto";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -220,36 +220,44 @@ export const Signup = ({ navigation }) => {
                 }}
               />
               {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
-              <InputField  keyboardType="email-address"
-                  refer={emailRef}
-                  value={email}
-                  onChangeText={(newVal) => setEmail(newVal)}
-                  onSubmitEditing={() => passwordRef.current.focus()}
-                  errorText={error.email} label="Email" inputStyle={styles.inputStyle} />
-              <InputField  refer={passwordRef}
-                  value={password}
-                  onChangeText={(newVal) => setPassword(newVal)}
-                  secureTextEntry
-                  returnKeyType="done"
-                  errorText={error.password}
-                  blurOnSubmit={true} label="Password" inputStyle={styles.inputStyle} />
+              <InputField
+                keyboardType="email-address"
+                refer={emailRef}
+                value={email}
+                onChangeText={(newVal) => setEmail(newVal)}
+                onSubmitEditing={() => passwordRef.current.focus()}
+                errorText={error.email}
+                label="Email"
+                inputStyle={styles.inputStyle}
+              />
+              <InputField
+                refer={passwordRef}
+                value={password}
+                onChangeText={(newVal) => setPassword(newVal)}
+                secureTextEntry
+                returnKeyType="done"
+                errorText={error.password}
+                blurOnSubmit={true}
+                label="Password"
+                inputStyle={styles.inputStyle}
+              />
               {/* <InputField
                 label="Date of birth"
                 inputStyle={styles.inputStyle}
               /> */}
-                <Pressable onPress={showDatePicker}>
-                  <CustomText label="Select Date of birth" />
-                    {/* <MyText text="Select Date of birth" color="#FF8112" /> */}
-                  </Pressable>
-               {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={dob ? new Date(dob) : new Date()}
-                    mode={mode}
-                    display="default"
-                    onChange={onStartChange}
-                  />
-                )}
+              <Pressable onPress={showDatePicker}>
+                <CustomText label="Select Date of birth" />
+                {/* <MyText text="Select Date of birth" color="#FF8112" /> */}
+              </Pressable>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={dob ? new Date(dob) : new Date()}
+                  mode={mode}
+                  display="default"
+                  onChange={onStartChange}
+                />
+              )}
               <LogoButton imgPath={images.faceBook} label="Facebook link" />
               <LogoButton imgPath={images.linkedin} label="Linkedin link" />
               <LogoButton imgPath={images.twitter} label="Twitter link" />
@@ -274,7 +282,7 @@ export const Signup = ({ navigation }) => {
                   textStyle={styles.dontHaveText}
                   label="Already have an account? "
                 />
-                <Pressable onPress={()=>navigation.navigate("Signin")}>
+                <Pressable onPress={() => navigation.navigate("Signin")}>
                   <CustomText
                     textStyle={styles.signUpHereText}
                     label="Sign in here"

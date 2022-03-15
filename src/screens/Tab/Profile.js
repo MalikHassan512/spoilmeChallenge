@@ -1,6 +1,7 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import {
   SafeAreaView,
+  Image,
   View,
   StyleSheet,
   Pressable,
@@ -8,35 +9,44 @@ import {
   ScrollView,
   Keyboard,
   TouchableOpacity,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {MyHeading} from '../../components/Common/MyHeading';
-import {MyText} from '../../components/Common/MyText';
-import {AuthSubmitButton} from '../../components/Common/AuthSubmitButton';
-import {MyTextField} from '../../components/Common/MyTextField';
-import {changeUserData, getUser} from '../../firebase/firestore/users';
-import {useSelector} from 'react-redux';
-import {selectUser} from '../../redux/features/userSlice';
-import {Loading} from '../../components/Common/Loading';
-import {LoadingImage} from '../../components/Common/LoadingImage';
-import {signout} from '../../firebase/auth/signout'
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { MyHeading } from "../../components/Common/MyHeading";
+import { MyText } from "../../components/Common/MyText";
+import { AuthSubmitButton } from "../../components/Common/AuthSubmitButton";
+import { MyTextField } from "../../components/Common/MyTextField";
+import { changeUserData, getUser } from "../../firebase/firestore/users";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/features/userSlice";
+import { Loading } from "../../components/Common/Loading";
+import { LoadingImage } from "../../components/Common/LoadingImage";
+import { signout } from "../../firebase/auth/signout";
+import InputField from "../../components/Common/InputField";
+import images from "../../assets/images";
+import Header from "../../components/Header";
+import { ScaledSheet } from "react-native-size-matters";
+import CustomButton from "../../components/Common/CustomButton";
+import CustomText from "../../components/Common/CustomText";
+import colors from "../../util/colors";
+import LogoButton from "../../components/Common/LogoButton";
 export const Profile = () => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState(new Date());
-  const [initialFirstName, initialSetFirstName] = useState('');
+  const [initialFirstName, initialSetFirstName] = useState("");
   const [showDate, setShowDate] = useState(false);
-  const [initialLastName, initialSetLastName] = useState('');
-  const [initialDob, initialSetDob] = useState('');
+  const [initialLastName, initialSetLastName] = useState("");
+  const [initialDob, initialSetDob] = useState("");
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+
   const userId = useSelector(selectUser);
 
   useEffect(() => {
     getUser(userId)
-      .then(user => {
+      .then((user) => {
         setFirstName(user?.firstName);
         setLastName(user?.lastName);
         setDob(user?.dob?.toDate());
@@ -45,7 +55,7 @@ export const Profile = () => {
         initialSetDob(user?.dob);
         setInitialLoading(false);
       })
-      .catch(e => {
+      .catch((e) => {
         // alert('An error occured.Try again');
         console.log(e);
       });
@@ -55,11 +65,11 @@ export const Profile = () => {
     try {
       setOnSubmitLoading(true);
       await changeUserData(userId, firstName, lastName, dob);
-      alert('Info Changed Successfully');
+      alert("Info Changed Successfully");
       setOnSubmitLoading(false);
     } catch (e) {
       setOnSubmitLoading(false);
-      alert('Error occured. Try again');
+      alert("Error occured. Try again");
     }
   };
 
@@ -67,27 +77,83 @@ export const Profile = () => {
     <Loading />
   ) : (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
       <SafeAreaView style={styles.outerContainer}>
         <Pressable onPress={Keyboard.dismiss}>
           <ScrollView
             style={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <View style={styles.inner}>
               <LoadingImage
-                source={require('../../assets/images/logo.png')}
+                source={require("../../assets/images/logo.png")}
                 style={styles.logo}
               />
-              <View style={styles.innerContainer}>
-                <View style={{marginBottom: 20}}>
+              <Header fImgPath={images.setting} sImgPath={images.edit} />
+              <View style={styles.imgContainer}>
+                <Image source={images.people1} style={styles.peopleImg} />
+              </View>
+              <View>
+                <InputField
+                  withLabel="Name"
+                  inputStyle={styles.inputStyle}
+                  label="Name"
+                  value={firstName}
+                  onChangeText={(newVal) => setFirstName(newVal)}
+                  onSubmitEditing={() => lastNameRef.current.focus()}
+                  autoCapitalize="none"
+                />
+                <InputField
+                  withLabel="Gender"
+                  inputStyle={styles.inputStyle}
+                  label="Gender"
+                  value={lastName}
+                  onChangeText={(newVal) => setLastName(newVal)}
+                  autoCapitalize="none"
+                />
+                <InputField
+                  withLabel="Email"
+                  inputStyle={styles.inputStyle}
+                  label="Email"
+                />
+                <InputField
+                  withLabel="Date of birth"
+                  inputStyle={styles.inputStyle}
+                  label="Date of birth"
+                />
+                <LogoButton
+                  container={{ marginBottom: -8 }}
+                  withLabel="Social links"
+                  imgPath={images.faceBook}
+                  label="facebook.com"
+                />
+                <LogoButton
+                  imgPath={images.linkedin}
+                  label="LinkedIn.com"
+                  container={{ marginBottom: -8 }}
+                />
+                <LogoButton
+                  imgPath={images.twitter}
+                  label="Twitter.com"
+                  container={{ marginBottom: 0 }}
+                />
+              </View>
+              <View
+                style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
+              >
+                <CustomButton label="Save changes" onPress={signout} />
+              </View>
+              {/* <View style={styles.innerContainer}>
+                <View style={{ marginBottom: 20 }}>
                   <MyHeading text="Profile" fontSize={25} />
                 </View>
                 <MyTextField
                   label="First Name"
                   refer={firstNameRef}
                   value={firstName}
-                  onChangeText={newVal => setFirstName(newVal)}
+                  onChangeText={(newVal) => setFirstName(newVal)}
                   onSubmitEditing={() => lastNameRef.current.focus()}
                   autoCapitalize="none"
                 />
@@ -95,14 +161,18 @@ export const Profile = () => {
                   label="Last Name"
                   refer={lastNameRef}
                   value={lastName}
-                  onChangeText={newVal => setLastName(newVal)}
+                  onChangeText={(newVal) => setLastName(newVal)}
                   autoCapitalize="none"
                 />
+
+
+
                 <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Pressable onPress={() => setShowDate(true)}>
                     <MyText text="Change Date of birth" color="#FF8112" />
                   </Pressable>
@@ -120,10 +190,18 @@ export const Profile = () => {
                     }}
                   />
                 )}
-                <View style={{marginTop: 30}}>
-                  <TouchableOpacity style={{backgroundColor:'red',padding:15,alignItems:"center",borderRadius:5,
-                marginBottom:10,}} onPress={signout} >
-                    <MyText  color={'white'} text="Logout" />
+                <View style={{ marginTop: 30 }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "red",
+                      padding: 15,
+                      alignItems: "center",
+                      borderRadius: 5,
+                      marginBottom: 10,
+                    }}
+                    onPress={signout}
+                  >
+                    <MyText color={"white"} text="Logout" />
                   </TouchableOpacity>
                   <AuthSubmitButton
                     text="Change Info"
@@ -136,7 +214,7 @@ export const Profile = () => {
                     onPress={onSubmit}
                   />
                 </View>
-              </View>
+              </View> */}
             </View>
           </ScrollView>
         </Pressable>
@@ -145,36 +223,45 @@ export const Profile = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   outerContainer: {
     flex: 1,
   },
   scrollContainer: {
-    backgroundColor: '#fff',
-    width: '101%',
+    backgroundColor: "#fff",
+    width: "101%",
   },
   inner: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   innerContainer: {
     paddingHorizontal: 20,
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
     paddingTop: 30,
     marginTop: 40,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
-  textField: {
-    width: '100%',
-    backgroundColor: 'white',
+  imgContainer: {
+    width: "100@ms",
+    height: "100@ms",
+    borderRadius: "100@ms",
+    backgroundColor: "red",
+    marginBottom: "20@vs",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
-  logo: {
-    maxWidth: 200,
-    marginTop: 40,
-    maxHeight: 40,
-    resizeMode: 'contain',
+  peopleImg: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  inputStyle: {
+    height: "40@vs",
+    marginBottom: "8@vs",
   },
 });

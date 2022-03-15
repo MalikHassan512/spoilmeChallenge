@@ -10,4 +10,6 @@ export default {
   faceBook: require("./fb.png"),
   twitter: require("./twiter.png"),
   linkedin: require("./linkdin.png"),
+  setting: require("./setting.png"),
+  edit: require("./edit.png"),
 };
