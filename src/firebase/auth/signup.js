@@ -12,7 +12,6 @@ export const signupWithEmail = async user => {
   let profilePicUrl;
   try {
     profilePicUrl = await uploadProfilePic(user.profilePic);
-    console.log("profilePicUrl",profilePicUrl)
     await addUserData(
       userCredentials.user.uid,
       user.firstName,
@@ -22,6 +21,10 @@ export const signupWithEmail = async user => {
       user.email,
       profilePicUrl,
       user.location,
+      user.fb,
+      user.twitter,
+      user.linkedin
+
     );
     return userCredentials.user.uid;
   } catch (e) {

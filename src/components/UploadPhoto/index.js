@@ -28,10 +28,6 @@ const UploadPhoto = (props) => {
     const {assets:[result]}= await launchImageLibrary(options);
     setImage(result)
     props.handleChange(result)
-
-    console.log('takePhotoFromLibrary',result);
-
-
   };
   const ModalIcons = ({ source, title, onPress }) => {
     return (
@@ -47,7 +43,7 @@ const UploadPhoto = (props) => {
         <View style={styles.container}>
         <View style={props.imageContainer}>
             <Image
-              source={image ? {uri:image.uri}:  (props.placeholder||{uri:"https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"})}
+              source={image ? {uri:image.uri} :props.image ? {uri:props.image} :   (props.placeholder || {uri:"https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"})}
               style={styles.image}
             />
           </View>
@@ -93,9 +89,9 @@ const styles = StyleSheet.create({
         right:5,
         borderRadius:50,
         borderWidth:1,
-        borderColor:'white',
         backgroundColor: 'white',
-        padding:3,
+        borderWidth:0,
+        padding:5,
     },
     container:{
         alignSelf: 'center',

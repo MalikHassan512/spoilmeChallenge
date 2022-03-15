@@ -11,10 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { MyHeading } from "../../components/Common/MyHeading";
-import { MyText } from "../../components/Common/MyText";
-import { AuthSubmitButton } from "../../components/Common/AuthSubmitButton";
-import { MyTextField } from "../../components/Common/MyTextField";
+import UploadPhoto from "components/UploadPhoto";
 import { changeUserData, getUser } from "../../firebase/firestore/users";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/features/userSlice";
@@ -29,30 +26,60 @@ import CustomButton from "../../components/Common/CustomButton";
 import CustomText from "../../components/Common/CustomText";
 import colors from "../../util/colors";
 import LogoButton from "../../components/Common/LogoButton";
+import DropDownPicker from "react-native-dropdown-picker";
+import moment from "moment";
+
 export const Profile = () => {
-  const firstNameRef = useRef();
-  const lastNameRef = useRef();
+  const [isDisabled, setDisabled] = useState(true)
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("")
   const [dob, setDob] = useState(new Date());
-  const [initialFirstName, initialSetFirstName] = useState("");
-  const [showDate, setShowDate] = useState(false);
-  const [initialLastName, initialSetLastName] = useState("");
-  const [initialDob, initialSetDob] = useState("");
+  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState("date");
+  const [image, setImage] = useState("")
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-
+  const [gender, setGender] = useState("");
+  const [items, setItems] = useState([
+    { label: "Male", value: "Male" },
+    { label: "Female", value: "Female" },
+    { label: "Other", value: "Other" },
+  ]);
+  const [open, setOpen] = useState(false);
+  const [fb, setFb] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [twitter, setTwitter] = useState("");
   const userId = useSelector(selectUser);
+  // moment().diff(userProfile.dob, 'years')
+
+  const onStartChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dob;
+    setShow(Platform.OS === "ios");
+    setDob(currentDate);
+  };
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatePicker = () => {
+    showMode("date");
+  };
+  
 
   useEffect(() => {
     getUser(userId)
       .then((user) => {
         setFirstName(user?.firstName);
         setLastName(user?.lastName);
-        setDob(user?.dob?.toDate());
-        initialSetFirstName(user?.firstName);
-        initialSetLastName(user?.lastName);
-        initialSetDob(user?.dob);
+        setEmail(user?.email)
+        setGender(user?.gender)
+        setImage(user?.profilePic)
+        setDob(user?.dob?.toDate() || new Date());
+        setFb(user?.fb)
+        setTwitter(user?.twitter)
+        setLinkedin(user?.linkedin)
         setInitialLoading(false);
       })
       .catch((e) => {
@@ -62,9 +89,19 @@ export const Profile = () => {
   }, [userId]);
 
   const onSubmit = async () => {
+    const temp={
+      id:userId,
+      firstName,
+      lastName,
+      gender,
+      dob,
+      fb,
+      linkedin,
+      twitter
+    }
     try {
       setOnSubmitLoading(true);
-      await changeUserData(userId, firstName, lastName, dob);
+      await changeUserData(temp);
       alert("Info Changed Successfully");
       setOnSubmitLoading(false);
     } catch (e) {
@@ -87,63 +124,112 @@ export const Profile = () => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.inner}>
-              <LoadingImage
-                source={require("../../assets/images/logo.png")}
-                style={styles.logo}
+              <Header fImgPath={images.setting} sImgPress={()=>setDisabled(!isDisabled)} sImgStyle={!isDisabled && {tintColor:colors.primary}}  sImgPath={images.edit} />
+              <UploadPhoto
+                image={image}
+                handleChange={(res) => setImage(res)}
+                iconColor={"white"}
+                imageContainer={styles.logoContainer}
+                placeholder={images.placeholder}
+                iconStyle={{backgroundColor:colors.primary}}
               />
-              <Header fImgPath={images.setting} sImgPath={images.edit} />
-              <View style={styles.imgContainer}>
-                <Image source={images.people1} style={styles.peopleImg} />
-              </View>
+              {isDisabled && <CustomText fontSize={20} label={firstName +" "+ lastName + ", " + moment().diff(dob,"years")} />}
               <View>
+               {!isDisabled &&
+               <>
                 <InputField
-                  withLabel="Name"
+                  disabled={isDisabled}
+                  withLabel="First Name"
                   inputStyle={styles.inputStyle}
-                  label="Name"
+                  label="First Name"
                   value={firstName}
                   onChangeText={(newVal) => setFirstName(newVal)}
-                  onSubmitEditing={() => lastNameRef.current.focus()}
                   autoCapitalize="none"
                 />
-                <InputField
-                  withLabel="Gender"
+                 <InputField
+                  disabled={isDisabled}
+                  withLabel="Last Name"
                   inputStyle={styles.inputStyle}
-                  label="Gender"
+                  label="Last Name"
                   value={lastName}
                   onChangeText={(newVal) => setLastName(newVal)}
                   autoCapitalize="none"
                 />
+                </>
+                }
+                <DropDownPicker
+                  disabled={isDisabled}
+                open={open}
+                value={gender}
+                items={items}
+                setOpen={setOpen}
+                setValue={setGender}
+                setItems={setItems}
+                placeholder="Gender"
+                placeholderStyle={{color:'grey'}}
+                dropDownContainerStyle={{
+                  borderColor: "#dbdbdb",
+                }}
+                style={{
+                  borderColor: "#dbdbdb",
+                  marginVertical: 10,
+                  width:'85%'
+                }}
+              />
                 <InputField
                   withLabel="Email"
                   inputStyle={styles.inputStyle}
                   label="Email"
+                  disabled
+                  value={email}
                 />
-                <InputField
-                  withLabel="Date of birth"
-                  inputStyle={styles.inputStyle}
-                  label="Date of birth"
+                
+                 <Pressable disabled={isDisabled} style={styles.dropDownContainer} onPress={showDatePicker}>
+                <CustomText label={dob ? moment(dob).format("YY/MM/DD") : "Date of birth"} />
+              </Pressable >
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={dob}
+                  mode={mode}
+                  display="default"
+                  onChange={onStartChange}
                 />
+              )}
                 <LogoButton
+                  onChangeText={setFb}
+                  disabled={isDisabled}
                   container={{ marginBottom: -8 }}
                   withLabel="Social links"
                   imgPath={images.faceBook}
                   label="facebook.com"
+                  value={fb}
                 />
                 <LogoButton
+                disabled={isDisabled}
+                onChangeText={setLinkedin}
                   imgPath={images.linkedin}
                   label="LinkedIn.com"
                   container={{ marginBottom: -8 }}
+                  value={linkedin}
                 />
                 <LogoButton
+                  onChangeText={setTwitter}
+                  disabled={isDisabled}
                   imgPath={images.twitter}
                   label="Twitter.com"
+                  value={twitter}
                   container={{ marginBottom: 0 }}
                 />
               </View>
               <View
                 style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
               >
-                <CustomButton label="Save changes" onPress={signout} />
+                <CustomButton label="Save changes"   
+                    loading={onSubmitLoading}
+                    onPress={onSubmit} />
+                 <CustomButton label="Logout"   
+                    onPress={signout} />
               </View>
               {/* <View style={styles.innerContainer}>
                 <View style={{ marginBottom: 20 }}>
@@ -263,5 +349,28 @@ const styles = ScaledSheet.create({
   inputStyle: {
     height: "40@vs",
     marginBottom: "8@vs",
+  },
+  dropDownContainer: {
+    paddingVertical: "10@vs",
+    paddingHorizontal: "20@s",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "10@ms",
+    marginBottom: "8@vs",
+    borderWidth: 2,
+    borderColor: "#ebebeb",
+  },
+  logoContainer: {
+    width: "100@s",
+    height: "100@s",
+    borderRadius: "130@s",
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "white",
+    marginVertical: "5@vs",
+    marginBottom: "10@vs",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

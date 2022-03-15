@@ -24,7 +24,8 @@ import Geolocation from "react-native-geolocation-service";
 import { signupWithEmail } from "../../firebase/auth/signup";
 import UploadPhoto from "components/UploadPhoto";
 import DropDownPicker from "react-native-dropdown-picker";
-
+import colors from 'util/colors'
+import moment from 'moment'
 export const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
   const firstNameRef = useRef();
@@ -37,7 +38,7 @@ export const Signup = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState(gender);
+  const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,9 @@ export const Signup = ({ navigation }) => {
   const [image, setImage] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [fb, setFb] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [twitter, setTwitter] = useState("");
   // const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "Male", value: "Male" },
@@ -125,11 +129,14 @@ export const Signup = ({ navigation }) => {
         firstName,
         lastName,
         gender,
-        email,
+        email:email.trim(),
         password,
         dob,
         profilePic: image,
         location,
+        fb,
+        twitter,
+        linkedin
       };
       const userId = await signupWithEmail(tempUser);
       console.log("userId", userId);
@@ -171,8 +178,10 @@ export const Signup = ({ navigation }) => {
               />
               <UploadPhoto
                 handleChange={(res) => setImage(res)}
-                iconColor={"black"}
+                iconColor={"white"}
                 imageContainer={styles.logoContainer}
+                placeholder={images.placeholder}
+                iconStyle={{backgroundColor:colors.primary}}
               />
               <View
                 style={{
@@ -202,6 +211,7 @@ export const Signup = ({ navigation }) => {
                   errorText={error.lastName}
                 />
               </View>
+              
               <DropDownPicker
                 open={open}
                 value={gender}
@@ -210,6 +220,7 @@ export const Signup = ({ navigation }) => {
                 setValue={setGender}
                 setItems={setItems}
                 placeholder="Gender"
+                placeholderStyle={{color:'grey'}}
                 onChangeValue={() => emailRef.current.focus()}
                 dropDownContainerStyle={{
                   borderColor: "#dbdbdb",
@@ -245,10 +256,9 @@ export const Signup = ({ navigation }) => {
                 label="Date of birth"
                 inputStyle={styles.inputStyle}
               /> */}
-              <Pressable onPress={showDatePicker}>
-                <CustomText label="Select Date of birth" />
-                {/* <MyText text="Select Date of birth" color="#FF8112" /> */}
-              </Pressable>
+              <Pressable style={styles.dropDownContainer} onPress={showDatePicker}>
+                <CustomText label={dob ? moment(dob).format("YYYY-MM-DD") : "Date of birth"} />
+              </Pressable >
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -258,9 +268,9 @@ export const Signup = ({ navigation }) => {
                   onChange={onStartChange}
                 />
               )}
-              <LogoButton imgPath={images.faceBook} label="Facebook link" />
-              <LogoButton imgPath={images.linkedin} label="Linkedin link" />
-              <LogoButton imgPath={images.twitter} label="Twitter link" />
+              <LogoButton onChangeText={setFb} value={fb} imgPath={images.faceBook} label="Facebook link" />
+              <LogoButton onChangeText={setLinkedin} value={linkedin} imgPath={images.linkedin} label="Linkedin link" />
+              <LogoButton onChangeText={setTwitter} value={twitter} imgPath={images.twitter} label="Twitter link" />
 
               <CustomButton
                 btnContainer={{ marginBottom: 23 }}
@@ -272,6 +282,9 @@ export const Signup = ({ navigation }) => {
                   !email ||
                   !password ||
                   !location ||
+                  !fb ||
+                  !linkedin ||
+                  !twitter ||
                   !image?.uri
                 }
                 loading={loading}
@@ -319,7 +332,7 @@ const styles = ScaledSheet.create({
   },
   inputStyle: {
     height: "45@s",
-    borderWidth: 2,
+    // borderWidth: 2,
     marginBottom: "8@s",
   },
   signUpTextContainer: {
@@ -351,5 +364,16 @@ const styles = ScaledSheet.create({
     marginBottom: "10@vs",
     justifyContent: "center",
     alignItems: "center",
+  },
+  dropDownContainer: {
+    paddingVertical: "10@vs",
+    paddingHorizontal: "20@s",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "10@ms",
+    marginBottom: "8@vs",
+    borderWidth: 2,
+    borderColor: "#ebebeb",
   },
 });

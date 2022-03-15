@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { ScaledSheet } from "react-native-size-matters";
+import { moderateScale, ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
-
+import colors from 'util/colors'
 import React from "react";
 
 const InputField = ({
@@ -21,15 +21,17 @@ const InputField = ({
   onFocus = () => {},
   blurOnSubmit = false,
   secureTextEntry = false,
+  disabled=false
 }) => {
   return (
     <View>
-      <CustomText label={withLabel} textStyle={styles.withLabel} />
+     {/* {withLabel && <CustomText label={withLabel} textStyle={styles.withLabel} />} */}
       <TextInput
-        underlineColor={"transparent"}
-        outline={"transparent"}
+        mode="outlined"
+        outlineColor="#ebebeb"
+        disabled={disabled}
         style={[styles.inputStyle, inputStyle]}
-        placeholder={label}
+        label={label+" *"}
         onChangeText={onChangeText}
         multiline={multiline}
         keyboardType={keyboardType}
@@ -44,8 +46,9 @@ const InputField = ({
         secureTextEntry={!!secureTextEntry}
         onFocus={onFocus}
         theme={{
+          roundness:moderateScale(10),
           colors: {
-            primary: "#FF8112",
+            primary:colors.primary,
           },
         }}
       />
@@ -58,17 +61,12 @@ export default InputField;
 const styles = ScaledSheet.create({
   inputStyle: {
     backgroundColor: "white",
-    borderWidth: 3,
-    borderColor: "#ebebeb",
-    borderTopRightRadius: "10@ms",
-    borderTopLeftRadius: "10@ms",
-    borderRadius: "10@ms",
     background: "#FFFFFF",
-    fontSize: "16@ms",
+    fontSize: "14@ms",
     color: "#878787",
     width: "300@s",
-    height: "55@vs",
-    paddingHorizontal: "20@s",
+    height: "45@vs",
+    
   },
   withLabel: {
     fontSize: "16@ms",

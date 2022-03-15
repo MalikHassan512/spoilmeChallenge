@@ -5,13 +5,17 @@ import {Relationship} from '../screens/Tab/Relationship';
 import {Map} from '../screens/Tab/Map';
 import Home from '../screens/Tab/Home';
 import {Spoil} from '../screens/Tab/Spoil';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+const Tab = createMaterialTopTabNavigator();
 export function TabStack() {
-  const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
+    tabBarPosition={"bottom"}
       screenOptions={({route}) => ({
+        tabBarIndicator:()=>{},
+        tabBarItemStyle:{padding:0},
+        tabBarLabelStyle:{fontSize:10},
         unmountOnBlur:true,
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {

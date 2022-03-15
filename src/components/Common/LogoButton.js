@@ -1,20 +1,19 @@
-import { Image, View } from "react-native";
+import { Image, View,TextInput } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import React from "react";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
-const LogoButton = ({ label, imgPath, withLabel, container }) => {
+const LogoButton = ({ label, imgPath, withLabel, container,onChangeText,value,disabled }) => {
   return (
     <View>
       <CustomText
         label={withLabel}
         textStyle={[withLabel && styles.withLabel]}
       />
-      <Pressable style={[styles.container, container]}>
+      <View style={[styles.container, container]}>
         <Image style={styles.img} source={imgPath} />
-        <CustomText style={styles.text} label={label} />
-      </Pressable>
+        <TextInput editable={!disabled} value={value} onChangeText={onChangeText} placeholder={label} style={styles.text} />
+      </View>
     </View>
   );
 };
@@ -41,6 +40,9 @@ const styles = ScaledSheet.create({
   text: {
     color: "#878787",
     fontSize: "16@ms",
+    padding:0,
+    margin:0,
+    flexGrow:1
   },
   withLabel: {
     fontSize: "16@ms",

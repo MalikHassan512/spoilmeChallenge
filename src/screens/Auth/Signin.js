@@ -31,7 +31,7 @@ export const Signin = () => {
     setError({});
     setLoading(true);
     try {
-      const userId = await signinWithEmail(email, password);
+      const userId = await signinWithEmail(email.trim(), password);
       dispatch(changeUser(userId));
     } catch (e) {
       if (e.code) {
@@ -73,7 +73,7 @@ export const Signin = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={{ flex: 1 ,backgroundColor:'#fff'}}
     >
       <SafeAreaView style={styles.outerContainer}>
         <Pressable onPress={Keyboard.dismiss}>

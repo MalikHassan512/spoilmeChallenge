@@ -4,12 +4,12 @@ import { ScaledSheet } from "react-native-size-matters";
 import images from "../assets/images";
 import React from "react";
 
-const Header = ({ fImgPath, sImgPath, fImgStyle, sImgStyle }) => {
+const Header = ({ fImgPath, sImgPath, fImgStyle, sImgStyle,sImgPress }) => {
   return (
     <View style={styles.mainContainer}>
       <Image source={fImgPath} style={[styles.fImg, fImgStyle]} />
       <Image style={styles.logo} source={images.logo} />
-      <Pressable>
+      <Pressable onPress={sImgPress}>
         <Image source={sImgPath} style={[styles.sImg, sImgStyle]} />
       </Pressable>
     </View>

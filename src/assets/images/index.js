@@ -12,4 +12,5 @@ export default {
   linkedin: require("./linkdin.png"),
   setting: require("./setting.png"),
   edit: require("./edit.png"),
+  placeholder:require("./placeholder.png")
 };

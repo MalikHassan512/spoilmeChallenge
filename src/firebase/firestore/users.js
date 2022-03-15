@@ -10,6 +10,9 @@ export const addUserData = async (
   email,
   profilePic,
   location,
+  fb,
+  twitter,
+  linkedin,
 ) => {
   await firestore().doc(`users/${id}`).set({
     id,
@@ -20,6 +23,9 @@ export const addUserData = async (
     email: email.toLowerCase(),
     profilePic,
     location,
+    fb,
+    twitter,
+    linkedin
   });
 };
 
@@ -79,12 +85,13 @@ export const getUsersByLocation = async (latitude, longitude, setUsers) => {
   setUsers(tempUsers);
 };
 
-export const changeUserData = async (id, firstName, lastName, dob) => {
-  await firestore().doc(`users/${id}`).update({
-    firstName,
-    lastName,
-    dob,
-  });
+export const changeUserData = async (user) => {
+  console.log(user);
+  try {
+  await firestore().doc(`users/${user.id}`).update(user);
+  } catch (error) {
+   console.log('changeUserData error',error) 
+  }
 };
 
 export const deleteUserData = async id => {
