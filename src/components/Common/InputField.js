@@ -1,12 +1,13 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { MyText } from "./MyText";
+import { View } from "react-native";
 import { TextInput } from "react-native-paper";
+import { ScaledSheet } from "react-native-size-matters";
 
-export const MyTextField = ({
-  label,
+import React from "react";
+
+const InputField = ({label,
   refer,
   value,
+  inputStyle,
   onChangeText,
   errorText,
   returnKeyType = "next",
@@ -16,31 +17,22 @@ export const MyTextField = ({
   onSubmitEditing = () => {},
   onFocus = () => {},
   blurOnSubmit = false,
-  secureTextEntry = false,
-}) => {
+  secureTextEntry = false,}) => {
   return (
     <View>
       <TextInput
-        label={label}
-        // mode="outlined"
+        underlineColor={"transparent"}
+        outline={"transparent"}
+        style={[styles.inputStyle, inputStyle]}
+        placeholder={label}
+        onChangeText={onChangeText}
         multiline={multiline}
         keyboardType={keyboardType}
         numberOfLines={10}
-        style={[
-          {
-            width,
-            padding: 0,
-            margin: 0,
-            borderWidth: 0,
-          },
-          styles.textField,
-        ]}
         enablesReturnKeyAutomatically={true}
         ref={refer}
         value={value}
-        onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
-        outlineColor="#dbdbdb"
         blurOnSubmit={blurOnSubmit}
         returnKeyType={returnKeyType}
         error={!!errorText}
@@ -51,22 +43,28 @@ export const MyTextField = ({
             primary: "#FF8112",
           },
         }}
+        
       />
-      {!!errorText && <MyText text={errorText} color="red" />}
+      
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  textField: {
-    width: "100%",
+export default InputField;
+
+const styles = ScaledSheet.create({
+  inputStyle: {
     backgroundColor: "white",
-    fontSize: 14,
-    zIndex: 1000,
-    borderRadius: 10,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-    borderWidth: 1,
+    borderWidth: 3,
     borderColor: "#ebebeb",
+    borderTopRightRadius: "10@ms",
+    borderTopLeftRadius: "10@ms",
+    borderRadius: "10@ms",
+    background: "#FFFFFF",
+    fontSize: "16@ms",
+    color: "#878787",
+    width: "300@s",
+    height: "55@vs",
+    paddingHorizontal: "20@s",
   },
 });

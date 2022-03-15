@@ -11,19 +11,20 @@ import {
   Image,
   PermissionsAndroid,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
-import Geolocation from "react-native-geolocation-service";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MyHeading } from "../../components/Common/MyHeading";
-import { MyText } from "../../components/Common/MyText";
-import { MyTextField } from "../../components/Common/MyTextField";
-import { AuthSubmitButton } from "../../components/Common/AuthSubmitButton";
-import { signupWithEmail } from "../../firebase/auth/signup";
-import { useDispatch } from "react-redux";
-import { changeUser } from "../../redux/features/userSlice";
-import { LoadingImage } from "../../components/Common/LoadingImage";
 import { ScaledSheet } from "react-native-size-matters";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
+import InputField from "../../components/Common/InputField";
+import CustomButton from "../../components/Common/CustomButton";
+import CustomText from "../../components/Common/CustomText";
+import LogoButton from "../../components/Common/LogoButton";
+import images from "../../assets/images";
+import { useDispatch } from "react-redux";
+import Geolocation from "react-native-geolocation-service";
+import {signupWithEmail} from '../../firebase/auth/signup'
 import UploadPhoto from "components/UploadPhoto";
+import DropDownPicker from "react-native-dropdown-picker";
+
 export const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
   const firstNameRef = useRef();
@@ -91,31 +92,6 @@ export const Signup = ({ navigation }) => {
       }
     }
   };
-  // const getLocation = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //       {
-  //         title: 'Spoil:me',
-  //         message: 'Spoil:me wants to access your location ',
-  //       },
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       Geolocation.getCurrentPosition(
-  //         position => {
-  //           setLocation(position);
-  //         },
-  //         error => {
-  //           console.log(error.code, error.message);
-  //           alert('Location Permission not given');
-  //         },
-  //         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-  //       );
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
   const getOneTimeLocation = () => {
     Geolocation.getCurrentPosition(
       //Will give you the current location
@@ -175,6 +151,7 @@ export const Signup = ({ navigation }) => {
       }
     }
   };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -186,135 +163,85 @@ export const Signup = ({ navigation }) => {
             style={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.inner}>
-              <Image
-                source={require("../../assets/images/logo.png")}
-                style={styles.logo}
+            <View style={styles.mainContainer}>
+              <Image style={styles.logo} source={images.logo} />
+              <CustomText
+                textStyle={styles.createYourAccountText}
+                label="Create Your Account"
               />
-              <View style={styles.innerContainer}>
-                <View style={{ marginBottom: 20 }}>
-                  <MyHeading textAlign={"center"} text="Create your account" />
-                </View>
-                <UploadPhoto
-                  handleChange={(res) => setImage(res)}
-                  iconColor={"black"}
-                  imageContainer={styles.logoContainer}
+              <UploadPhoto
+                handleChange={(res) => setImage(res)}
+                iconColor={"black"}
+                imageContainer={styles.logoContainer}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <InputField
+                  label="First name"
+                  inputStyle={[styles.inputStyle, { width: 165 }]}
+                  refer={firstNameRef}
+                  value={firstName}
+                  onChangeText={(newVal) => setFirstName(newVal)}
+                  onSubmitEditing={() => lastNameRef.current.focus()}
+                  returnKeyType="next"
+                  errorText={error.firstName}
                 />
-                {/* <Pressable onPress={pickImage}>
-                  {image ? (
-                    <LoadingImage
-                      style={styles.profilePic}
-                      source={{uri: image}}
-                    />
-                  ) : (
-                    <View style={styles.profilePic}>
-                      <MyText text="Select Profile Pic" />
-                    </View>
-                  )}
-                </Pressable> */}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      marginRight: 5,
-                    }}
-                  >
-                    <MyTextField
-                      label="First name"
-                      refer={firstNameRef}
-                      value={firstName}
-                      onChangeText={(newVal) => setFirstName(newVal)}
-                      onSubmitEditing={() => lastNameRef.current.focus()}
-                      returnKeyType="next"
-                      errorText={error.firstName}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                    }}
-                  >
-                    <MyTextField
-                      label="Last name"
-                      refer={lastNameRef}
-                      value={lastName}
-                      onChangeText={(newVal) => setLastName(newVal)}
-                      onSubmitEditing={() => genderRef.current.focus()}
-                      returnKeyType="next"
-                      errorText={error.lastName}
-                    />
-                  </View>
-                </View>
-                <DropDownPicker
-                  open={open}
-                  value={gender}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setGender}
-                  setItems={setItems}
-                  placeholder="Gender"
-                  onChangeValue={()=>emailRef.current.focus()}
-                  dropDownContainerStyle={{
-                    borderColor:"#dbdbdb"
-                  }}
-                  style={{
-                    borderColor:"#dbdbdb",
-                    marginVertical:10,
-                  }}
-/>
-                {/* <MyTextField
-                  label="Gender"
-                  refer={genderRef}
-                  value={gender}
-                  onChangeText={(newVal) => setGender(newVal)}
-                  onSubmitEditing={() => }
-                  errorText={error.gender}
-                /> */}
-                <MyTextField
-                  label="Email"
-                  keyboardType="email-address"
+                <InputField
+                  label="Second name"
+                  inputStyle={[styles.inputStyle, { width: 165 }]}
+                  refer={lastNameRef}
+                  value={lastName}
+                  onChangeText={(newVal) => setLastName(newVal)}
+                  onSubmitEditing={() => genderRef.current.focus()}
+                  returnKeyType="next"
+                  errorText={error.lastName}
+                />
+              </View>
+              <DropDownPicker
+                open={open}
+                value={gender}
+                items={items}
+                setOpen={setOpen}
+                setValue={setGender}
+                setItems={setItems}
+                placeholder="Gender"
+                onChangeValue={() => emailRef.current.focus()}
+                dropDownContainerStyle={{
+                  borderColor: "#dbdbdb",
+                }}
+                style={{
+                  borderColor: "#dbdbdb",
+                  marginVertical: 10,
+                }}
+              />
+              {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
+              <InputField  keyboardType="email-address"
                   refer={emailRef}
                   value={email}
                   onChangeText={(newVal) => setEmail(newVal)}
                   onSubmitEditing={() => passwordRef.current.focus()}
-                  errorText={error.email}
-                />
-                <MyTextField
-                  label="Password"
-                  refer={passwordRef}
+                  errorText={error.email} label="Email" inputStyle={styles.inputStyle} />
+              <InputField  refer={passwordRef}
                   value={password}
                   onChangeText={(newVal) => setPassword(newVal)}
                   secureTextEntry
                   returnKeyType="done"
                   errorText={error.password}
-                  blurOnSubmit={true}
-                />
-
-                <View
-                  style={{
-                    marginVertical: "5%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Pressable onPress={showDatePicker}>
-                    <MyText text="Select Date of birth" color="#FF8112" />
+                  blurOnSubmit={true} label="Password" inputStyle={styles.inputStyle} />
+              {/* <InputField
+                label="Date of birth"
+                inputStyle={styles.inputStyle}
+              /> */}
+                <Pressable onPress={showDatePicker}>
+                  <CustomText label="Select Date of birth" />
+                    {/* <MyText text="Select Date of birth" color="#FF8112" /> */}
                   </Pressable>
-                  {/* <MyText text={dob?.toLocaleDateString?.()} /> */}
-                </View>
-                {/* {location && (
-                  <View style={{marginBottom: '5%'}}>
-                    <MyText text="Location data collected" textAlign="center" />
-                  </View>
-                )} */}
-
-                {show && (
+               {show && (
                   <DateTimePicker
                     testID="dateTimePicker"
                     value={dob ? new Date(dob) : new Date()}
@@ -323,34 +250,36 @@ export const Signup = ({ navigation }) => {
                     onChange={onStartChange}
                   />
                 )}
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginBottom: 10,
-                  }}
-                >
-                  <MyText text="Already have an account?" color="gray" />
-                  <Pressable
-                    style={{ marginLeft: 5 }}
-                    onPress={() => navigation.navigate("Signin")}
-                  >
-                    <MyText text="Sign in" color="#FF8112" />
-                  </Pressable>
-                </View>
-                <AuthSubmitButton
-                  text="Sign up"
-                  disabled={
-                    !firstName ||
-                    !lastName ||
-                    !gender ||
-                    !email ||
-                    !password ||
-                    !location ||
-                    !image?.uri
-                  }
-                  loading={loading}
-                  onPress={handleSubmit}
+              <LogoButton imgPath={images.faceBook} label="Facebook link" />
+              <LogoButton imgPath={images.linkedin} label="Linkedin link" />
+              <LogoButton imgPath={images.twitter} label="Twitter link" />
+
+              <CustomButton
+                btnContainer={{ marginBottom: 23 }}
+                label="Sign up"
+                disabled={
+                  !firstName ||
+                  !lastName ||
+                  !gender ||
+                  !email ||
+                  !password ||
+                  !location ||
+                  !image?.uri
+                }
+                loading={loading}
+                onPress={handleSubmit}
+              />
+              <View style={styles.signUpTextContainer}>
+                <CustomText
+                  textStyle={styles.dontHaveText}
+                  label="Already have an account? "
                 />
+                <Pressable onPress={()=>navigation.navigate("Signin")}>
+                  <CustomText
+                    textStyle={styles.signUpHereText}
+                    label="Sign in here"
+                  />
+                </Pressable>
               </View>
             </View>
           </ScrollView>
@@ -361,44 +290,47 @@ export const Signup = ({ navigation }) => {
 };
 
 const styles = ScaledSheet.create({
+  createYourAccountText: {
+    color: "#000000",
+    fontWeight: "bold",
+    fontSize: "20@ms",
+    alignSelf: "center",
+    marginBottom: "30@vs",
+  },
+  logo: {
+    width: "126@s",
+    height: "32@vs",
+    alignSelf: "center",
+    marginTop: "34@vs",
+    marginBottom: "20@vs",
+  },
+  mainContainer: {
+    flex: 1,
+    paddingHorizontal: "25@s",
+    justifyContent: "center",
+  },
+  inputStyle: {
+    height: "45@s",
+    borderWidth: 2,
+    marginBottom: "8@s",
+  },
+  signUpTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: "47@vs",
+    alignSelf: "center",
+  },
+  dontHaveText: {
+    color: "#878787",
+    fontSize: "16@ms",
+  },
+  signUpHereText: {
+    color: "#C71F1E",
+    fontSize: "16@ms",
+  },
   outerContainer: {
     backgroundColor: "#fff",
     flex: 1,
-  },
-  scrollContainer: {
-    width: "101%",
-  },
-  inner: {
-    paddingBottom: 20,
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  innerContainer: {
-    paddingHorizontal: 20,
-    width: "101%",
-    marginTop: 40,
-    paddingTop: "5%",
-    backgroundColor: "#fff",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  disclaimer: {
-    fontSize: 12,
-    fontFamily: "NunitoSans-Regular",
-    textAlign: "center",
-    color: "grey",
-    display: "flex",
-  },
-  dropIcons: {
-    maxWidth: 25,
-    maxHeight: 20,
-  },
-  logo: {
-    maxWidth: 200,
-    marginTop: 40,
-    maxHeight: 40,
-    resizeMode: "contain",
   },
   logoContainer: {
     width: "100@s",
@@ -411,15 +343,5 @@ const styles = ScaledSheet.create({
     marginBottom: "10@vs",
     justifyContent: "center",
     alignItems: "center",
-  },
-  profilePic: {
-    borderRadius: 100,
-    backgroundColor: "#F1F1F1",
-    height: 140,
-    width: 140,
-    marginBottom: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
   },
 });
