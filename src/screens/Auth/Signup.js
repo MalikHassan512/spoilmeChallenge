@@ -36,7 +36,7 @@ export const Signup = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState(gender);
   const [dob, setDob] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export const Signup = ({ navigation }) => {
   const [image, setImage] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [value, setValue] = useState(null);
+  // const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
@@ -253,10 +253,10 @@ export const Signup = ({ navigation }) => {
                 </View>
                 <DropDownPicker
                   open={open}
-                  value={value}
+                  value={gender}
                   items={items}
                   setOpen={setOpen}
-                  setValue={setValue}
+                  setValue={setGender}
                   setItems={setItems}
                   placeholder="Gender"
                   onChangeValue={()=>emailRef.current.focus()}
