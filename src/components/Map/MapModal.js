@@ -10,6 +10,7 @@ import {createRelationship} from '../../firebase/firestore/relationships';
 
 export default function MapModal({
   userId,
+  user,
   relatedUser,
   modalVisible,
   closeModal,
@@ -25,8 +26,8 @@ export default function MapModal({
   }, []);
 
   const handleSpoilPress = async spoilType => {
-    await sendMessage(userId, relatedUser.id, spoilType, `Here’s a ${spoilType.name}, enjoy!`);
-    await createRelationship(userId,relatedUser.id)
+    await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
+    await createRelationship(user,relatedUser)
     alert('Spoil sent');
   };
 

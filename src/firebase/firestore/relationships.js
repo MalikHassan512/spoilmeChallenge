@@ -1,26 +1,29 @@
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 
-export const createRelationship = async (user1, user2) => {
+export const createRelationship = async (from, to) => {
   const id = uuid.v4();
   await firestore().doc(`relationships/${id}`).set({
     id,
-    user1,
-    user2,
+    from,
+    to,
+    relationStatus:0,
   });
 };
 
 export const getUserRelationships = async userId => {
-  const result1 = await firestore()
+  const result = await firestore()
     .collection(`relationships`)
-    .where('user1', '==', userId)
-    .get();
-  const result2 = await firestore()
-    .collection(`relationships`)
-    .where('user2', '==', userId)
     .get();
   const relationships = [];
-  result1.forEach(res => relationships.push(res.data()));
-  result2.forEach(res => relationships.push(res.data()));
-  return relationships;
+  // result.forEach(item=>console.log(item.data()))
+  // result1.forEach(res =>res.data().from.id==userId || relationships.push(res.data()));
+  result.forEach((item,index)=>{
+
+    if(item?.data()?.from?.id==userId || item?.data()?.to?.id==userId){
+      relationships.push(item.data()) 
+    }
+
+  });
+  return relationships
 };

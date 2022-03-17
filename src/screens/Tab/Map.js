@@ -25,13 +25,14 @@ export const Map = () => {
   const [relatedUsers, setRelatedUsers] = useState([]);
   const [selectedRelatedUser, setSelectedRelatedUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [user,setUser]=useState({})
   const closeModal = () => {
     setModalVisible(false);
   };
 
   useEffect(() => {
     getUser(userId).then((user) => {
+      setUser(user)
       setRegion({
         latitude: user.location.coords.latitude,
         longitude: user.location.coords.longitude,
@@ -130,6 +131,7 @@ export const Map = () => {
       {selectedRelatedUser && (
         <MapModal
           userId={userId}
+          user={user}
           relatedUser={selectedRelatedUser}
           closeModal={closeModal}
           modalVisible={modalVisible}

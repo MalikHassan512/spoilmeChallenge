@@ -34,7 +34,7 @@ export const getSpoils = (userId, setSpoils) => {
         const tempSpoil = spoilSnapshot.data();
         const spoilDate = tempSpoil.date.toDate();
         tempSpoil.date = spoilDate;
-        if( (tempSpoil.to === userId || tempSpoil.from === userId)){
+        if( (tempSpoil.to.id === userId || tempSpoil.from.id === userId)){
         if (i !== 0 && !isDateEqual(tempDate, spoilDate)) {
           console.log('here');
           tempSpoils.push(tempSpoilDateGroup);

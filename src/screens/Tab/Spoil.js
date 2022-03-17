@@ -21,7 +21,6 @@ export const Spoil = ({navigation}) => {
       spoilSubscriber();
     };
   }, [userId]);
-
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View>
@@ -58,16 +57,16 @@ export const Spoil = ({navigation}) => {
                         />
                         <View>
                           <MyHeading text={spoil.name} fontSize={18} />
-                          {/* <MyText
+                          <MyText
                             text={
-                              userId == spoil.to
-                                ? `Received from ${spoil.to}`
-                                : userId == spoil.from
-                                ? `Sent to ${spoil.from}`
+                              userId != spoil.from.id
+                                ? `Received from ${spoil.to.firstName}`
+                                : userId == spoil.from.id
+                                ? `Sent to ${spoil.from.firstName}`
                                 : null
                             }
                             color="gray"
-                          /> */}
+                          />
                         </View>
                       </View>
                     </TouchableOpacity>

@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import {addSpoilData} from './spoils';
 
-export const sendMessage = async (from, to, spoil, text) => {
+export const sendMessage = async (from, to, spoil, text,spoilStatus) => {
   const id = uuid.v4();
   await firestore().doc(`chats/${id}`).set({
     id,
@@ -10,6 +10,7 @@ export const sendMessage = async (from, to, spoil, text) => {
     to,
     spoil,
     text,
+    spoilStatus,
     date: firestore.Timestamp.now(),
     read: false,
   });

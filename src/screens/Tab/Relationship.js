@@ -34,6 +34,7 @@ export const Relationship = ({navigation}) => {
     setLoading(true);
     getUserRelationships(userId)
       .then(res => {
+        console.log('resoluation',res)
         setRelationships(res);
       })
       .catch(e => {
@@ -43,65 +44,65 @@ export const Relationship = ({navigation}) => {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  useEffect(() => {
-    const getRelatedUsers = async () => {
-      const tempRelatedUsersId = [];
-      for (let relationship of relationships) {
-        tempRelatedUsersId.push(
-          userId === relationship.user1
-            ? relationship.user2
-            : relationship.user1,
-        );
-      }
-      if (tempRelatedUsersId.length === 0) return;
-      const tempRelatedUsers = await getUsersById(tempRelatedUsersId);
-      tempRelatedUsers.filter(relatedUser => {
-        if (relatedUser) return relatedUser;
-      });
-      setRelatedUsers(tempRelatedUsers);
-      setFilteredUsers(tempRelatedUsers);
-      setLoading(false);
-    };
-    getRelatedUsers().catch(e => {
-      console.log(e);
-      setLoading(false);
-      alert('Error occured. Please Try again');
-    });
-  }, [relationships]);
+  // useEffect(() => {
+  //   const getRelatedUsers = async () => {
+  //     const tempRelatedUsersId = [];
+  //     for (let relationship of relationships) {
+  //       tempRelatedUsersId.push(
+  //         userId === relationship.user1
+  //           ? relationship.user2
+  //           : relationship.user1,
+  //       );
+  //     }
+  //     if (tempRelatedUsersId.length === 0) return;
+  //     const tempRelatedUsers = await getUsersById(tempRelatedUsersId);
+  //     tempRelatedUsers.filter(relatedUser => {
+  //       if (relatedUser) return relatedUser;
+  //     });
+  //     setRelatedUsers(tempRelatedUsers);
+  //     setFilteredUsers(tempRelatedUsers);
+  //     setLoading(false);
+  //   };
+  //   getRelatedUsers().catch(e => {
+  //     console.log(e);
+  //     setLoading(false);
+  //     alert('Error occured. Please Try again');
+  //   });
+  // }, [relationships]);
 
-  useEffect(() => {
-    if (relatedUsers.length > 0) {
-      const subscribers = [];
-      relatedUsers.forEach((relatedUser, i) => {
-        subscribers.push(
-          getLastMessages(
-            userId,
-            relatedUser.id,
-            i,
-            lastMessages,
-            setLastMessages,
-          ),
-        );
-      });
-      setLastMessageSubscribers(subscribers);
-      return () => {
-        lastMessageSubscribers.forEach(lastMessageSubscriber =>
-          lastMessageSubscriber(),
-        );
-      };
-    }
-  }, [relatedUsers]);
+  // useEffect(() => {
+  //   if (relatedUsers.length > 0) {
+  //     const subscribers = [];
+  //     relatedUsers.forEach((relatedUser, i) => {
+  //       subscribers.push(
+  //         getLastMessages(
+  //           userId,
+  //           relatedUser.id,
+  //           i,
+  //           lastMessages,
+  //           setLastMessages,
+  //         ),
+  //       );
+  //     });
+  //     setLastMessageSubscribers(subscribers);
+  //     return () => {
+  //       lastMessageSubscribers.forEach(lastMessageSubscriber =>
+  //         lastMessageSubscriber(),
+  //       );
+  //     };
+  //   }
+  // }, [relatedUsers]);
 
-  useEffect(() => {
-    if (searchText) {
-      setFilteredUsers(
-        relatedUsers.filter(user => {
-          const re = new RegExp(searchText.replace('.', ''));
-          return !!user.firstName.match(re) || !!user.lastName.match(re);
-        }),
-      );
-    } else setFilteredUsers(relatedUsers);
-  }, [searchText]);
+  // useEffect(() => {
+  //   if (searchText) {
+  //     setFilteredUsers(
+  //       relatedUsers.filter(user => {
+  //         const re = new RegExp(searchText.replace('.', ''));
+  //         return !!user.firstName.match(re) || !!user.lastName.match(re);
+  //       }),
+  //     );
+  //   } else setFilteredUsers(relatedUsers);
+  // }, [searchText]);
 
   return loading ? (
     <Loading />
@@ -111,13 +112,13 @@ export const Relationship = ({navigation}) => {
         searchText={searchText}
         setSearchText={setSearchText}
       />
-      <UserList
+      {/* <UserList
         loading={loading}
         userId={userId}
         lastMessages={lastMessages}
-        otherUsers={filteredUsers}
+        otherUsers={relationships}
         navigation={navigation}
-      />
+      /> */}
       {/* <FloatingAction
         color="black"
         onPressMain={() => navigation.navigate('CreateRelationship')}
