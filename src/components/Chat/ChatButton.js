@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Colors from 'util/colors'
 const ChatButton = props => {
   return (
-    <TouchableOpacity activeOpacity={0.6} style={[styles.btn,{borderColor:props.text=="Approve"?Colors.green:Colors.primary}]}>
+    <TouchableOpacity onPress={props.onPress} activeOpacity={0.6} style={[styles.btn,{borderColor:props.text=="Approve"?Colors.green:Colors.primary}]}>
        { props.text == 'Approve'? <FontAwesome5 color={Colors.green} name='check' size={20}/>:props.text == "Decline"?<Entypo color={Colors.primary} name='cross' size={30}/>:null}
       <Text style={[styles.btnText,{color:props.text=="Approve"?Colors.green:Colors.primary}]}>{props.text}</Text>
     </TouchableOpacity>

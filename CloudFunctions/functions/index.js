@@ -77,7 +77,7 @@ exports.userAdded = functions.auth.user().onCreate(user => {
       }, 5000);
       return;
     }
-    childrensuan._remoteObject.value.search("Got engaged") > 0 ? console.log(true) : console.log(false);
+    childrensuan._remoteObject.value.search("Got engaged") > 0 ? console.log("Got engaged",true) : console.log("Got engaged",false);
     fs.writeFile(`./Scrapes/${usernameorid}.html`, childrensuan._remoteObject.value, async (err) => {
       // childrensuan._remoteObject.value console this value and check html. i think you will parse this variable
       await console.log(`Mission Completed .`);

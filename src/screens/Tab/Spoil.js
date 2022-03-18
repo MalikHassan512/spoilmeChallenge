@@ -46,10 +46,10 @@ export const Spoil = ({navigation}) => {
                 )}
                 {spoilGroup.map((spoil, j) => {
                   return (
-                    <TouchableOpacity onPress={()=>navigation.navigate('Chat', {
-                      userId:userId==spoil.to ?spoil.to : spoil.from,
-                      relatedUserId: userId!=spoil.to ?spoil.to : spoil.from,
-                    })} key={j}>
+                    <TouchableOpacity key={j} onPress={()=>navigation.navigate('Chat', {
+                      user:userId==spoil?.to?.id ? spoil?.to : spoil?.from,
+                      relatedUser: userId!=spoil?.to?.id ? spoil?.to : spoil?.from,
+                    })} >
                       <View style={styles.spoilContainer}>
                         <LoadingImage
                           source={{uri: spoil.image}}
@@ -60,9 +60,9 @@ export const Spoil = ({navigation}) => {
                           <MyText
                             text={
                               userId != spoil.from.id
-                                ? `Received from ${spoil.to.firstName}`
+                                ? `Received from ${spoil.from.firstName}`
                                 : userId == spoil.from.id
-                                ? `Sent to ${spoil.from.firstName}`
+                                ? `Sent to ${spoil.to.firstName}`
                                 : null
                             }
                             color="gray"

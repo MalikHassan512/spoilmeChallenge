@@ -112,13 +112,13 @@ export const Relationship = ({navigation}) => {
         searchText={searchText}
         setSearchText={setSearchText}
       />
-      {/* <UserList
+      <UserList
         loading={loading}
         userId={userId}
         lastMessages={lastMessages}
         otherUsers={relationships}
         navigation={navigation}
-      /> */}
+      />
       {/* <FloatingAction
         color="black"
         onPressMain={() => navigation.navigate('CreateRelationship')}

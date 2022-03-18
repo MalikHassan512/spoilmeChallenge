@@ -9,25 +9,15 @@ import {ChatFooter} from '../../components/Chat/ChatFooter';
 
 export const Chat = ({navigation, route}) => {
   
-  const {userId, relatedUserId} = route?.params
-  const [relatedUser, setRelatedUser] = useState(null);
+  const {user, relatedUser} = route?.params
 
-  useEffect(() => {
-    getUser(relatedUserId)
-      .then(user => setRelatedUser(user))
-      .catch(e => {
-        console.log(e);
-        alert('Error occured. Try again');
-      });
-  }, [relatedUserId]);
-  return !relatedUser ? (
-    <Loading />
-  ) : (
+  
+  return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         <ChatHeader relatedUser={relatedUser} navigation={navigation} />
-        <ChatBody userId={userId} relatedUserId={relatedUserId} />
-        <ChatFooter userId={userId} relatedUserId={relatedUserId} />
+        <ChatBody userId={user.id} relatedUserId={relatedUser.id} />
+        <ChatFooter userId={user} relatedUserId={relatedUser} />
       </View>
     </SafeAreaView>
   );
