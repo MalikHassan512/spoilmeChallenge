@@ -100,7 +100,7 @@ const Home = () => {
           })
         }
         if (user?.isEngaged) {
-          console.log(user?.isEngaged,'=======>>>>>>');
+          console.log(user?.isEngaged, '=======>>>>>>');
           posts.push({
             id: user?.id + 'ENGAGED',
             postType: 'ENGAGED',
@@ -110,6 +110,7 @@ const Home = () => {
         }
       }
     })
+    posts.push({ postType: 'MAP' })
     setPosts(posts)
     setRefreshing(false)
   }
@@ -124,9 +125,15 @@ const Home = () => {
     )
   }
   const renderPost = ({ item }) => {
-    return (
-      <Post description={item.description} name={item?.name} />
-    )
+    if (item?.postType == 'MAP') {
+      return (
+        <Post description={item.description} name={item?.name} postType={'MAP'} />
+      )
+    } else {
+      return (
+        <Post description={item.description} name={item?.name} />
+      )
+    }
   }
   const renderEmpty = ({ item }) => {
     return (
@@ -152,6 +159,7 @@ const Home = () => {
           style={styles.flatlist}
           renderItem={renderStoryAvatar}
           keyExtractor={item => item.id}
+          showsHorizontalScrollIndicator={false}
         />
         <FlatList
           data={posts}
@@ -160,13 +168,13 @@ const Home = () => {
           renderItem={renderPost}
           keyExtractor={item => item.id}
           refreshing={refreshing}
+          showsVerticalScrollIndicator={false}
           onRefresh={() => {
             setRefreshing(true)
             loadData()
           }}
           ListEmptyComponent={renderEmpty}
         />
-        {/* <Post postType='MAP' /> */}
       </View>
       <ImageView
         images={storyImages}

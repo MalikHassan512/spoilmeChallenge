@@ -6,21 +6,21 @@ import {
   SafeAreaView,
   FlatList,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {getUserRelationships} from '../../firebase/firestore/relationships';
-import {useSelector} from 'react-redux';
-import {selectUser} from '../../redux/features/userSlice';
-import {getUsersById} from '../../firebase/firestore/users';
-import {LoadingImage} from '../../components/Common/LoadingImage';
-import {MyHeading} from '../../components/Common/MyHeading';
-import {MyText} from '../../components/Common/MyText';
-import {Loading} from '../../components/Common/Loading';
-import {getLastMessages} from '../../firebase/firestore/chats';
-import {FloatingAction} from 'react-native-floating-action';
-import {RelationshipHeader} from '../../components/Relationship/RelationshipHeader';
-import {UserList} from '../../components/Relationship/UserList';
+import React, { useState, useEffect } from 'react';
+import { getUserRelationships } from '../../firebase/firestore/relationships';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/features/userSlice';
+import { getUsersById } from '../../firebase/firestore/users';
+import { LoadingImage } from '../../components/Common/LoadingImage';
+import { MyHeading } from '../../components/Common/MyHeading';
+import { MyText } from '../../components/Common/MyText';
+import { Loading } from '../../components/Common/Loading';
+import { getLastMessages } from '../../firebase/firestore/chats';
+import { FloatingAction } from 'react-native-floating-action';
+import { RelationshipHeader } from '../../components/Relationship/RelationshipHeader';
+import { UserList } from '../../components/Relationship/UserList';
 
-export const Relationship = ({navigation}) => {
+export const Relationship = ({ navigation }) => {
   const [relationships, setRelationships] = useState([]);
   const [relatedUsers, setRelatedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,12 +29,12 @@ export const Relationship = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const userId = useSelector(selectUser);
-
+  const [refreshing, setRefreshing] = useState(false)
   useEffect(() => {
     setLoading(true);
     getUserRelationships(userId)
       .then(res => {
-        console.log('resoluation',res)
+        console.log('resoluation', res)
         setRelationships(res);
       })
       .catch(e => {
@@ -118,6 +118,7 @@ export const Relationship = ({navigation}) => {
         lastMessages={lastMessages}
         otherUsers={relationships}
         navigation={navigation}
+       
       />
       {/* <FloatingAction
         color="black"

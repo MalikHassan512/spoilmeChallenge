@@ -20,15 +20,15 @@ export const UserList = ({
     return (
       <TouchableOpacity
         key={index}
-        disabled={otherUser.relationStatus==0 ||otherUser.relationStatus==2}
+        disabled={otherUser.relationStatus == 0 || otherUser.relationStatus == 2}
         style={[styles.userContainer]}
         onPress={async () => {
           console.log('sdkjbkajsbdkjabdjk');
-            navigation.navigate("Chat", {
-              user:currentUser,
-              relatedUser: user,
-            });
-         
+          navigation.navigate("Chat", {
+            user: currentUser,
+            relatedUser: user,
+          });
+
         }}
       >
         <View
@@ -48,7 +48,7 @@ export const UserList = ({
               text={`${user.firstName} ${user.lastName[0]}.`}
             />
             <MyText marginBottom={5} text={otherUser.lastMessage} color="#C4C4C4" />
-            {otherUser.relationStatus==0 ? <View style={{ flexDirection: "row" }}>
+            {otherUser.relationStatus == 0 ? <View style={{ flexDirection: "row" }}>
               <ChatButton
                 onPress={() => updateRelationStatus(otherUser, 1)}
                 text="Approve"
@@ -57,7 +57,7 @@ export const UserList = ({
                 onPress={() => updateRelationStatus(otherUser, 2)}
                 text="Decline"
               />
-          </View>: otherUser.relationStatus==2  ? <CustomText color={colors.primary} fontSize={10} label={"You've blocked this user"} /> :null}
+            </View> : otherUser.relationStatus == 2 ? <CustomText color={colors.primary} fontSize={10} label={"You've blocked this user"} /> : null}
           </View>
         </View>
       </TouchableOpacity>
