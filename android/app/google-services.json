@@ -1,1 +1,54 @@
-{"installed":{"client_id":"402944316207-35kid85mrn6lg9pd98sap8ou4h3hu3sv.apps.googleusercontent.com","project_id":"spoilme-1","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]}}
+{
+  "project_info": {
+    "project_number": "402944316207",
+    "project_id": "spoilme-1",
+    "storage_bucket": "spoilme-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402944316207:android:59d6532175ec898051c7da",
+        "android_client_info": {
+          "package_name": "com.spoil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402944316207-35kid85mrn6lg9pd98sap8ou4h3hu3sv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spoil",
+            "certificate_hash": "45a223213537b15d91ceb6c6fa024f1d5cbd9008"
+          }
+        },
+        {
+          "client_id": "402944316207-7l9hmjdeoac3t4n5pbfgfih23p7smsop.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgnJDcaDa-ocTGwlyD04u8Rbo-MZv3z0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402944316207-7l9hmjdeoac3t4n5pbfgfih23p7smsop.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402944316207-v1vffbqn73oo7vn310lq2sci3okf651q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.spoil"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

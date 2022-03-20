@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
@@ -18,7 +18,8 @@ import { useDispatch } from "react-redux";
 import { changeUser } from "../../redux/features/userSlice";
 
 import CustomButton from "../../components/Common/CustomButton";
-export const Signin = () => {
+import ScreenWrapper from "../../components/ScreenWrapper";
+export const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -71,84 +72,72 @@ export const Signin = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 ,backgroundColor:'#fff'}}
-    >
-      <SafeAreaView style={styles.outerContainer}>
-        <Pressable onPress={Keyboard.dismiss}>
-          <ScrollView
-            style={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.mainContainer}>
-              <Image
-                source={require("../../assets/images/logo.png")}
-                style={styles.logo}
-              />
-              <CustomText
-                textStyle={styles.loginText}
-                label="Login To Your Account"
-              />
-              <InputField
-                keyboardType="email-address"
-                refer={emailRef}
-                value={email}
-                onChangeText={(newVal) => setEmail(newVal)}
-                onSubmitEditing={() => passwordRef.current.focus()}
-                errorText={error.email}
-                autoCapitalize="none"
-                label="Email"
-                inputStyle={styles.inputStyle}
-              />
-              <InputField
-                refer={passwordRef}
-                value={password}
-                onChangeText={(newVal) => setPassword(newVal)}
-                secureTextEntry
-                returnKeyType="done"
-                errorText={error.password}
-                blurOnSubmit={true}
-                label="Password"
-                inputStyle={styles.inputStyle}
-              />
-              <Pressable onPress={() => navigation.navigate("ForgotPassword")}>
-                <CustomText
-                  textStyle={styles.forgetText}
-                  label="Forgot password?"
-                />
-              </Pressable>
-              <CustomButton disabled={!email || !password}
-                  loading={loading}
-                  onPress={onSigninWithEmail} label="Sign in" />
-              <CustomText
-                label="Or sign in with"
-                textStyle={styles.orSignInWithText}
-              />
-              <View style={styles.googleBtnContainer}>
-                <GoogleSigninButton
-                  style={styles.googleBtn}
-                  onPress={onSigninWithGoogle}
-                  size={GoogleSigninButton.Size.Wide}
-                />
-              </View>
-              <View style={styles.signUpTextContainer}>
-                <CustomText
-                  textStyle={styles.dontHaveText}
-                  label="Don’t have an account? "
-                />
-                <Pressable>
-                  <CustomText
-                    textStyle={styles.signUpHereText}
-                    label="Sign up here"
-                  />
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
-        </Pressable>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+    <ScreenWrapper scrollEnabled>
+      <View style={styles.mainContainer}>
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logo}
+        />
+        <CustomText
+          textStyle={styles.loginText}
+          label="Login To Your Account"
+        />
+        <InputField
+          keyboardType="email-address"
+          refer={emailRef}
+          value={email}
+          onChangeText={(newVal) => setEmail(newVal)}
+          onSubmitEditing={() => passwordRef.current.focus()}
+          errorText={error.email}
+          autoCapitalize="none"
+          label="Email"
+          inputStyle={styles.inputStyle}
+        />
+        <InputField
+          refer={passwordRef}
+          value={password}
+          onChangeText={(newVal) => setPassword(newVal)}
+          secureTextEntry
+          returnKeyType="done"
+          errorText={error.password}
+          blurOnSubmit={true}
+          label="Password"
+          inputStyle={styles.inputStyle}
+        />
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <CustomText
+            textStyle={styles.forgetText}
+            label="Forgot password?"
+          />
+        </TouchableOpacity>
+        <CustomButton disabled={!email || !password}
+          loading={loading}
+          onPress={onSigninWithEmail} label="Sign in" />
+        <CustomText
+          label="Or sign in with"
+          textStyle={styles.orSignInWithText}
+        />
+        <View style={styles.googleBtnContainer}>
+          <GoogleSigninButton
+            style={styles.googleBtn}
+            onPress={onSigninWithGoogle}
+            size={GoogleSigninButton.Size.Wide}
+          />
+        </View>
+        <View style={styles.signUpTextContainer}>
+          <CustomText
+            textStyle={styles.dontHaveText}
+            label="Don’t have an account? "
+          />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <CustomText
+              textStyle={styles.signUpHereText}
+              label="Sign up here"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScreenWrapper>
   );
 };
 

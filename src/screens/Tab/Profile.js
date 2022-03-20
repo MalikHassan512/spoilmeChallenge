@@ -4,7 +4,7 @@ import {
   Image,
   View,
   StyleSheet,
-  Pressable,
+  
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
@@ -28,6 +28,8 @@ import colors from "../../util/colors";
 import LogoButton from "../../components/Common/LogoButton";
 import DropDownPicker from "react-native-dropdown-picker";
 import moment from "moment";
+import ScreenWrapper from "../../components/ScreenWrapper";
+import { width } from "react-native-dimension";
 
 export const Profile = () => {
   const [isDisabled, setDisabled] = useState(true)
@@ -66,7 +68,7 @@ export const Profile = () => {
   const showDatePicker = () => {
     showMode("date");
   };
-  
+
 
   useEffect(() => {
     getUser(userId)
@@ -89,15 +91,17 @@ export const Profile = () => {
   }, [userId]);
 
   const onSubmit = async () => {
-    const temp={
-      id:userId,
+    const temp = {
+      id: userId,
       firstName,
       lastName,
       gender,
       dob,
       fb,
       linkedin,
-      twitter
+      twitter,
+      isScrapedfb: false,
+      isScrapedli: false,
     }
     try {
       setOnSubmitLoading(true);
@@ -113,199 +117,130 @@ export const Profile = () => {
   return initialLoading ? (
     <Loading />
   ) : (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <SafeAreaView style={styles.outerContainer}>
-        <Pressable onPress={Keyboard.dismiss}>
-          <ScrollView
-            style={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.inner}>
-              <Header fImgPath={images.setting} sImgPress={()=>setDisabled(!isDisabled)} sImgStyle={!isDisabled && {tintColor:colors.primary}}  sImgPath={images.edit} />
-              <UploadPhoto
-                image={image}
-                handleChange={(res) => setImage(res)}
-                iconColor={"white"}
-                imageContainer={styles.logoContainer}
-                placeholder={images.placeholder}
-                iconStyle={{backgroundColor:colors.primary}}
-              />
-              {isDisabled && <CustomText fontSize={20} label={firstName +" "+ lastName + ", " + moment().diff(dob,"years")} />}
-              <View>
-               {!isDisabled &&
-               <>
-                <InputField
-                  disabled={isDisabled}
-                  withLabel="First Name"
-                  inputStyle={styles.inputStyle}
-                  label="First Name"
-                  value={firstName}
-                  onChangeText={(newVal) => setFirstName(newVal)}
-                  autoCapitalize="none"
-                />
-                 <InputField
-                  disabled={isDisabled}
-                  withLabel="Last Name"
-                  inputStyle={styles.inputStyle}
-                  label="Last Name"
-                  value={lastName}
-                  onChangeText={(newVal) => setLastName(newVal)}
-                  autoCapitalize="none"
-                />
-                </>
-                }
-                <DropDownPicker
-                  disabled={isDisabled}
-                open={open}
-                value={gender}
-                items={items}
-                setOpen={setOpen}
-                setValue={setGender}
-                setItems={setItems}
-                placeholder="Gender"
-                placeholderStyle={{color:'grey'}}
-                dropDownContainerStyle={{
-                  borderColor: "#dbdbdb",
-                }}
-                style={{
-                  borderColor: "#dbdbdb",
-                  marginVertical: 10,
-                  width:'85%'
-                }}
-              />
-                <InputField
-                  withLabel="Email"
-                  inputStyle={styles.inputStyle}
-                  label="Email"
-                  disabled
-                  value={email}
-                />
-                
-                 <Pressable disabled={isDisabled} style={styles.dropDownContainer} onPress={showDatePicker}>
-                <CustomText label={dob ? moment(dob).format("YY/MM/DD") : "Date of birth"} />
-              </Pressable >
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={dob}
-                  mode={mode}
-                  display="default"
-                  onChange={onStartChange}
-                />
-              )}
-                <LogoButton
-                  onChangeText={setFb}
-                  disabled={isDisabled}
-                  container={{ marginBottom: -8 }}
-                  withLabel="Social links"
-                  imgPath={images.faceBook}
-                  label="facebook.com"
-                  value={fb}
-                />
-                <LogoButton
+
+    <ScreenWrapper scrollEnabled>
+      <View style={styles.inner}>
+        <Header
+          fImgPath={images.setting}
+          sImgPress={() => setDisabled(!isDisabled)}
+          sImgStyle={!isDisabled && { tintColor: colors.primary }}
+          sImgPath={images.edit} />
+        <UploadPhoto
+          image={image}
+          handleChange={(res) => setImage(res)}
+          iconColor={"white"}
+          imageContainer={styles.logoContainer}
+          placeholder={images.placeholder}
+          iconStyle={{ backgroundColor: colors.primary }}
+        />
+        {isDisabled && <CustomText container={{ alignSelf: 'center' }} fontSize={20} label={firstName + " " + lastName} />}
+        <View>
+          {!isDisabled &&
+            <>
+              <InputField
                 disabled={isDisabled}
-                onChangeText={setLinkedin}
-                  imgPath={images.linkedin}
-                  label="LinkedIn.com"
-                  container={{ marginBottom: -8 }}
-                  value={linkedin}
-                />
-                <LogoButton
-                  onChangeText={setTwitter}
-                  disabled={isDisabled}
-                  imgPath={images.twitter}
-                  label="Twitter.com"
-                  value={twitter}
-                  container={{ marginBottom: 0 }}
-                />
-              </View>
-              <View
-                style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
-              >
-                <CustomButton label="Save changes"   
-                    loading={onSubmitLoading}
-                    onPress={onSubmit} />
-                 <CustomButton label="Logout"   
-                    onPress={signout} />
-              </View>
-              {/* <View style={styles.innerContainer}>
-                <View style={{ marginBottom: 20 }}>
-                  <MyHeading text="Profile" fontSize={25} />
-                </View>
-                <MyTextField
-                  label="First Name"
-                  refer={firstNameRef}
-                  value={firstName}
-                  onChangeText={(newVal) => setFirstName(newVal)}
-                  onSubmitEditing={() => lastNameRef.current.focus()}
-                  autoCapitalize="none"
-                />
-                <MyTextField
-                  label="Last Name"
-                  refer={lastNameRef}
-                  value={lastName}
-                  onChangeText={(newVal) => setLastName(newVal)}
-                  autoCapitalize="none"
-                />
+                withLabel="First Name"
+                inputStyle={styles.inputStyle}
+                label="First Name"
+                value={firstName}
+                onChangeText={(newVal) => setFirstName(newVal)}
+                autoCapitalize="none"
+              />
+              <InputField
+                disabled={isDisabled}
+                withLabel="Last Name"
+                inputStyle={styles.inputStyle}
+                label="Last Name"
+                value={lastName}
+                onChangeText={(newVal) => setLastName(newVal)}
+                autoCapitalize="none"
+              />
+            </>
+          }
+          <DropDownPicker
+            disabled={isDisabled}
+            open={open}
+            value={gender}
+            items={items}
+            setOpen={setOpen}
+            setValue={setGender}
+            setItems={setItems}
+            placeholder="Gender"
+            placeholderStyle={{ color: 'grey' }}
+            dropDownContainerStyle={{
+              borderColor: "#dbdbdb",
+            }}
+            style={{
+              borderColor: "#dbdbdb",
+              marginVertical: 10,
+              alignSelf: 'center',
+              width: '90%'
+            }}
+          />
+          <InputField
+            withLabel="Email"
+            inputStyle={styles.inputStyle}
+            label="Email"
+            disabled
+            value={email}
+          />
 
-
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Pressable onPress={() => setShowDate(true)}>
-                    <MyText text="Change Date of birth" color="#FF8112" />
-                  </Pressable>
-                  <MyText text={dob?.toLocaleDateString()} />
-                </View>
-
-                {showDate && (
-                  <DateTimePicker
-                    value={dob}
-                    mode="data"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                      setShowDate(false);
-                      if (selectedDate) setDob(selectedDate);
-                    }}
-                  />
-                )}
-                <View style={{ marginTop: 30 }}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "red",
-                      padding: 15,
-                      alignItems: "center",
-                      borderRadius: 5,
-                      marginBottom: 10,
-                    }}
-                    onPress={signout}
-                  >
-                    <MyText color={"white"} text="Logout" />
-                  </TouchableOpacity>
-                  <AuthSubmitButton
-                    text="Change Info"
-                    disabled={
-                      initialDob === dob &&
-                      firstName === initialFirstName &&
-                      lastName === initialLastName
-                    }
-                    loading={onSubmitLoading}
-                    onPress={onSubmit}
-                  />
-                </View>
-              </View> */}
-            </View>
-          </ScrollView>
-        </Pressable>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+          <TouchableOpacity disabled={isDisabled} style={styles.dropDownContainer} onPress={showDatePicker}>
+            <CustomText label={dob ? moment(dob).format("YY/MM/DD") : "Date of birth"} />
+          </TouchableOpacity >
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              style={{ width: width(50), alignSelf: 'center' }}
+              value={dob}
+              mode={mode}
+              display="default"
+              onChange={onStartChange}
+            />
+          )}
+          <LogoButton
+            onChangeText={setFb}
+            disabled={isDisabled}
+            container={{ marginBottom: -8, marginHorizontal: width(3) }}
+            withLabel="Social links"
+            textContainer={{marginLeft: width(3)}}
+            imgPath={images.faceBook}
+            label="facebook.com"
+            value={fb}
+          />
+          <LogoButton
+            disabled={isDisabled}
+            onChangeText={setLinkedin}
+            imgPath={images.linkedin}
+            label="LinkedIn.com"
+            container={{ marginBottom: -8, marginHorizontal: width(3) }}
+            value={linkedin}
+          />
+          <LogoButton
+            onChangeText={setTwitter}
+            disabled={isDisabled}
+            imgPath={images.twitter}
+            label="Twitter.com"
+            value={twitter}
+            container={{ marginBottom: 0, marginHorizontal: width(3) }}
+          />
+        </View>
+        <View
+          style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
+        >
+          <CustomButton
+            label="Save changes"
+            loading={onSubmitLoading}
+            onPress={onSubmit} />
+          <CustomButton label="Logout"
+            onPress={signout} />
+        </View>
+      </View>
+    </ScreenWrapper>
+    //       </ScrollView>
+    //     </TouchableOpacity>
+    //   </SafeAreaView>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -318,9 +253,8 @@ const styles = ScaledSheet.create({
     width: "101%",
   },
   inner: {
-    alignItems: "center",
     flex: 1,
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
   },
   innerContainer: {
     paddingHorizontal: 20,
@@ -330,6 +264,7 @@ const styles = ScaledSheet.create({
     marginTop: 40,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
+
   },
   imgContainer: {
     width: "100@ms",
@@ -349,6 +284,8 @@ const styles = ScaledSheet.create({
   inputStyle: {
     height: "40@vs",
     marginBottom: "8@vs",
+    alignSelf: 'center',
+    width: '90%'
   },
   dropDownContainer: {
     paddingVertical: "10@vs",
@@ -360,6 +297,8 @@ const styles = ScaledSheet.create({
     marginBottom: "8@vs",
     borderWidth: 2,
     borderColor: "#ebebeb",
+    width: '90%',
+    alignSelf: 'center'
   },
   logoContainer: {
     width: "100@s",

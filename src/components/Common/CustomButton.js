@@ -1,4 +1,4 @@
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import CustomText from "./CustomText";
 import { ScaledSheet } from "react-native-size-matters";
 import React from "react";
@@ -6,7 +6,7 @@ import * as Progress from "react-native-progress";
 
 const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
   return (
-    <Pressable
+    <TouchableOpacity
       disabled={disabled}
       style={[
         styles.signUpBtn,
@@ -24,7 +24,7 @@ const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
           style={{ alignSelf: "center" }}
         />
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

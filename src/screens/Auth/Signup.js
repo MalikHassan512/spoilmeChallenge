@@ -4,7 +4,7 @@ import {
   ScrollView,
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -26,6 +26,7 @@ import UploadPhoto from "components/UploadPhoto";
 import DropDownPicker from "react-native-dropdown-picker";
 import colors from 'util/colors'
 import moment from 'moment'
+import ScreenWrapper from "../../components/ScreenWrapper";
 export const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
   const firstNameRef = useRef();
@@ -129,7 +130,7 @@ export const Signup = ({ navigation }) => {
         firstName,
         lastName,
         gender,
-        email:email.trim(),
+        email: email.trim(),
         password,
         dob,
         profilePic: image,
@@ -160,153 +161,141 @@ export const Signup = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <SafeAreaView style={styles.outerContainer}>
-        <Pressable onPress={Keyboard.dismiss}>
-          <ScrollView
-            style={styles.scrollContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.mainContainer}>
-              <Image style={styles.logo} source={images.logo} />
-              <CustomText
-                textStyle={styles.createYourAccountText}
-                label="Create Your Account"
-              />
-              <UploadPhoto
-                handleChange={(res) => setImage(res)}
-                iconColor={"white"}
-                imageContainer={styles.logoContainer}
-                placeholder={images.placeholder}
-                iconStyle={{backgroundColor:colors.primary}}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <InputField
-                  label="First name"
-                  inputStyle={[styles.inputStyle, { width: 165 }]}
-                  refer={firstNameRef}
-                  value={firstName}
-                  onChangeText={(newVal) => setFirstName(newVal)}
-                  onSubmitEditing={() => lastNameRef.current.focus()}
-                  returnKeyType="next"
-                  errorText={error.firstName}
-                />
-                <InputField
-                  label="Second name"
-                  inputStyle={[styles.inputStyle, { width: 165 }]}
-                  refer={lastNameRef}
-                  value={lastName}
-                  onChangeText={(newVal) => setLastName(newVal)}
-                  onSubmitEditing={() => genderRef.current.focus()}
-                  returnKeyType="next"
-                  errorText={error.lastName}
-                />
-              </View>
-              
-              <DropDownPicker
-                open={open}
-                value={gender}
-                items={items}
-                setOpen={setOpen}
-                setValue={setGender}
-                setItems={setItems}
-                placeholder="Gender"
-                placeholderStyle={{color:'grey'}}
-                onChangeValue={() => emailRef.current.focus()}
-                dropDownContainerStyle={{
-                  borderColor: "#dbdbdb",
-                }}
-                style={{
-                  borderColor: "#dbdbdb",
-                  marginVertical: 10,
-                }}
-              />
-              {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
-              <InputField
-                keyboardType="email-address"
-                refer={emailRef}
-                value={email}
-                onChangeText={(newVal) => setEmail(newVal)}
-                onSubmitEditing={() => passwordRef.current.focus()}
-                errorText={error.email}
-                label="Email"
-                inputStyle={styles.inputStyle}
-              />
-              <InputField
-                refer={passwordRef}
-                value={password}
-                onChangeText={(newVal) => setPassword(newVal)}
-                secureTextEntry
-                returnKeyType="done"
-                errorText={error.password}
-                blurOnSubmit={true}
-                label="Password"
-                inputStyle={styles.inputStyle}
-              />
-              {/* <InputField
+    <ScreenWrapper scrollEnabled>
+      <View style={styles.mainContainer}>
+        <Image style={styles.logo} source={images.logo} />
+        <CustomText
+          textStyle={styles.createYourAccountText}
+          label="Create Your Account"
+        />
+        <UploadPhoto
+          handleChange={(res) => setImage(res)}
+          iconColor={"white"}
+          imageContainer={styles.logoContainer}
+          placeholder={images.placeholder}
+          iconStyle={{ backgroundColor: colors.primary }}
+        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <InputField
+            label="First name"
+            inputStyle={[styles.inputStyle, { width: 165 }]}
+            refer={firstNameRef}
+            value={firstName}
+            onChangeText={(newVal) => setFirstName(newVal)}
+            onSubmitEditing={() => lastNameRef.current.focus()}
+            returnKeyType="next"
+            errorText={error.firstName}
+          />
+          <InputField
+            label="Second name"
+            inputStyle={[styles.inputStyle, { width: 165 }]}
+            refer={lastNameRef}
+            value={lastName}
+            onChangeText={(newVal) => setLastName(newVal)}
+            onSubmitEditing={() => genderRef.current.focus()}
+            returnKeyType="next"
+            errorText={error.lastName}
+          />
+        </View>
+
+        <DropDownPicker
+          open={open}
+          value={gender}
+          items={items}
+          setOpen={setOpen}
+          setValue={setGender}
+          setItems={setItems}
+          placeholder="Gender"
+          placeholderStyle={{ color: 'grey' }}
+          onChangeValue={() => emailRef.current.focus()}
+          dropDownContainerStyle={{
+            borderColor: "#dbdbdb",
+          }}
+          style={{
+            borderColor: "#dbdbdb",
+            marginVertical: 10,
+          }}
+        />
+        {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
+        <InputField
+          keyboardType="email-address"
+          refer={emailRef}
+          value={email}
+          onChangeText={(newVal) => setEmail(newVal)}
+          onSubmitEditing={() => passwordRef.current.focus()}
+          errorText={error.email}
+          label="Email"
+          inputStyle={styles.inputStyle}
+        />
+        <InputField
+          refer={passwordRef}
+          value={password}
+          onChangeText={(newVal) => setPassword(newVal)}
+          secureTextEntry
+          returnKeyType="done"
+          errorText={error.password}
+          blurOnSubmit={true}
+          label="Password"
+          inputStyle={styles.inputStyle}
+        />
+        {/* <InputField
                 label="Date of birth"
                 inputStyle={styles.inputStyle}
               /> */}
-              <Pressable style={styles.dropDownContainer} onPress={showDatePicker}>
-                <CustomText label={dob ? moment(dob).format("YYYY-MM-DD") : "Date of birth"} />
-              </Pressable >
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={dob ? new Date(dob) : new Date()}
-                  mode={mode}
-                  display="default"
-                  onChange={onStartChange}
-                />
-              )}
-              <LogoButton onChangeText={setFb} value={fb} imgPath={images.faceBook} label="Facebook link" />
-              <LogoButton onChangeText={setLinkedin} value={linkedin} imgPath={images.linkedin} label="Linkedin link" />
-              <LogoButton onChangeText={setTwitter} value={twitter} imgPath={images.twitter} label="Twitter link" />
+        <TouchableOpacity style={styles.dropDownContainer} onPress={showDatePicker}>
+          <CustomText label={dob ? moment(dob).format("YYYY-MM-DD") : "Date of birth"} />
+        </TouchableOpacity>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={dob ? new Date(dob) : new Date()}
+            mode={mode}
+            display="default"
+            onChange={onStartChange}
+          />
+        )}
+        <LogoButton onChangeText={setFb} value={fb} imgPath={images.faceBook} label="Facebook link" />
+        <LogoButton onChangeText={setLinkedin} value={linkedin} imgPath={images.linkedin} label="Linkedin link" />
+        <LogoButton onChangeText={setTwitter} value={twitter} imgPath={images.twitter} label="Twitter link" />
 
-              <CustomButton
-                btnContainer={{ marginBottom: 23 }}
-                label="Sign up"
-                disabled={
-                  !firstName ||
-                  !lastName ||
-                  !gender ||
-                  !email ||
-                  !password ||
-                  !location ||
-                  !fb ||
-                  !linkedin ||
-                  !twitter ||
-                  !image?.uri
-                }
-                loading={loading}
-                onPress={handleSubmit}
-              />
-              <View style={styles.signUpTextContainer}>
-                <CustomText
-                  textStyle={styles.dontHaveText}
-                  label="Already have an account? "
-                />
-                <Pressable onPress={() => navigation.navigate("Signin")}>
-                  <CustomText
-                    textStyle={styles.signUpHereText}
-                    label="Sign in here"
-                  />
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
-        </Pressable>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+        <CustomButton
+          btnContainer={{ marginBottom: 23 }}
+          label="Sign up"
+          disabled={
+            !firstName ||
+            !lastName ||
+            !gender ||
+            !email ||
+            !password ||
+            !location
+            // !fb ||
+            // !linkedin ||
+            // !twitter ||
+            // !image?.uri
+          }
+          loading={loading}
+          onPress={handleSubmit}
+        />
+        <View style={styles.signUpTextContainer}>
+          <CustomText
+            textStyle={styles.dontHaveText}
+            label="Already have an account? "
+          />
+          <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
+            <CustomText
+              textStyle={styles.signUpHereText}
+              label="Sign in here"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScreenWrapper>
   );
 };
 

@@ -14,7 +14,7 @@ export default Logo
 
 const styles = ScaledSheet.create({
     image:{
-        width:"125@s",
+        width:"100@s",
         height:'31@vs',
     }
 })

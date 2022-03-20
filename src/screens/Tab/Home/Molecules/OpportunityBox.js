@@ -1,9 +1,8 @@
 import React from "react";
 import { Box } from "./Box";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import CustomText from "components/CustomText";
 import { ScaledSheet } from "react-native-size-matters";
-import { Image, View } from "react-native";
+import { Image, View,TouchableOpacity } from "react-native";
 import Images from "assets/images";
 import Entypo from "react-native-vector-icons/Entypo";
 export const OpportunityBox = () => {
@@ -21,9 +20,9 @@ export const OpportunityBox = () => {
           label="Congratulate Maria for her 47 Birthay"
         />
 
-        <Pressable style={styles.btnContainer}>
+        <TouchableOpacity style={styles.btnContainer}>
           <CustomText textStyle={styles.btn} label="Say congrats" />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View
         style={{

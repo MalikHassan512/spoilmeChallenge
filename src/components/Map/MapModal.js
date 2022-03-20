@@ -1,4 +1,4 @@
-import {StyleSheet, ScrollView, View, Pressable,Text} from 'react-native';
+import {StyleSheet, ScrollView, View,TouchableOpacity,Text} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Modal from 'react-native-modal';
 import {LoadingImage} from '../Common/LoadingImage';
@@ -60,7 +60,7 @@ export default function MapModal({
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {spoilTypes.map((spoilType, i) => {
               return (
-                <Pressable
+                <TouchableOpacity
                   onPress={() => handleSpoilPress(spoilType)}
                   key={i}
                   style={styles.spoilTypes}>
@@ -70,14 +70,14 @@ export default function MapModal({
                   />
                   <Text style={{marginStart:-20,marginTop:5}}>{`\$${10 + 5 * i}`}</Text>
                   {/* <MyText  text=  /> */}
-                </Pressable>
+                </TouchableOpacity>
               );
             })}
           </ScrollView>
         </View>
-        <Pressable style={styles.btn} onPress={closeModal}>
+        <TouchableOpacity style={styles.btn} onPress={closeModal}>
           <MyHeading text="Cancel" textAlign="center" color="red" />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </Modal>
   );

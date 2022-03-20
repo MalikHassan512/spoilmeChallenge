@@ -1,4 +1,5 @@
 import auth from '@react-native-firebase/auth';
+import moment from 'moment';
 import {addUserData} from '../firestore/users';
 import {deleteProfilePic, uploadProfilePic} from '../storage/profilPic';
 import {deleteAccount} from './deleteAccount';
@@ -23,7 +24,7 @@ export const signupWithEmail = async user => {
       user.location,
       user.fb,
       user.twitter,
-      user.linkedin
+      user.linkedin,
 
     );
     return userCredentials.user.uid;

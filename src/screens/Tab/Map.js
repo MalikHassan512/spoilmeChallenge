@@ -1,7 +1,7 @@
 import {
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   ScrollView,
   Image,
   SafeAreaView,
@@ -73,9 +73,9 @@ export const Map = () => {
           style={{ width: 125, height: 31 }}
           source={require("../../assets/images/logo.png")}
         />
-        <Pressable style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton}>
           <Image source={require("../../assets/images/search.png")} />
-        </Pressable>
+        </TouchableOpacity>
       </View> */}
 
       {region && relatedUsers && (
@@ -95,7 +95,7 @@ export const Map = () => {
                   }}
                   coordinate={{
                     latitude: relatedUser?.location?.coords?.latitude || 32.2,
-                    longitude: relatedUser.location.coords.longitude || 32.4,
+                    longitude: relatedUser?.location?.coords?.longitude || 32.4,
                   }}
                 >
                   <View

@@ -1,4 +1,4 @@
-import {StyleSheet, Pressable, Image, View} from 'react-native';
+import {StyleSheet,TouchableOpacity, Image, View} from 'react-native';
 import React from 'react';
 
 export default function MapHeader() {
@@ -6,9 +6,9 @@ export default function MapHeader() {
     <View style={styles.logoContainer}>
       <Image source={require('../../assets/images/bar_left.png')} />
       <Image source={require('../../assets/images/logo.png')} />
-      <Pressable style={styles.searchButton}>
+      <TouchableOpacity style={styles.searchButton}>
         <Image source={require('../../assets/images/search.png')} />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }

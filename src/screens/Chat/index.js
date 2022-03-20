@@ -1,4 +1,4 @@
-import {View, StyleSheet, Pressable, ScrollView, Image} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ChatHeader} from '../../components/Chat/ChatHeader';

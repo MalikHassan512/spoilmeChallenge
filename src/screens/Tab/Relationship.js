@@ -1,7 +1,7 @@
 import {
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   Image,
   SafeAreaView,
   FlatList,

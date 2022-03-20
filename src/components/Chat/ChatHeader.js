@@ -1,4 +1,4 @@
-import {StyleSheet, Pressable, View, Image} from 'react-native';
+import {StyleSheet, View, Image,TouchableOpacity} from 'react-native';
 import {LoadingImage} from '../Common/LoadingImage';
 import {MyHeading} from '../Common/MyHeading';
 import React from 'react';
@@ -6,9 +6,9 @@ import React from 'react';
 export const ChatHeader = ({relatedUser, navigation}) => {
   return (
     <View style={styles.header}>
-      <Pressable onPress={() => navigation.goBack()}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/images/back.png')} />
-      </Pressable>
+      </TouchableOpacity>
       <View>
         <MyHeading text="Relationship with" fontSize={15} textAlign="center" />
         <MyHeading

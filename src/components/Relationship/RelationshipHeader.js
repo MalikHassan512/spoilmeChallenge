@@ -1,4 +1,4 @@
-import {StyleSheet, Image, Pressable, View, TextInput} from 'react-native';
+import {StyleSheet, Image, TouchableOpacity, View, TextInput} from 'react-native';
 import React, {useState} from 'react';
 
 export const RelationshipHeader = ({searchText, setSearchText}) => {
@@ -8,11 +8,11 @@ export const RelationshipHeader = ({searchText, setSearchText}) => {
       <View style={styles.logoContainer}>
         <Image source={require('../../assets/images/bar_left.png')} />
         <Image style={{width:125,height:31}} source={require('../../assets/images/logo.png')} />
-        <Pressable
+        <TouchableOpacity
           style={styles.searchButton}
           onPress={() => setShowSearch(!showSearch)}>
           <Image source={require('../../assets/images/search.png')} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       {showSearch && (
         <TextInput

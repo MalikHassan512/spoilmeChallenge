@@ -1,13 +1,13 @@
-import {StyleSheet, ScrollView, Pressable, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {getAllSpoilTypes} from '../../firebase/firestore/spoils';
-import {LoadingImage} from '../Common/LoadingImage';
-import {MyTextField} from '../Common/MyTextField';
-import {MyText} from '../Common/MyText';
-import {sendMessage} from '../../firebase/firestore/chats';
+import { StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { getAllSpoilTypes } from '../../firebase/firestore/spoils';
+import { LoadingImage } from '../Common/LoadingImage';
+import { MyTextField } from '../Common/MyTextField';
+import { MyText } from '../Common/MyText';
+import { sendMessage } from '../../firebase/firestore/chats';
 import Modal from 'react-native-modal';
 
-export const ChatFooter = ({userId, relatedUserId}) => {
+export const ChatFooter = ({ userId, relatedUserId }) => {
   const [spoilTypes, setSpoilTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -50,9 +50,9 @@ export const ChatFooter = ({userId, relatedUserId}) => {
       horizontal
       showsHorizontalScrollIndicator={false}>
       {spoilTypes.map((spoilType, i) => (
-        <Pressable key={i} onPress={() => handleSpoilPress(spoilType)}>
-          <LoadingImage source={{uri: spoilType.image}} style={styles.spoil} />
-        </Pressable>
+        <TouchableOpacity key={i} onPress={() => handleSpoilPress(spoilType)}>
+          <LoadingImage source={{ uri: spoilType.image }} style={styles.spoil} />
+        </TouchableOpacity>
       ))}
       <Modal
         isVisible={modalVisible}
@@ -65,7 +65,7 @@ export const ChatFooter = ({userId, relatedUserId}) => {
             onChangeText={text => setMessage(text)}
           />
 
-          <Pressable onPress={handleSend} style={styles.sendBtn}>
+          <TouchableOpacity onPress={handleSend} style={styles.sendBtn}>
             <MyText text="Send Message with" textAlign="center" />
             <LoadingImage
               style={{
@@ -73,9 +73,9 @@ export const ChatFooter = ({userId, relatedUserId}) => {
                 width: 50,
                 marginLeft: 10,
               }}
-              source={{uri: selectedSpoilType?.image}}
+              source={{ uri: selectedSpoilType?.image }}
             />
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </Modal>
     </ScrollView>

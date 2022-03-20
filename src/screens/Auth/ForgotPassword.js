@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import {MyHeading} from '../../components/Common/MyHeading';
@@ -20,11 +20,11 @@ export const ForgotPassword = ({navigation}) => {
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <Pressable
+        <TouchableOpacity
           style={{flexDirection: 'row', alignItems: 'center'}}
           onPress={() => navigation.goBack()}>
           <MyText text="Back" color="gray" />
-        </Pressable>
+        </TouchableOpacity>
         <View style={{marginBottom: 25, marginTop: 20}}>
           <MyHeading text="Forgot Password" textAlign="center" />
           <MyText

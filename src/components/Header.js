@@ -1,5 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { Image, StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import images from "../assets/images";
 import React from "react";
@@ -9,9 +8,9 @@ const Header = ({ fImgPath, sImgPath, fImgStyle, sImgStyle,sImgPress }) => {
     <View style={styles.mainContainer}>
       <Image source={fImgPath} style={[styles.fImg, fImgStyle]} />
       <Image style={styles.logo} source={images.logo} />
-      <Pressable onPress={sImgPress}>
+      <TouchableOpacity activeOpacity={0.7} onPress={sImgPress}>
         <Image source={sImgPath} style={[styles.sImg, sImgStyle]} />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };

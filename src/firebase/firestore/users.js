@@ -1,4 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
+import moment from 'moment';
 import uuid from 'react-native-uuid';
 
 export const addUserData = async (
@@ -13,6 +14,7 @@ export const addUserData = async (
   fb,
   twitter,
   linkedin,
+
 ) => {
   await firestore().doc(`users/${id}`).set({
     id,
@@ -25,7 +27,12 @@ export const addUserData = async (
     location,
     fb,
     twitter,
-    linkedin
+    linkedin,
+    isHired: false,
+    isEngaged: false,
+    lastUpdated: moment().valueOf(),
+    isScrapedfb: false,
+    isScrapedli: false,
   });
 };
 

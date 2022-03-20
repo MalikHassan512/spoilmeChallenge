@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
@@ -77,7 +77,7 @@ export const Signin = ({ navigation }) => {
       style={{ flex: 1 }}
     >
       <SafeAreaView style={styles.outerContainer}>
-        <Pressable onPress={Keyboard.dismiss}>
+        <TouchableOpacity onPress={Keyboard.dismiss}>
           <ScrollView
             style={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
@@ -103,12 +103,12 @@ export const Signin = ({ navigation }) => {
                   onPress={onSigninWithGoogle}
                   size={GoogleSigninButton.Size.Wide}
                 />
-                <Pressable
+                <TouchableOpacity
                   style={{ marginBottom: "10%", marginTop: 10 }}
                   onPress={() => navigation.navigate("ForgotPassword")}
                 >
                   <MyText text="Forgot password?" color="#FF8112" />
-                </Pressable>
+                </TouchableOpacity>
                 <View
                   style={{
                     flexDirection: "row",
@@ -116,12 +116,12 @@ export const Signin = ({ navigation }) => {
                   }}
                 >
                   <MyText text="Don't have an account?" color="gray" />
-                  <Pressable
+                  <TouchableOpacity
                     style={{ marginLeft: 5 }}
                     onPress={() => navigation.navigate("Signup")}
                   >
                     <MyText text="Sign up" color="#FF8112" />
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
                 <AuthSubmitButton
                   text="Sign in"
@@ -132,7 +132,7 @@ export const Signin = ({ navigation }) => {
               </View>
             </View>
           </ScrollView>
-        </Pressable>
+        </TouchableOpacity>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

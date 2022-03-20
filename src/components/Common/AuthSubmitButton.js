@@ -1,14 +1,15 @@
 import React from 'react';
-import {StyleSheet, Pressable} from 'react-native';
-import {MyText} from './MyText';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { MyText } from './MyText';
 import * as Progress from 'react-native-progress';
 
-export const AuthSubmitButton = ({text, onPress, disabled, loading}) => {
+export const AuthSubmitButton = ({ text, onPress, disabled, loading }) => {
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.7}
       style={[
         styles.button,
-        {backgroundColor: !disabled ? '#FF8112' : 'rgba(200,200,200,0.5)'},
+        { backgroundColor: !disabled ? '#FF8112' : 'rgba(200,200,200,0.5)' },
       ]}
       onPress={onPress}
       disabled={disabled}>
@@ -18,10 +19,10 @@ export const AuthSubmitButton = ({text, onPress, disabled, loading}) => {
         <Progress.Circle
           indeterminate
           size={30}
-          style={{alignSelf: 'center'}}
+          style={{ alignSelf: 'center' }}
         />
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, Pressable, View } from "react-native";
+import { StyleSheet, FlatList, TouchableOpacity, View } from "react-native";
 import { LoadingImage } from "../Common/LoadingImage";
 import { MyText } from "../Common/MyText";
 import { MyHeading } from "../Common/MyHeading";
@@ -18,11 +18,12 @@ export const UserList = ({
     const user = otherUser.from.id !== userId ? otherUser.from : otherUser.to;
     const currentUser = otherUser.from.id === userId ? otherUser.from : otherUser.to;
     return (
-      <Pressable
+      <TouchableOpacity
         key={index}
         disabled={otherUser.relationStatus==0 ||otherUser.relationStatus==2}
         style={[styles.userContainer]}
         onPress={async () => {
+          console.log('sdkjbkajsbdkjabdjk');
             navigation.navigate("Chat", {
               user:currentUser,
               relatedUser: user,
@@ -59,7 +60,7 @@ export const UserList = ({
           </View>: otherUser.relationStatus==2  ? <CustomText color={colors.primary} fontSize={10} label={"You've blocked this user"} /> :null}
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     );
   };
 

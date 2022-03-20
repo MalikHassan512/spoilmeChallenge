@@ -1,7 +1,7 @@
 import {
   StyleSheet,
   SafeAreaView,
-  Pressable,
+  TouchableOpacity,
   Image,
   View,
   TextInput,

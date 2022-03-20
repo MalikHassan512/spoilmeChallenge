@@ -3,12 +3,13 @@ import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import React from "react";
 
-const LogoButton = ({ label, imgPath, withLabel, container,onChangeText,value,disabled }) => {
+const LogoButton = ({ label, imgPath, withLabel,textContainer={}, container,onChangeText,value,disabled }) => {
   return (
     <View>
       <CustomText
         label={withLabel}
         textStyle={[withLabel && styles.withLabel]}
+        container={textContainer}
       />
       <View style={[styles.container, container]}>
         <Image style={styles.img} source={imgPath} />
@@ -42,7 +43,8 @@ const styles = ScaledSheet.create({
     fontSize: "16@ms",
     padding:0,
     margin:0,
-    flexGrow:1
+    flex: 1,
+    flexGrow:1,
   },
   withLabel: {
     fontSize: "16@ms",
