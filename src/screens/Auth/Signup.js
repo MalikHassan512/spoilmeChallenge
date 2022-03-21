@@ -154,8 +154,8 @@ export const Signup = ({ navigation }) => {
         case "auth/weak-password":
           setError({ password: "Weak password." });
         default:
-          alert("Some error occured. Please try again");
           setLoading(false);
+          alert("Some error occured. Please try again");
       }
     }
   };
@@ -273,11 +273,11 @@ export const Signup = ({ navigation }) => {
             !gender ||
             !email ||
             !password ||
-            !location
-            // !fb ||
-            // !linkedin ||
-            // !twitter ||
-            // !image?.uri
+            !location ||
+            !fb ||
+            !linkedin ||
+            !twitter ||
+            !image?.uri
           }
           loading={loading}
           onPress={handleSubmit}

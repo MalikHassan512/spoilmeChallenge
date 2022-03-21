@@ -4,7 +4,7 @@ import {addSpoilData} from './spoils';
 
 export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
   const id = uuid.v4();
-  await firestore().doc(`chats/${id}`).set({
+  const message={
     id,
     from,
     to,
@@ -13,12 +13,13 @@ export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
     spoilStatus,
     date: firestore.Timestamp.now(),
     read: false,
-  });
-  addSpoilData(spoil.name, spoil.image, from, to);
+  }
+  await firestore().doc(`chats/${id}`).set(message);
+  addSpoilData(spoil.name, spoil.image, from, to,id);
+  return {id,spoilStatus,text,from:from.id,to:to.id}
 };
 
 export const getMessages = (user1, user2, setMessages) => {
-  console.log(user1,user2)
   return firestore()
     .collection(`chats`)
     .orderBy('date', 'asc')
@@ -38,6 +39,9 @@ export const updateSpoilStatus =async(message,status)=>{
   } catch (error) {
     
   }
+}
+export const getMessageById=(id)=>{
+  return firestore().doc(`chats/${id}`).get()
 }
 export const getLastMessages = (
   user1,

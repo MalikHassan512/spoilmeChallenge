@@ -49,6 +49,7 @@ export const Spoil = ({navigation}) => {
                     <TouchableOpacity key={j} onPress={()=>navigation.navigate('Chat', {
                       user:userId==spoil?.to?.id ? spoil?.to : spoil?.from,
                       relatedUser: userId!=spoil?.to?.id ? spoil?.to : spoil?.from,
+                      relationId:spoil?.relationId || -1,
                     })} >
                       <View style={styles.spoilContainer}>
                         <LoadingImage

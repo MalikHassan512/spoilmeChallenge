@@ -1,7 +1,7 @@
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
+  Dimensions,
   ScrollView,
   Image,
   SafeAreaView,
@@ -18,8 +18,13 @@ import MapHeader from "../../components/Map/MapHeader";
 import MapModal from "../../components/Map/MapModal";
 import { MyText } from "../../components/Common/MyText";
 import Header from "../../components/Header";
+const { width, height } = Dimensions.get("window");
 
-export const Map = () => {
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA + ASPECT_RATIO;
+
+export const Map = ({navigation}) => {
   const [region, setRegion] = useState(null);
   const userId = useSelector(selectUser);
   const [relatedUsers, setRelatedUsers] = useState([]);
@@ -30,39 +35,55 @@ export const Map = () => {
     setModalVisible(false);
   };
 
-  useEffect(() => {
-    getUser(userId).then((user) => {
-      setUser(user)
-      setRegion({
-        latitude: user.location.coords.latitude,
-        longitude: user.location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUser(userId).then((user) => {
+        if(user){
+        setUser(user)
+        setRegion({
+          latitude: user.location.coords.latitude,
+          longitude: user.location.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta:LONGITUDE_DELTA,
+        });
+      }else{
+        setRegion({
+          latitude:31.3914008,
+          longitude:32.8377671,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      }
       });
+  
+      getAllUsers().then((users) => setRelatedUsers(users));
+      // getUserRelationships(userId)
+      //   .then(relationships => {
+      //     const tempRelatedUsersId = [];
+      //     relationships.forEach(relationship => {
+      //       if (relationship.user1 === userId)
+      //         tempRelatedUsersId.push(relationship.user2);
+      //       else tempRelatedUsersId.push(relationship.user1);
+      //     });
+      //     if (tempRelatedUsersId.length === 0) return;
+      //     getUsersById(tempRelatedUsersId)
+      //       .then(users => setRelatedUsers(users))
+      //       .catch(e => {
+      //         console.log(e);
+      //         alert('Error occured');
+      //       });
+      //   })
+      //   .catch(e => {
+      //     console.log(e);
+      //     alert('Error occured');
+      //   });
+      
+
     });
 
-    getAllUsers().then((users) => setRelatedUsers(users));
-    // getUserRelationships(userId)
-    //   .then(relationships => {
-    //     const tempRelatedUsersId = [];
-    //     relationships.forEach(relationship => {
-    //       if (relationship.user1 === userId)
-    //         tempRelatedUsersId.push(relationship.user2);
-    //       else tempRelatedUsersId.push(relationship.user1);
-    //     });
-    //     if (tempRelatedUsersId.length === 0) return;
-    //     getUsersById(tempRelatedUsersId)
-    //       .then(users => setRelatedUsers(users))
-    //       .catch(e => {
-    //         console.log(e);
-    //         alert('Error occured');
-    //       });
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //     alert('Error occured');
-    //   });
-  }, []);
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,7 +98,6 @@ export const Map = () => {
           <Image source={require("../../assets/images/search.png")} />
         </TouchableOpacity>
       </View> */}
-
       {region && relatedUsers && (
         <MapView
           style={{ width: "100%", height: "90%" }}

@@ -31,7 +31,7 @@ import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { width } from "react-native-dimension";
 
-export const Profile = () => {
+export const Profile = ({navigation}) => {
   const [isDisabled, setDisabled] = useState(true)
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -69,10 +69,11 @@ export const Profile = () => {
     showMode("date");
   };
 
-
-  useEffect(() => {
-    getUser(userId)
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUser(userId)
       .then((user) => {
+        console.log("user",user)
         setFirstName(user?.firstName);
         setLastName(user?.lastName);
         setEmail(user?.email)
@@ -88,7 +89,13 @@ export const Profile = () => {
         // alert('An error occured.Try again');
         console.log(e);
       });
-  }, [userId]);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+
+
 
   const onSubmit = async () => {
     const temp = {
@@ -108,6 +115,7 @@ export const Profile = () => {
       await changeUserData(temp);
       alert("Info Changed Successfully");
       setOnSubmitLoading(false);
+      setDisabled(true)
     } catch (e) {
       setOnSubmitLoading(false);
       alert("Error occured. Try again");
@@ -229,11 +237,11 @@ export const Profile = () => {
           style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
         >
           <CustomButton
-            label="Save changes"
+            label={!isDisabled ? "Save changes":"Logout"}
             loading={onSubmitLoading}
-            onPress={onSubmit} />
-          <CustomButton label="Logout"
-            onPress={signout} />
+            onPress={!isDisabled ?onSubmit:signout} />
+          {/* <CustomButton label="Logout"
+            onPress={signout} /> */}
         </View>
       </View>
     </ScreenWrapper>

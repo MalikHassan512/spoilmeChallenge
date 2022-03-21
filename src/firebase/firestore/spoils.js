@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 
-export const addSpoilData = async (name, image, from, to) => {
+export const addSpoilData = async (name, image, from, to,relationId) => {
   const id = uuid.v4();
   await firestore().doc(`spoils/${id}`).set({
     id,
@@ -10,6 +10,7 @@ export const addSpoilData = async (name, image, from, to) => {
     image,
     to,
     date: firestore.Timestamp.now(),
+    relationId
   });
 };
 

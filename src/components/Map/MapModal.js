@@ -6,7 +6,7 @@ import {MyHeading} from '../Common/MyHeading';
 import {getAllSpoilTypes} from '../../firebase/firestore/spoils';
 import {MyText} from '../Common/MyText';
 import {sendMessage} from '../../firebase/firestore/chats';
-import {createRelationship,checkUserRelationships} from '../../firebase/firestore/relationships';
+import {createRelationship,checkUserRelationships,updateRelationStatus} from '../../firebase/firestore/relationships';
 
 export default function MapModal({
   userId,
@@ -27,12 +27,15 @@ export default function MapModal({
 
   const handleSpoilPress = async spoilType => {
    const relationStatus=await checkUserRelationships(userId,relatedUser.id)
+   let messages={}
     if(!relationStatus){
-    await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
-    await createRelationship(user,relatedUser,`Here’s a ${spoilType.name}, enjoy!`)
+    messages= await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
+    console.log("messages",messages)
+    await createRelationship(user,relatedUser,`Here’s a ${spoilType.name}, enjoy!`,0,messages)
     console.log('relation created')
     }else{
-      await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
+      messages = await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
+      await updateRelationStatus(relationStatus,messages)
       console.log('relation already exist')
 
     }

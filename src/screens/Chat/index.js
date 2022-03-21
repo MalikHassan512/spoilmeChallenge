@@ -9,14 +9,14 @@ import {ChatFooter} from '../../components/Chat/ChatFooter';
 
 export const Chat = ({navigation, route}) => {
   
-  const {user, relatedUser} = route?.params
+  const {user, relatedUser,relationId} = route?.params
 
   
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         <ChatHeader relatedUser={relatedUser} navigation={navigation} />
-        <ChatBody userId={user.id} relatedUserId={relatedUser.id} />
+        <ChatBody relationId={relationId} userId={user.id} relatedUserId={relatedUser.id} />
         <ChatFooter userId={user} relatedUserId={relatedUser} />
       </View>
     </SafeAreaView>

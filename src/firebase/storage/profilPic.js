@@ -5,8 +5,7 @@ import { Platform } from 'react-native'
 export const uploadProfilePic = async profilePic => {
   const uploadUri = Platform.OS === 'ios' ? profilePic.uri.replace('file://', '') : profilePic.uri;
   const storageRef = storage().ref().child(`profilePics/${uuid.v4()}`);
- const ref= await storageRef.putFile(uploadUri);
- console.log('ref',ref)
+  await storageRef.putFile(uploadUri);
   return await storageRef.getDownloadURL();
 };
 export const deleteProfilePic = async profilePicId => {
