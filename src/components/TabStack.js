@@ -6,7 +6,7 @@ import {Map} from '../screens/Tab/Map';
 import Home from '../screens/Tab/Home';
 import {Spoil} from '../screens/Tab/Spoil';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import { Platform } from 'react-native'
 const Tab = createMaterialTopTabNavigator();
 export function TabStack() {
   return (
@@ -16,6 +16,7 @@ export function TabStack() {
         tabBarIndicator:()=>{},
         tabBarItemStyle:{padding:0},
         tabBarLabelStyle:{fontSize:10},
+        // keyboardHidesTabBar: Platform.OS === 'ios' ? false : true,
         unmountOnBlur:true,
         headerShown: false,
         tabBarIcon: ({focused, color, size}) => {

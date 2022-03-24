@@ -30,6 +30,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { width } from "react-native-dimension";
+import {deleteProfilePic, uploadProfilePic} from '../../firebase/storage/profilPic';
 
 export const Profile = ({navigation}) => {
   const [isDisabled, setDisabled] = useState(true)
@@ -53,6 +54,7 @@ export const Profile = ({navigation}) => {
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
   const userId = useSelector(selectUser);
+  const [dbImage, setDbImage] = useState("")
   // moment().diff(userProfile.dob, 'years')
 
   const onStartChange = (event, selectedDate) => {
@@ -73,12 +75,13 @@ export const Profile = ({navigation}) => {
     const unsubscribe = navigation.addListener('focus', () => {
       getUser(userId)
       .then((user) => {
-        console.log("user",user)
+        // console.log("user",user)
         setFirstName(user?.firstName);
         setLastName(user?.lastName);
         setEmail(user?.email)
         setGender(user?.gender)
         setImage(user?.profilePic)
+        setDbImage(user?.profilePic)
         setDob(user?.dob?.toDate() || new Date());
         setFb(user?.fb)
         setTwitter(user?.twitter)
@@ -98,6 +101,8 @@ export const Profile = ({navigation}) => {
 
 
   const onSubmit = async () => {
+    setOnSubmitLoading(true);
+
     const temp = {
       id: userId,
       firstName,
@@ -110,10 +115,17 @@ export const Profile = ({navigation}) => {
       isScrapedfb: false,
       isScrapedli: false,
     }
+    if(dbImage!=image?.uri){
+      try {
+        await deleteProfilePic(userId)
+      } catch (error) {
+        console.log("error",error) 
+      }
+      
+      temp.profilePic=await uploadProfilePic(image,userId)
+    }
     try {
-      setOnSubmitLoading(true);
       await changeUserData(temp);
-      alert("Info Changed Successfully");
       setOnSubmitLoading(false);
       setDisabled(true)
     } catch (e) {
@@ -134,6 +146,7 @@ export const Profile = ({navigation}) => {
           sImgStyle={!isDisabled && { tintColor: colors.primary }}
           sImgPath={images.edit} />
         <UploadPhoto
+          disabled={isDisabled}
           image={image}
           handleChange={(res) => setImage(res)}
           iconColor={"white"}

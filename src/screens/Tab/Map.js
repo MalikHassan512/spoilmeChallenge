@@ -18,76 +18,80 @@ import MapHeader from "../../components/Map/MapHeader";
 import MapModal from "../../components/Map/MapModal";
 import { MyText } from "../../components/Common/MyText";
 import Header from "../../components/Header";
+import SimpleToast from "react-native-simple-toast";
 const { width, height } = Dimensions.get("window");
 
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA + ASPECT_RATIO;
 
-export const Map = ({navigation}) => {
+export const Map = ({ navigation }) => {
   const [region, setRegion] = useState(null);
   const userId = useSelector(selectUser);
   const [relatedUsers, setRelatedUsers] = useState([]);
   const [selectedRelatedUser, setSelectedRelatedUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [user,setUser]=useState({})
+  const [user, setUser] = useState({});
+  const [searchText, setSearchText] = useState("");
   const closeModal = () => {
     setModalVisible(false);
   };
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       getUser(userId).then((user) => {
-        if(user){
-        setUser(user)
-        setRegion({
-          latitude: user.location.coords.latitude,
-          longitude: user.location.coords.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta:LONGITUDE_DELTA,
-        });
-      }else{
-        setRegion({
-          latitude:31.3914008,
-          longitude:32.8377671,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      }
+        if (user) {
+          setUser(user);
+          setRegion({
+            latitude: user.location.coords.latitude,
+            longitude: user.location.coords.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          });
+        } else {
+          setRegion({
+            latitude: 31.3914008,
+            longitude: 32.8377671,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        }
       });
-  
-      getAllUsers().then((users) => setRelatedUsers(users));
-      // getUserRelationships(userId)
-      //   .then(relationships => {
-      //     const tempRelatedUsersId = [];
-      //     relationships.forEach(relationship => {
-      //       if (relationship.user1 === userId)
-      //         tempRelatedUsersId.push(relationship.user2);
-      //       else tempRelatedUsersId.push(relationship.user1);
-      //     });
-      //     if (tempRelatedUsersId.length === 0) return;
-      //     getUsersById(tempRelatedUsersId)
-      //       .then(users => setRelatedUsers(users))
-      //       .catch(e => {
-      //         console.log(e);
-      //         alert('Error occured');
-      //       });
-      //   })
-      //   .catch(e => {
-      //     console.log(e);
-      //     alert('Error occured');
-      //   });
-      
 
+      getAllUsers().then((users) => setRelatedUsers(users));
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
-
+  const searchedUser = () => {
+    getAllUsers().then((users) => {
+      let user = users.find((user) =>user.id!=userId && user.email == searchText.trim().toLowerCase());
+      console.log('user',user)
+      if(user){
+      setRegion({
+        latitude: user.location.coords.latitude,
+        longitude: user.location.coords.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      });
+    }else{
+      // console.log("helos")
+      SimpleToast.show("User not found")
+    }
+      // console.log("tempUser", tempUser);
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header
+        searchedUser={searchedUser}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        sImgContainerStyle={styles.searchIcon}
+        sImgPath={require("../../assets/images/search.png")}
+        containerStyle={styles.headerContainer}
+      />
       {/* <View style={[{ alignItems: "center", padding: 20 }]}>
         <Image source={require("../../assets/images/bar_left.png")} />
         <Image
@@ -100,7 +104,7 @@ export const Map = ({navigation}) => {
       </View> */}
       {region && relatedUsers && (
         <MapView
-          style={{ width: "100%", height: "90%" }}
+          style={{ width: "100%", height: "100%" }}
           region={region}
           onRegionChangeComplete={setRegion}
         >
@@ -165,5 +169,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  headerContainer: {
+    zIndex: 99,
+    position: "absolute",
+    marginTop: 15,
+    alignItems: "flex-start",
+  },
+  searchIcon: {
+    backgroundColor: "white",
+    borderRadius: 6,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
 });

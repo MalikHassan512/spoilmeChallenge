@@ -21,6 +21,7 @@ const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
         <Progress.Circle
           indeterminate
           size={30}
+          color={"white"}
           style={{ alignSelf: "center" }}
         />
       )}

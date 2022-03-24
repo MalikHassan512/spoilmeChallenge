@@ -43,8 +43,8 @@ export const Relationship = ({ navigation }) => {
   const getRelations = () =>
   getUserRelationships(userId)
     .then((res) => {
-      console.log("resoluation", res);
       setRelationships(res);
+      setRelatedUsers(res)
     })
     .catch((e) => {
       console.log(e);
@@ -100,16 +100,19 @@ export const Relationship = ({ navigation }) => {
   //   }
   // }, [relatedUsers]);
 
-  // useEffect(() => {
-  //   if (searchText) {
-  //     setFilteredUsers(
-  //       relatedUsers.filter(user => {
-  //         const re = new RegExp(searchText.replace('.', ''));
-  //         return !!user.firstName.match(re) || !!user.lastName.match(re);
-  //       }),
-  //     );
-  //   } else setFilteredUsers(relatedUsers);
-  // }, [searchText]);
+  useEffect(() => {
+      if(searchText){
+        setRelationships(
+          relatedUsers.filter((otherUser,index)=>{
+          const user = otherUser.from.id !== userId ? otherUser.from : otherUser.to;
+          const re = new RegExp(searchText.replace('.', ''));
+          return !!user.firstName.match(re) || !!user.lastName.match(re);
+        })
+        )
+      }else{
+        setRelationships(relatedUsers)
+      }
+  }, [searchText]);
 
   return loading ? (
     <Loading />

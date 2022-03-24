@@ -1,10 +1,10 @@
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput,Text } from "react-native-paper";
 import { moderateScale, ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import colors from 'util/colors'
 import React from "react";
-
+import Entypo from 'react-native-vector-icons/Entypo'
 const InputField = ({
   label,
   withLabel,
@@ -21,7 +21,8 @@ const InputField = ({
   onFocus = () => {},
   blurOnSubmit = false,
   secureTextEntry = false,
-  disabled=false
+  disabled=false,
+  right
 }) => {
   return (
     <View>
@@ -32,6 +33,8 @@ const InputField = ({
         disabled={disabled}
         style={[styles.inputStyle, inputStyle]}
         label={label+" *"}
+        right={right ? <TextInput.Icon style={{marginTop:15}} onPress={right} name={()=><Entypo  name="cross" size={20} color={"rgba(0,0,0,0.5)"} />} />: null}
+        
         onChangeText={onChangeText}
         multiline={multiline}
         keyboardType={keyboardType}

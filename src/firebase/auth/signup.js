@@ -12,7 +12,7 @@ export const signupWithEmail = async user => {
   );
   let profilePicUrl;
   try {
-    profilePicUrl = await uploadProfilePic(user.profilePic);
+    profilePicUrl = await uploadProfilePic(user.profilePic,userCredentials.user.uid);
     await addUserData(
       userCredentials.user.uid,
       user.firstName,
@@ -31,7 +31,7 @@ export const signupWithEmail = async user => {
   } catch (e) {
     //if profilePicUrl is not undefined then error
     //came before it so profilePice is not saved in firebase
-    if (profilePicUrl) deleteProfilePic(profilePicUrl);
+    if (profilePicUrl) deleteProfilePic(userCredentials.user.uid);
     await deleteAccount();
     throw Error(e);
   }

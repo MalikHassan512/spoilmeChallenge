@@ -27,7 +27,6 @@ const RelationItem = ({ index, otherUser,navigation,userId}) => {
           style={{
             flexDirection: "row",
             justifyContent: "space-around",
-            // alignItems: "center",
           }}
         >
           <LoadingImage

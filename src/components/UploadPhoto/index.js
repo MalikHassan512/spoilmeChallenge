@@ -47,9 +47,9 @@ const UploadPhoto = (props) => {
               style={styles.image}
             />
           </View>
-          <TouchableOpacity activeOpacity={0.6} style={[styles.iconStyle,props.iconStyle]} onPress={() => setImageModal(true)} >
+        {!props.disabled &&  <TouchableOpacity activeOpacity={0.6} style={[styles.iconStyle,props.iconStyle]} onPress={() => setImageModal(true)} >
           <Entypo name="camera" color={props.iconColor || 'black'} size={17} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <Modal transparent={true} visible={imageModal} animationType="slide">
         <TouchableOpacity
           style={styles.headModalContainer}

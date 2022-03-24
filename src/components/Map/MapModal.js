@@ -1,12 +1,24 @@
-import {StyleSheet, ScrollView, View,TouchableOpacity,Text} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import Modal from 'react-native-modal';
-import {LoadingImage} from '../Common/LoadingImage';
-import {MyHeading} from '../Common/MyHeading';
-import {getAllSpoilTypes} from '../../firebase/firestore/spoils';
-import {MyText} from '../Common/MyText';
-import {sendMessage} from '../../firebase/firestore/chats';
-import {createRelationship,checkUserRelationships,updateRelationStatus} from '../../firebase/firestore/relationships';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import Modal from "react-native-modal";
+import { LoadingImage } from "../Common/LoadingImage";
+import { MyHeading } from "../Common/MyHeading";
+import { getAllSpoilTypes } from "../../firebase/firestore/spoils";
+import * as Progress from "react-native-progress";
+import { sendMessage } from "../../firebase/firestore/chats";
+import {
+  createRelationship,
+  checkUserRelationships,
+  updateRelationStatus,
+} from "../../firebase/firestore/relationships";
+import colors from "../../util/colors";
+import SimpleToast from "react-native-simple-toast";
 
 export default function MapModal({
   userId,
@@ -16,31 +28,51 @@ export default function MapModal({
   closeModal,
 }) {
   const [spoilTypes, setSpoilTypes] = useState([]);
+  const [loadingId, setLoadingId] = useState(-1);
   useEffect(() => {
     getAllSpoilTypes()
-      .then(res => setSpoilTypes(res))
-      .catch(e => {
+      .then((res) => setSpoilTypes(res))
+      .catch((e) => {
         console.log(e);
-        alert('Error occured');
+        alert("Error occured");
       });
   }, []);
 
-  const handleSpoilPress = async spoilType => {
-   const relationStatus=await checkUserRelationships(userId,relatedUser.id)
-   let messages={}
-    if(!relationStatus){
-    messages= await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
-    console.log("messages",messages)
-    await createRelationship(user,relatedUser,`Here’s a ${spoilType.name}, enjoy!`,0,messages)
-    console.log('relation created')
-    }else{
-      messages = await sendMessage(user, relatedUser, spoilType, `Here’s a ${spoilType.name}, enjoy!`,0);
-      await updateRelationStatus(relationStatus,messages)
-      console.log('relation already exist')
-
+  const handleSpoilPress = async (spoilType) => {
+    setLoadingId(spoilType.name)
+    const relationStatus = await checkUserRelationships(userId, relatedUser.id);
+    let messages = {};
+    if (!relationStatus) {
+      messages = await sendMessage(
+        user,
+        relatedUser,
+        spoilType,
+        `Here’s a ${spoilType.name}, enjoy!`,
+        0
+      );
+      console.log("messages", messages);
+      await createRelationship(
+        user,
+        relatedUser,
+        `Here’s a ${spoilType.name}, enjoy!`,
+        0,
+        messages
+      );
+      console.log("relation created");
+    } else {
+      messages = await sendMessage(
+        user,
+        relatedUser,
+        spoilType,
+        `Here’s a ${spoilType.name}, enjoy!`,
+        0
+      );
+      await updateRelationStatus(relationStatus, messages);
+      console.log("relation already exist");
     }
-    alert('Spoil sent');
-
+    setLoadingId("")
+    SimpleToast.show("Spoil sent")
+    // alert("Spoil sent");
   };
 
   return (
@@ -48,12 +80,13 @@ export default function MapModal({
       isVisible={modalVisible}
       onBackButtonPress={closeModal}
       style={styles.modal}
-      onBackdropPress={closeModal}>
+      onBackdropPress={closeModal}
+    >
       <View>
         <View style={styles.top}>
           <View style={styles.user}>
             <LoadingImage
-              source={{uri: relatedUser.profilePic}}
+              source={{ uri: relatedUser.profilePic }}
               style={styles.profilePic}
             />
             <MyHeading
@@ -66,12 +99,25 @@ export default function MapModal({
                 <TouchableOpacity
                   onPress={() => handleSpoilPress(spoilType)}
                   key={i}
-                  style={styles.spoilTypes}>
-                  <LoadingImage
-                    source={{uri: spoilType.image}}
-                    style={styles.profilePic}
-                  />
-                  <Text style={{marginStart:-20,marginTop:5}}>{`\$${10 + 5 * i}`}</Text>
+                  style={styles.spoilTypes}
+                >
+                  {spoilType.name == loadingId ? (
+                    <Progress.Circle
+                      indeterminate
+                      size={65}
+                      color={colors.primary}
+                      style={{ alignSelf: "center",  }}
+                    />
+                  ) : (
+                    <LoadingImage
+                      source={{ uri: spoilType.image }}
+                      style={[styles.profilePic, { marginRight: 0 }]}
+                    />
+                  )}
+
+                  <Text
+                    style={{ marginTop: 8, fontWeight: "bold", color: "#000" }}
+                  >{`\$${10 + 5 * i}`}</Text>
                   {/* <MyText  text=  /> */}
                 </TouchableOpacity>
               );
@@ -87,20 +133,20 @@ export default function MapModal({
 }
 
 const styles = StyleSheet.create({
-  modal: {justifyContent: 'flex-end'},
+  modal: { justifyContent: "flex-end" },
   top: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,
   },
   user: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 10,
     paddingBottom: 30,
     borderBottomWidth: 2,
-    borderBottomColor: '#EAEAEA',
+    borderBottomColor: "#EAEAEA",
   },
   profilePic: {
     marginRight: 20,
@@ -111,13 +157,13 @@ const styles = StyleSheet.create({
   },
   spoilTypes: {
     marginTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 20,
   },
   btn: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     marginTop: 20,
   },

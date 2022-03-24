@@ -37,7 +37,7 @@ export const Spoil = ({navigation}) => {
             <MyHeading text="Spoils available" color="white" fontSize={15} />
           </View>
         </View>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {spoils.map((spoilGroup, i) => {
             return (
               <View key={i} style={{marginVertical: 5}}>

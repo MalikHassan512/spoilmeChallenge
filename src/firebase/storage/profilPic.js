@@ -2,9 +2,9 @@ import uuid from 'react-native-uuid';
 import storage from '@react-native-firebase/storage';
 import { Platform } from 'react-native'
 
-export const uploadProfilePic = async profilePic => {
+export const uploadProfilePic = async (profilePic,id) => {
   const uploadUri = Platform.OS === 'ios' ? profilePic.uri.replace('file://', '') : profilePic.uri;
-  const storageRef = storage().ref().child(`profilePics/${uuid.v4()}`);
+  const storageRef = storage().ref().child(`profilePics/${id}`);
   await storageRef.putFile(uploadUri);
   return await storageRef.getDownloadURL();
 };
