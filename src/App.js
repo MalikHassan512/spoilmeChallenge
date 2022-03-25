@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Signup} from './screens/Auth/Signup';
@@ -15,16 +14,8 @@ import {Loading} from './components/Common/Loading';
 import {TabStack} from './components/TabStack';
 import {CreateRelationship} from './screens/CreateRelationship';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-
-
-const App = () => {
-  return (
-    <Provider store={store}>
-      <Main />
-    </Provider>
-  );
-};
-
+import React, { useRef, useState, useEffect } from "react";
+import { AppState } from 'react-native'
 const Main = () => {
   const dispatch = useDispatch();
   const userId = useSelector(selectUser);
@@ -66,5 +57,38 @@ const Main = () => {
     </NavigationContainer>
   );
 };
+const App = () => {
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+      }
+
+      appState.current = nextAppState;
+      // console.log("AppState", appState.current);
+      if(appState.current=="active"){
+        console.log("user is active")
+      }else{
+        console.log("user is inactive")
+
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+  return (
+    <Provider store={store}>
+      <Main />
+    </Provider>
+  );
+};
+
+
 
 export default App;
