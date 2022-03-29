@@ -5,12 +5,12 @@ import React from "react";
 
 const LogoButton = ({ label, imgPath, withLabel,textContainer={}, container,onChangeText,value,disabled }) => {
   return (
-    <View>
-      <CustomText
+    <View style={styles.surface}>
+     {withLabel && <CustomText
         label={withLabel}
         textStyle={[withLabel && styles.withLabel]}
         container={textContainer}
-      />
+      />}
       <View style={[styles.container, container]}>
         <Image style={styles.img} source={imgPath} />
         <TextInput editable={!disabled} value={value} onChangeText={onChangeText} placeholder={label} style={styles.text} />
@@ -29,7 +29,7 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
     borderRadius: "10@ms",
-    marginBottom: "8@vs",
+    marginBottom: "10@vs",
     borderWidth: 2,
     borderColor: "#ebebeb",
   },
@@ -50,5 +50,16 @@ const styles = ScaledSheet.create({
     fontSize: "16@ms",
     fontWeight: "bold",
     marginBottom: "5@vs",
+  },
+  surface: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
 });

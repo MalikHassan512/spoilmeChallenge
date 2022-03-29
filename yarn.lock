@@ -5740,6 +5740,11 @@ react-native-codegen@^0.0.8:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
+react-native-contacts@^7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-contacts/-/react-native-contacts-7.0.4.tgz#6f084f651bb5dde433acc22553c6d1ca909e46b7"
+  integrity sha512-x6K9TMC0XBH/yyfqYh5BGS9JI1PpA2Ac/XHVVFVP8F8lPLNexQ0qPsNBo1cy9l2pPqlijpC33+FU0ty/N5iOWA==
+
 react-native-dimension@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/react-native-dimension/-/react-native-dimension-1.0.6.tgz#049e40746160137f5e1dde89983b04ff8dc288d5"
@@ -5811,6 +5816,13 @@ react-native-maps@^0.30.1:
   integrity sha512-VDgGygFcXwKLFNmdGb5DVy3DJhjP3qCe3txzDfeO6kQyNELj875ZbZMTYW84XsLUBFNpAWXKffWvMKHMQKv2Gg==
   dependencies:
     "@types/geojson" "^7946.0.7"
+
+react-native-modal-datetime-picker@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-13.1.0.tgz#9aeb99d83f30e8ea1168d5c17cb84e21630278df"
+  integrity sha512-AfhaC2XhhY6KF7wjcoi1ja1w7NcmNnpldD0M+qCjVbUKz3GXN7gphjGBgJ9U9AY5hqDTsuTYdLjJdNMpiU6gmg==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-modal@^13.0.0:
   version "13.0.1"

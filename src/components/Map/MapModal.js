@@ -19,6 +19,8 @@ import {
 } from "../../firebase/firestore/relationships";
 import colors from "../../util/colors";
 import SimpleToast from "react-native-simple-toast";
+import CustomText from "../CustomText";
+import moment from "moment";
 
 export default function MapModal({
   userId,
@@ -89,9 +91,12 @@ export default function MapModal({
               source={{ uri: relatedUser.profilePic }}
               style={styles.profilePic}
             />
+            <View>
             <MyHeading
               text={`${relatedUser.firstName} ${relatedUser.lastName}`}
             />
+            <CustomText marginTop={3} color={"#A1A1A1"} label={relatedUser?.isActive ? "Active now" : `Last active ${moment(relatedUser?.lastActive || new Date()).fromNow()}`}  />
+            </View>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {spoilTypes.map((spoilType, i) => {

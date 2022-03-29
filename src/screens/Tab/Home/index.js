@@ -81,7 +81,6 @@ const Home = () => {
       let dob = new Date(user?.dob?.seconds * 1000)
       let formatedDate = moment(dob).format('DD-MM-YYYY')
       let todaysDate = moment().format('DD-MM-YYYY')
-      console.log(user?.id)
       if (user?.id !== auth().currentUser.uid) {
         if (formatedDate == todaysDate) {
           posts.push({
@@ -100,7 +99,6 @@ const Home = () => {
           })
         }
         if (user?.isEngaged) {
-          console.log(user?.isEngaged, '=======>>>>>>');
           posts.push({
             id: user?.id + 'ENGAGED',
             postType: 'ENGAGED',

@@ -13,7 +13,8 @@ import {signout} from './firebase/auth/signout';
 import {Loading} from './components/Common/Loading';
 import {TabStack} from './components/TabStack';
 import {CreateRelationship} from './screens/CreateRelationship';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import firestore from '@react-native-firebase/firestore';
+import {changeUserData} from './firebase/firestore/users'
 import React, { useRef, useState, useEffect } from "react";
 import { AppState } from 'react-native'
 const Main = () => {
@@ -21,7 +22,35 @@ const Main = () => {
   const userId = useSelector(selectUser);
   const Stack = createNativeStackNavigator();
   const [loading, setLoading] = useState(true);
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+      }
 
+      appState.current = nextAppState;
+      // console.log("AppState", appState.current);
+      if(appState.current=="active"){
+        console.log("user is active")
+        if(userId)
+        changeUserData({id:userId,isActive:true,lastActive:firestore.Timestamp.now(),})
+      }else{
+        if(userId)
+        changeUserData({id:userId,isActive:false,lastActive:firestore.Timestamp.now(),})
+
+        console.log("user is inactive")
+
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   useEffect(() => {
   
     setTimeout(() => {
@@ -58,30 +87,6 @@ const Main = () => {
   );
 };
 const App = () => {
-  const appState = useRef(AppState.currentState);
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("App has come to the foreground!");
-      }
-
-      appState.current = nextAppState;
-      // console.log("AppState", appState.current);
-      if(appState.current=="active"){
-        console.log("user is active")
-      }else{
-        console.log("user is inactive")
-
-      }
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
   return (
     <Provider store={store}>
       <Main />

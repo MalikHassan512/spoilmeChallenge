@@ -31,6 +31,8 @@ export const addUserData = async (
     isHired: false,
     isEngaged: false,
     lastUpdated: moment().valueOf(),
+    lastActive:firestore.Timestamp.now(),
+    isActive:true,
     isScrapedfb: false,
     isScrapedli: false,
   });

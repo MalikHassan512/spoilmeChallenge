@@ -31,6 +31,7 @@ import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { width } from "react-native-dimension";
 import {deleteProfilePic, uploadProfilePic} from '../../firebase/storage/profilPic';
+import firestore from '@react-native-firebase/firestore';
 
 export const Profile = ({navigation}) => {
   const [isDisabled, setDisabled] = useState(true)
@@ -133,7 +134,10 @@ export const Profile = ({navigation}) => {
       alert("Error occured. Try again");
     }
   };
-
+const signoutUser=()=>{
+  changeUserData({id:userId,isActive:false,lastActive:firestore.Timestamp.now(),})
+  signout()
+}
   return initialLoading ? (
     <Loading />
   ) : (
@@ -252,7 +256,7 @@ export const Profile = ({navigation}) => {
           <CustomButton
             label={!isDisabled ? "Save changes":"Logout"}
             loading={onSubmitLoading}
-            onPress={!isDisabled ?onSubmit:signout} />
+            onPress={!isDisabled ?onSubmit:()=>signoutUser()} />
           {/* <CustomButton label="Logout"
             onPress={signout} /> */}
         </View>

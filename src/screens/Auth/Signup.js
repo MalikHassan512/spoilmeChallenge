@@ -11,24 +11,23 @@ import {
   Image,
   PermissionsAndroid,
 } from "react-native";
-import { ScaledSheet } from "react-native-size-matters";
-import DateTimePicker from "@react-native-community/datetimepicker";
-
+import { moderateScale, scale, ScaledSheet } from "react-native-size-matters";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 import InputField from "../../components/Common/InputField";
 import CustomButton from "../../components/Common/CustomButton";
 import CustomText from "../../components/Common/CustomText";
 import LogoButton from "../../components/Common/LogoButton";
 import images from "../../assets/images";
 import { useDispatch } from "react-redux";
-import Geolocation from "react-native-geolocation-service";
 import { signupWithEmail } from "../../firebase/auth/signup";
 import UploadPhoto from "components/UploadPhoto";
 import DropDownPicker from "react-native-dropdown-picker";
-import colors from 'util/colors'
-import moment from 'moment'
+import colors from "util/colors";
+import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
+import requestLocationPermission from "../../util/getLocation";
 export const Signup = ({ navigation }) => {
-  const dispatch = useDispatch();
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const genderRef = useRef();
@@ -45,12 +44,23 @@ export const Signup = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
   const [image, setImage] = useState("");
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
   const [fb, setFb] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
-  // const [value, setValue] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setDob(date);
+    hideDatePicker();
+  };
   const [items, setItems] = useState([
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
@@ -58,62 +68,9 @@ export const Signup = ({ navigation }) => {
   ]);
   const [open, setOpen] = useState(false);
 
-  const onStartChange = (event, selectedDate) => {
-    const currentDate = selectedDate || dob;
-    setShow(Platform.OS === "ios");
-    setDob(currentDate);
-  };
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatePicker = () => {
-    showMode("date");
-  };
   useEffect(() => {
-    requestLocationPermission();
+    requestLocationPermission(setLocation);
   }, []);
-
-  const requestLocationPermission = async () => {
-    if (Platform.OS === "ios") {
-      getOneTimeLocation();
-    } else {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: "Location Access Required",
-            message: "This App needs to Access your location for address",
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getOneTimeLocation();
-        } else {
-          console.log("Permission Denied");
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
-  const getOneTimeLocation = () => {
-    Geolocation.getCurrentPosition(
-      //Will give you the current location
-      (position) => {
-        console.log("positon", position);
-        setLocation(position);
-      },
-      (error) => {
-        console.log("getOneTimeLocation", error.message);
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 30000,
-        maximumAge: 1000,
-      }
-    );
-  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -137,7 +94,7 @@ export const Signup = ({ navigation }) => {
         location,
         fb,
         twitter,
-        linkedin
+        linkedin,
       };
       const userId = await signupWithEmail(tempUser);
       console.log("userId", userId);
@@ -180,11 +137,12 @@ export const Signup = ({ navigation }) => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
+            marginBottom: scale(15),
           }}
         >
           <InputField
             label="First name"
-            inputStyle={[styles.inputStyle, { width: 165 }]}
+            inputStyle={[styles.inputStyle, { width: scale(145),marginBottom:0}]}
             refer={firstNameRef}
             value={firstName}
             onChangeText={(newVal) => setFirstName(newVal)}
@@ -194,7 +152,7 @@ export const Signup = ({ navigation }) => {
           />
           <InputField
             label="Second name"
-            inputStyle={[styles.inputStyle, { width: 165 }]}
+            inputStyle={[styles.inputStyle, { width: scale(145),marginBottom:0}]}
             refer={lastNameRef}
             value={lastName}
             onChangeText={(newVal) => setLastName(newVal)}
@@ -212,14 +170,23 @@ export const Signup = ({ navigation }) => {
           setValue={setGender}
           setItems={setItems}
           placeholder="Gender"
-          placeholderStyle={{ color: 'grey' }}
+          placeholderStyle={{ color: "grey" }}
           onChangeValue={() => emailRef.current.focus()}
           dropDownContainerStyle={{
             borderColor: "#dbdbdb",
           }}
           style={{
             borderColor: "#dbdbdb",
-            marginVertical: 10,
+            // marginVertical: 10,
+            marginBottom: scale(10),
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+            elevation: 3,
           }}
         />
         {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
@@ -244,28 +211,44 @@ export const Signup = ({ navigation }) => {
           label="Password"
           inputStyle={styles.inputStyle}
         />
-        {/* <InputField
-                label="Date of birth"
-                inputStyle={styles.inputStyle}
-              /> */}
-        <TouchableOpacity style={styles.dropDownContainer} onPress={showDatePicker}>
-          <CustomText label={dob ? moment(dob).format("YYYY-MM-DD") : "Date of birth"} />
-        </TouchableOpacity>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={dob ? new Date(dob) : new Date()}
-            mode={mode}
-            display="default"
-            onChange={onStartChange}
+        <TouchableOpacity
+          style={styles.dropDownContainer}
+          onPress={showDatePicker}
+        >
+          <CustomText
+            color={dob ? "black" : "grey"}
+            label={dob ? moment(dob).format("YYYY-MM-DD") : "Date of birth *"}
           />
-        )}
-        <LogoButton onChangeText={setFb} value={fb} imgPath={images.faceBook} label="Facebook link" />
-        <LogoButton onChangeText={setLinkedin} value={linkedin} imgPath={images.linkedin} label="Linkedin link" />
-        <LogoButton onChangeText={setTwitter} value={twitter} imgPath={images.twitter} label="Twitter link" />
+          <EvilIcons name="chevron-down" size={moderateScale(32)} />
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
+        <LogoButton
+          onChangeText={setFb}
+          value={fb}
+          imgPath={images.faceBook}
+          label="Facebook link"
+        />
+        <LogoButton
+          onChangeText={setLinkedin}
+          value={linkedin}
+          imgPath={images.linkedin}
+          label="Linkedin link"
+          container={{marginTop:scale(4),marginBottom:scale(14)}}
+        />
+        <LogoButton
+          onChangeText={setTwitter}
+          value={twitter}
+          imgPath={images.twitter}
+          label="Twitter link"
+        />
 
         <CustomButton
-          btnContainer={{ marginBottom: 23 }}
+          btnContainer={{ marginBottom: 23,marginTop:scale(5) }}
           label="Sign up"
           disabled={
             !firstName ||
@@ -322,7 +305,7 @@ const styles = ScaledSheet.create({
   inputStyle: {
     height: "45@s",
     // borderWidth: 2,
-    marginBottom: "8@s",
+    marginBottom: "12@s",
   },
   signUpTextContainer: {
     flexDirection: "row",
@@ -355,14 +338,28 @@ const styles = ScaledSheet.create({
     alignItems: "center",
   },
   dropDownContainer: {
-    paddingVertical: "10@vs",
-    paddingHorizontal: "20@s",
+    // paddingVertical: "10@vs",
+    height: "45@vs",
+    paddingStart: "15@s",
+    paddingEnd: 5,
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
     borderRadius: "10@ms",
-    marginBottom: "8@vs",
+    marginBottom: "14@s",
     borderWidth: 2,
     borderColor: "#ebebeb",
+    marginTop: "3@s",
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
 });

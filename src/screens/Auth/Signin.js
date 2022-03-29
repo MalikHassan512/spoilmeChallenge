@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -13,12 +13,14 @@ import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "../../components/Common/CustomText";
 import InputField from "../../components/Common/InputField";
 import { signinWithEmail, signinWithGoogle } from "../../firebase/auth/signin";
+import {changeUserData} from "../../firebase/firestore/users";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useDispatch } from "react-redux";
 import { changeUser } from "../../redux/features/userSlice";
-
+import firestore from '@react-native-firebase/firestore';
 import CustomButton from "../../components/Common/CustomButton";
 import ScreenWrapper from "../../components/ScreenWrapper";
+import requestLocationPermission from '../../util/getLocation'
 export const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
@@ -27,12 +29,18 @@ export const Signin = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState(null);
+  useEffect(() => {
+    requestLocationPermission(setLocation);
+  }, []);
 
   const onSigninWithEmail = async () => {
     setError({});
     setLoading(true);
     try {
       const userId = await signinWithEmail(email.trim(), password);
+      await changeUserData({id:userId,isActive:true,lastActive:firestore.Timestamp.now(),location})
+
       dispatch(changeUser(userId));
     } catch (e) {
       if (e.code) {
@@ -47,7 +55,7 @@ export const Signin = ({ navigation }) => {
             });
         }
       } else {
-        alert("Something went wrong. Please try again");
+        console.log("signin line 58",e);
       }
       setLoading(false);
     }
@@ -162,7 +170,7 @@ const styles = ScaledSheet.create({
     marginBottom: "25@vs",
   },
   inputStyle: {
-    marginBottom: "20@vs",
+    marginBottom: "15@vs",
   },
   forgetText: {
     fontSize: "16@ms",
