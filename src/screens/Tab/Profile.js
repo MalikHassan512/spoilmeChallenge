@@ -4,7 +4,6 @@ import {
   Image,
   View,
   StyleSheet,
-  
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
@@ -14,7 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import UploadPhoto from "components/UploadPhoto";
 import { changeUserData, getUser } from "../../firebase/firestore/users";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/features/userSlice";
+import { contactList, selectUser } from "../../redux/features/userSlice";
 import { Loading } from "../../components/Common/Loading";
 import { LoadingImage } from "../../components/Common/LoadingImage";
 import { signout } from "../../firebase/auth/signout";
@@ -30,18 +29,21 @@ import DropDownPicker from "react-native-dropdown-picker";
 import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import { width } from "react-native-dimension";
-import {deleteProfilePic, uploadProfilePic} from '../../firebase/storage/profilPic';
-import firestore from '@react-native-firebase/firestore';
-
-export const Profile = ({navigation}) => {
-  const [isDisabled, setDisabled] = useState(true)
+import {
+  deleteProfilePic,
+  uploadProfilePic,
+} from "../../firebase/storage/profilPic";
+import firestore from "@react-native-firebase/firestore";
+import ContactModal from '../../components/ContactModal'
+export const Profile = ({ navigation }) => {
+  const [isDisabled, setDisabled] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
   const [dob, setDob] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
-  const [image, setImage] = useState("")
+  const [image, setImage] = useState("");
   const [onSubmitLoading, setOnSubmitLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [gender, setGender] = useState("");
@@ -55,8 +57,10 @@ export const Profile = ({navigation}) => {
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
   const userId = useSelector(selectUser);
-  const [dbImage, setDbImage] = useState("")
-  // moment().diff(userProfile.dob, 'years')
+  const [dbImage, setDbImage] = useState("");
+  const contacts = useSelector((state) => state.user.contactList);
+  console.log("contacts", contacts);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onStartChange = (event, selectedDate) => {
     const currentDate = selectedDate || dob;
@@ -73,33 +77,31 @@ export const Profile = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       getUser(userId)
-      .then((user) => {
-        // console.log("user",user)
-        setFirstName(user?.firstName);
-        setLastName(user?.lastName);
-        setEmail(user?.email)
-        setGender(user?.gender)
-        setImage(user?.profilePic)
-        setDbImage(user?.profilePic)
-        setDob(user?.dob?.toDate() || new Date());
-        setFb(user?.fb)
-        setTwitter(user?.twitter)
-        setLinkedin(user?.linkedin)
-        setInitialLoading(false);
-      })
-      .catch((e) => {
-        // alert('An error occured.Try again');
-        console.log(e);
-      });
+        .then((user) => {
+          // console.log("user",user)
+          setFirstName(user?.firstName);
+          setLastName(user?.lastName);
+          setEmail(user?.email);
+          setGender(user?.gender);
+          setImage(user?.profilePic);
+          setDbImage(user?.profilePic);
+          setDob(user?.dob?.toDate() || new Date());
+          setFb(user?.fb);
+          setTwitter(user?.twitter);
+          setLinkedin(user?.linkedin);
+          setInitialLoading(false);
+        })
+        .catch((e) => {
+          // alert('An error occured.Try again');
+          console.log(e);
+        });
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
-
-
 
   const onSubmit = async () => {
     setOnSubmitLoading(true);
@@ -115,40 +117,46 @@ export const Profile = ({navigation}) => {
       twitter,
       isScrapedfb: false,
       isScrapedli: false,
-    }
-    if(dbImage!=image?.uri){
+    };
+    if (dbImage != image?.uri) {
       try {
-        await deleteProfilePic(userId)
+        await deleteProfilePic(userId);
       } catch (error) {
-        console.log("error",error) 
+        console.log("error", error);
       }
-      
-      temp.profilePic=await uploadProfilePic(image,userId)
+
+      temp.profilePic = await uploadProfilePic(image, userId);
     }
     try {
       await changeUserData(temp);
       setOnSubmitLoading(false);
-      setDisabled(true)
+      setDisabled(true);
     } catch (e) {
       setOnSubmitLoading(false);
       alert("Error occured. Try again");
     }
   };
-const signoutUser=()=>{
-  changeUserData({id:userId,isActive:false,lastActive:firestore.Timestamp.now(),})
-  signout()
-}
+  const signoutUser = () => {
+    changeUserData({
+      id: userId,
+      isActive: false,
+      lastActive: firestore.Timestamp.now(),
+    });
+    signout();
+  };
   return initialLoading ? (
     <Loading />
   ) : (
-
     <ScreenWrapper scrollEnabled>
+    <ContactModal contactList={contacts} modalVisible={modalVisible} closeModal={()=>setModalVisible(false)} />
+
       <View style={styles.inner}>
         <Header
           fImgPath={images.setting}
           sImgPress={() => setDisabled(!isDisabled)}
           sImgStyle={!isDisabled && { tintColor: colors.primary }}
-          sImgPath={images.edit} />
+          sImgPath={images.edit}
+        />
         <UploadPhoto
           disabled={isDisabled}
           image={image}
@@ -158,9 +166,18 @@ const signoutUser=()=>{
           placeholder={images.placeholder}
           iconStyle={{ backgroundColor: colors.primary }}
         />
-        {isDisabled && <CustomText container={{ alignSelf: 'center' }} fontSize={20} label={firstName + " " + lastName} />}
+        <TouchableOpacity onPress={()=>setModalVisible(true)} style={{alignSelf:'center'}}>
+        <CustomText  color={colors.primary} label="Invite users" />
+        </TouchableOpacity>
+        {isDisabled && (
+          <CustomText
+            container={{ alignSelf: "center" }}
+            fontSize={20}
+            label={firstName + " " + lastName}
+          />
+        )}
         <View>
-          {!isDisabled &&
+          {!isDisabled && (
             <>
               <InputField
                 disabled={isDisabled}
@@ -181,7 +198,7 @@ const signoutUser=()=>{
                 autoCapitalize="none"
               />
             </>
-          }
+          )}
           <DropDownPicker
             disabled={isDisabled}
             open={open}
@@ -191,15 +208,15 @@ const signoutUser=()=>{
             setValue={setGender}
             setItems={setItems}
             placeholder="Gender"
-            placeholderStyle={{ color: 'grey' }}
+            placeholderStyle={{ color: "grey" }}
             dropDownContainerStyle={{
               borderColor: "#dbdbdb",
             }}
             style={{
               borderColor: "#dbdbdb",
               marginVertical: 10,
-              alignSelf: 'center',
-              width: '90%'
+              alignSelf: "center",
+              width: "90%",
             }}
           />
           <InputField
@@ -210,13 +227,19 @@ const signoutUser=()=>{
             value={email}
           />
 
-          <TouchableOpacity disabled={isDisabled} style={styles.dropDownContainer} onPress={showDatePicker}>
-            <CustomText label={dob ? moment(dob).format("YY/MM/DD") : "Date of birth"} />
-          </TouchableOpacity >
+          <TouchableOpacity
+            disabled={isDisabled}
+            style={styles.dropDownContainer}
+            onPress={showDatePicker}
+          >
+            <CustomText
+              label={dob ? moment(dob).format("YY/MM/DD") : "Date of birth"}
+            />
+          </TouchableOpacity>
           {show && (
             <DateTimePicker
               testID="dateTimePicker"
-              style={{ width: width(50), alignSelf: 'center' }}
+              style={{ width: width(50), alignSelf: "center" }}
               value={dob}
               mode={mode}
               display="default"
@@ -228,7 +251,7 @@ const signoutUser=()=>{
             disabled={isDisabled}
             container={{ marginBottom: -8, marginHorizontal: width(3) }}
             withLabel="Social links"
-            textContainer={{marginLeft: width(3)}}
+            textContainer={{ marginLeft: width(3) }}
             imgPath={images.faceBook}
             label="facebook.com"
             value={fb}
@@ -250,17 +273,15 @@ const signoutUser=()=>{
             container={{ marginBottom: 0, marginHorizontal: width(3) }}
           />
         </View>
-        <View
-          style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}
-        >
+        <View style={{ paddingHorizontal: 30, width: "100%", marginTop: 23 }}>
           <CustomButton
-            label={!isDisabled ? "Save changes":"Logout"}
+            label={!isDisabled ? "Save changes" : "Logout"}
             loading={onSubmitLoading}
-            onPress={!isDisabled ?onSubmit:()=>signoutUser()} />
-          {/* <CustomButton label="Logout"
-            onPress={signout} /> */}
+            onPress={!isDisabled ? onSubmit : () => signoutUser()}
+          />
         </View>
       </View>
+   
     </ScreenWrapper>
     //       </ScrollView>
     //     </TouchableOpacity>
@@ -289,7 +310,6 @@ const styles = ScaledSheet.create({
     marginTop: 40,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-
   },
   imgContainer: {
     width: "100@ms",
@@ -309,8 +329,8 @@ const styles = ScaledSheet.create({
   inputStyle: {
     height: "40@vs",
     marginBottom: "8@vs",
-    alignSelf: 'center',
-    width: '90%'
+    alignSelf: "center",
+    width: "90%",
   },
   dropDownContainer: {
     paddingVertical: "10@vs",
@@ -322,8 +342,8 @@ const styles = ScaledSheet.create({
     marginBottom: "8@vs",
     borderWidth: 2,
     borderColor: "#ebebeb",
-    width: '90%',
-    alignSelf: 'center'
+    width: "90%",
+    alignSelf: "center",
   },
   logoContainer: {
     width: "100@s",
