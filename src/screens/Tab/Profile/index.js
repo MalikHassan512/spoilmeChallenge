@@ -139,14 +139,15 @@ const styles = ScaledSheet.create({
     resizeMode: "contain",
   },
   harryText: {
-    fontSize: "24@ms",
+    fontSize: "21@ms",
     alignSelf: "center",
     fontWeight: "500",
     color: colors.black,
     marginBottom: "20@s",
+  
   },
   marketingText: {
-    fontSize: "16@ms",
+    fontSize: "13@ms",
     alignSelf: "center",
     color: colors.text,
     letterSpacing: 1,
@@ -162,13 +163,13 @@ const styles = ScaledSheet.create({
     marginBottom: "20@vs",
   },
   text55: {
-    fontSize: "20@ms",
+    fontSize: "17@ms",
     color: colors.white,
     marginBottom: "5@vs",
     fontWeight: "bold",
   },
   relationText: {
-    fontSize: "16@ms",
+    fontSize: "13@ms",
     color: colors.white,
   },
 });

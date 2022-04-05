@@ -7,9 +7,9 @@ import images from "../../../assets/images";
 import colors from "../../../util/colors";
 import RelationPeopleWithBtn from "./Molecules/RelationPeopleWithBtn";
 const Contacts = () => {
-  const people = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const people = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11];
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Header label="Contacts" />
       <LogoButton
         imgPath={images.search}
@@ -29,7 +29,7 @@ const Contacts = () => {
           return <RelationPeopleWithBtn />;
         }}
       ></FlatList>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -59,8 +59,8 @@ const styles = ScaledSheet.create({
     marginBottom: "25@vs",
   },
   socialIcon: {
-    width: "25@ms",
-    height: "25@ms",
+    width: "22@ms",
+    height: "21@ms",
     resizeMode: "contain",
   },
 });

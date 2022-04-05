@@ -18,6 +18,11 @@ const Relations = () => {
         label="Search"
       />
       <FlatList
+        nestedScrollEnabled={true}
+        columnWrapperStyle={{
+          flexWrap: "wrap",
+          justifyContent: "space-around",
+        }}
         data={people}
         numColumns={3}
         renderItem={(element) => {

@@ -2,7 +2,7 @@ import { Image, View, TextInput } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import React from "react";
-
+import colors from "../../util/colors";
 const LogoButton = ({
   label,
   imgPath,
@@ -31,6 +31,7 @@ const LogoButton = ({
           onChangeText={onChangeText}
           placeholder={label}
           style={styles.text}
+          placeholderTextColor={colors.text}
         />
       </View>
     </View>
@@ -52,13 +53,13 @@ const styles = ScaledSheet.create({
     borderColor: "#ebebeb",
   },
   img: {
-    width: "25@ms",
-    height: "25@ms",
+    width: "22@ms",
+    height: "22@ms",
     marginRight: "15@s",
   },
   text: {
     color: "#878787",
-    fontSize: "16@ms",
+    fontSize: "15@ms",
     padding: 0,
     margin: 0,
     flex: 1,
