@@ -12,5 +12,13 @@ export default {
   linkedin: require("./linkdin.png"),
   setting: require("./setting.png"),
   edit: require("./edit.png"),
-  placeholder:require("./placeholder.png")
+  placeholder: require("./placeholder.png"),
+  menu: require("./menu.png"),
+  camera: require("./camera.png"),
+  phonIcon: require("./phoneIcon.png"),
+  fbIcon: require("./fbIcon.png"),
+  twitterIcon: require("./twiterIcon.png"),
+  homeIcon: require("./homeIcon.png"),
+  linkedinIcon: require("./linkdinIcon.png"),
+  search: require("./search.png"),
 };

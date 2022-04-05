@@ -1,19 +1,37 @@
-import { Image, View,TextInput } from "react-native";
+import { Image, View, TextInput } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import React from "react";
 
-const LogoButton = ({ label, imgPath, withLabel,textContainer={}, container,onChangeText,value,disabled }) => {
+const LogoButton = ({
+  label,
+  imgPath,
+  withLabel,
+  textContainer = {},
+  container,
+  onChangeText,
+  value,
+  disabled,
+  imgStyle,
+}) => {
   return (
     <View style={styles.surface}>
-     {withLabel && <CustomText
-        label={withLabel}
-        textStyle={[withLabel && styles.withLabel]}
-        container={textContainer}
-      />}
+      {withLabel && (
+        <CustomText
+          label={withLabel}
+          textStyle={[withLabel && styles.withLabel]}
+          container={textContainer}
+        />
+      )}
       <View style={[styles.container, container]}>
-        <Image style={styles.img} source={imgPath} />
-        <TextInput editable={!disabled} value={value} onChangeText={onChangeText} placeholder={label} style={styles.text} />
+        <Image style={[styles.img, imgStyle]} source={imgPath} />
+        <TextInput
+          editable={!disabled}
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={label}
+          style={styles.text}
+        />
       </View>
     </View>
   );
@@ -41,10 +59,10 @@ const styles = ScaledSheet.create({
   text: {
     color: "#878787",
     fontSize: "16@ms",
-    padding:0,
-    margin:0,
+    padding: 0,
+    margin: 0,
     flex: 1,
-    flexGrow:1,
+    flexGrow: 1,
   },
   withLabel: {
     fontSize: "16@ms",
