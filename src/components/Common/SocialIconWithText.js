@@ -8,6 +8,7 @@ const SocialIconWithText = ({ source, label, title }) => {
   return (
     <View style={styles.container}>
       <Image source={source} style={styles.image} />
+    
       {label && <CustomText label={label} textStyle={styles.text} />}
       {title && <CustomText label={title} textStyle={styles.textSecond} />}
     </View>
@@ -23,13 +24,13 @@ const styles = ScaledSheet.create({
     marginBottom: "10@vs",
   },
   image: {
-    width: "20@ms",
-    height: "20@ms",
+    width: "18@ms",
+    height: "16@ms",
     resizeMode: "contain",
     marginRight: "10@s",
   },
   text: {
-    fontSize: "14@ms",
+    fontSize: "15@ms",
     color: colors.text,
   },
   textSecond: {

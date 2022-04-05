@@ -52,8 +52,8 @@ const styles = ScaledSheet.create({
     justifyContent: "space-between",
   },
   imgContainer: {
-    width: "55@ms",
-    height: "55@ms",
+    width: "52@ms",
+    height: "52@ms",
     overflow: "hidden",
     borderRadius: "100@ms",
     alignItems: "center",
@@ -67,19 +67,19 @@ const styles = ScaledSheet.create({
     resizeMode: "contain",
   },
   text: {
-    fontSize: "16@ms",
+    fontSize: "15@ms",
     color: colors.black,
     fontWeight: "bold",
   },
   btn: {
-    paddingHorizontal: "20@s",
-    paddingVertical: "6@vs",
+    paddingHorizontal: "18@s",
+    paddingVertical: "4@vs",
     borderRadius: "50@ms",
     backgroundColor: colors.primary,
   },
   btnText: {
-    fontSize: "16@ms",
-    fontWeight: "bold",
+    fontSize: "14@ms",
+
     color: colors.white,
   },
 });

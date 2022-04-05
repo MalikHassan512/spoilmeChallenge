@@ -5,8 +5,9 @@ import colors from "../../util/colors";
 import { ScaledSheet } from "react-native-size-matters";
 import LogoButton from "./LogoButton";
 import images from "../../assets/images";
-
+import { useNavigation } from "@react-navigation/native";
 const PopupModal = ({ visible, onPress, bgPress }) => {
+  const navigation = useNavigation();
   return (
     <Modal visible={visible} transparent={true}>
       <View style={styles.firstContainer}>
@@ -20,7 +21,7 @@ const PopupModal = ({ visible, onPress, bgPress }) => {
             style={styles.emptyView}
           ></TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log("Setting")}
+            onPress={() => navigation.navigate("Setting")}
             style={styles.settingContainer}
           >
             <Image source={images.setting} style={styles.settingIcon} />
@@ -84,14 +85,14 @@ const styles = ScaledSheet.create({
     marginBottom: "20@vs",
   },
   settingIcon: {
-    width: "24@ms",
-    height: "24@ms",
+    width: "23@ms",
+    height: "22@ms",
     resizeMode: "contain",
     marginRight: "12@s",
     marginLeft: "15@s",
   },
   settingText: {
-    fontSize: "18@ms",
+    fontSize: "16@ms",
     color: colors.text,
   },
 });

@@ -13,6 +13,7 @@ const InputField = ({
   inputStyle,
   onChangeText,
   errorText,
+  profile,
   returnKeyType = "next",
   keyboardType = "default",
   width = "100%",
@@ -32,7 +33,7 @@ const InputField = ({
         outlineColor="#ebebeb"
         disabled={disabled}
         style={[styles.inputStyle, inputStyle]}
-        label={label + " *"}
+        label={label + (profile ? " " : " *")}
         right={
           right ? (
             <TextInput.Icon
