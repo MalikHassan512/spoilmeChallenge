@@ -10,4 +10,5 @@ export default {
   text: "#505050",
   inputBg: "#E3E5E8",
   photoBorder: "#46DA2E",
+  postBg: "#DADADA",
 };

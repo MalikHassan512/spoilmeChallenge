@@ -1,4 +1,10 @@
-import { View, ScrollView, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import React, { useState } from "react";
 import CustomText from "../../../components/CustomText";
 import { ScaledSheet } from "react-native-size-matters";
@@ -7,8 +13,10 @@ import colors from "../../../util/colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import SocialIconWithText from "../../../components/Common/SocialIconWithText";
 import PopupModal from "../../../components/Common/PopupModal";
+import Post from "./Molecules/Post";
 export const Profile = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
+  const post = [0, 1, 2, 3, 4, 5];
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -72,6 +80,12 @@ export const Profile = ({ navigation }) => {
             source={images.linkedinIcon}
             label="harrystyles"
           />
+          <FlatList
+            data={post}
+            renderItem={(element) => {
+              return <Post />;
+            }}
+          ></FlatList>
         </>
       )}
       {showModal && (
@@ -140,15 +154,14 @@ const styles = ScaledSheet.create({
     resizeMode: "contain",
   },
   harryText: {
-    fontSize: "21@ms",
+    fontSize: "24@ms",
     alignSelf: "center",
     fontWeight: "500",
     color: colors.black,
     marginBottom: "20@s",
-  
   },
   marketingText: {
-    fontSize: "13@ms",
+    fontSize: "16@ms",
     alignSelf: "center",
     color: colors.text,
     letterSpacing: 1,
@@ -164,13 +177,13 @@ const styles = ScaledSheet.create({
     marginBottom: "20@vs",
   },
   text55: {
-    fontSize: "17@ms",
+    fontSize: "20@ms",
     color: colors.white,
     marginBottom: "5@vs",
     fontWeight: "bold",
   },
   relationText: {
-    fontSize: "13@ms",
+    fontSize: "16@ms",
     color: colors.white,
   },
 });
