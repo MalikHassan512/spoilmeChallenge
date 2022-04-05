@@ -88,6 +88,7 @@ export const Profile = ({ navigation }) => {
 const styles = ScaledSheet.create({
   mainContainer: {
     padding: "25@ms",
+    backgroundColor: colors.white,
   },
   headerContainer: {
     flexDirection: "row",
