@@ -5,7 +5,8 @@ import CustomText from "../../../../components/CustomText";
 import colors from "../../../../util/colors";
 import images from "../../../../assets/images";
 
-const RelationPeopleWithBtn = ({ isOnline }) => {
+const RelationPeopleWithBtn = ({ isOnline, item }) => {
+  console.log('------Item', item)
   const [spoil, setSpoil] = useState(true);
   const peoples = [
     {
@@ -23,7 +24,7 @@ const RelationPeopleWithBtn = ({ isOnline }) => {
               <View style={styles.imgContainer}>
                 <Image style={styles.img} source={element.item.img} />
               </View>
-              <CustomText label={element.item.name} textStyle={styles.text} />
+              <CustomText label={item?.givenName} textStyle={styles.text} />
             </View>
             <TouchableOpacity
               onPress={() => setSpoil(!spoil)}
@@ -79,7 +80,6 @@ const styles = ScaledSheet.create({
   },
   btnText: {
     fontSize: "14@ms",
-
     color: colors.white,
   },
 });

@@ -31,7 +31,7 @@ export const getSpoils = (userId, setSpoils) => {
       const tempSpoils = [];
       let tempDate = new Date();
       let tempSpoilDateGroup = [];
-      spoilsSnapshot.forEach((spoilSnapshot, i) => {
+      spoilsSnapshot?.forEach((spoilSnapshot, i) => {
         const tempSpoil = spoilSnapshot.data();
         const spoilDate = tempSpoil.date.toDate();
         tempSpoil.date = spoilDate;

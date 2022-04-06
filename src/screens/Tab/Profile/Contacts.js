@@ -1,21 +1,42 @@
 import { View, FlatList, ScrollView, Image } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Molecules/Header";
 import LogoButton from "../../../components/Common/LogoButton";
 import images from "../../../assets/images";
 import colors from "../../../util/colors";
 import RelationPeopleWithBtn from "./Molecules/RelationPeopleWithBtn";
+import { useSelector } from "react-redux";
+import ContactModal from "../../../components/ContactModal";
+import { selectUser } from "../../../redux/features/userSlice";
 const Contacts = () => {
-  const people = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11];
+  const people = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const [searchText, setSearchText] = useState("");
+  const [relationships, setRelationships] = useState([]);
+  const contacts = useSelector((state) => state.user.contactList);
+  const userId = useSelector(selectUser);
+  useEffect(() => {
+    if (searchText) {
+      setRelationships(
+        contacts.filter((otherUser, index) => {
+          const re = new RegExp(searchText.replace(".", ""));
+          return !!otherUser.givenName.match(re);
+        })
+      );
+    } else {
+      setRelationships(contacts);
+    }
+  }, [searchText]);
   return (
     <View style={styles.container}>
       <Header label="Contacts" />
+      {console.log('---------Response', relationships)}
       <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}
         container={styles.logoButton}
         label="Search"
+        onChangeText={(value) => setSearchText(value)}
       />
       <View style={styles.socialIconContainer}>
         <Image style={styles.socialIcon} source={images.faceBook} />
@@ -24,11 +45,10 @@ const Contacts = () => {
         <Image style={styles.socialIcon} source={images.phonIcon} />
       </View>
       <FlatList
-        data={people}
-        renderItem={(element) => {
-          return <RelationPeopleWithBtn />;
-        }}
-      ></FlatList>
+        data={relationships}
+        keyExtractor={(item, index) => item + index.toString()}
+        renderItem={({ item }) => <RelationPeopleWithBtn item={item} />}
+      />
     </View>
   );
 };

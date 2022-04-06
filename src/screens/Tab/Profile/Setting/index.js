@@ -5,17 +5,24 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import Header from "../Molecules/Header";
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "../../../../components/CustomText";
 import InputField from "../../../../components/Common/InputField";
+import { changeUserData, getUser } from "../../../../firebase/firestore/users";
 import colors from "../../../../util/colors";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import { width } from "react-native-dimension";
-const Setting = () => {
+import { useSelector } from "react-redux";
+import { contactList, selectUser } from "../../../../redux/features/userSlice";
+const Setting = ({ navigation }) => {
+  const userId = useSelector(selectUser);
+  const [isDisabled, setDisabled] = useState(true);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState(new Date());
@@ -52,7 +59,46 @@ const Setting = () => {
   const showDatePicker = () => {
     showMode("date");
   };
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getUser(userId)
+        .then((user) => {
+          // console.log("user",user)
+          setFirstName(user?.firstName);
+          setLastName(user?.lastName);
+          setEmail(user?.email);
+          setGender(user?.gender);
+          setDob(user?.dob?.toDate() || new Date());
+          setInitialLoading(false);
+        })
+        .catch((e) => {
+          // alert('An error occured.Try again');
+          console.log("----error", e);
+        });
+    });
 
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+  const onSubmit = async () => {
+    setOnSubmitLoading(true);
+
+    const temp = {
+      id: userId,
+      firstName,
+      lastName,
+      gender,
+      dob,
+    };
+    try {
+      await changeUserData(temp);
+      setOnSubmitLoading(false);
+      setDisabled(true);
+    } catch (e) {
+      setOnSubmitLoading(false);
+      alert("Error occured. Try again");
+    }
+  };
   return (
     <View style={styles.container}>
       <Header label="Settings" />
@@ -61,11 +107,20 @@ const Setting = () => {
         showsHorizontalScrollIndicator={false}
       >
         <CustomText textStyle={styles.loginText} label="My Account" />
-        <CustomText textStyle={styles.loginText1} label="Name" />
+        <CustomText textStyle={styles.loginText1} label="First Name" />
         <InputField
           profile={true}
-          value={email}
-          onChangeText={(newVal) => setEmail(newVal)}
+          value={firstName}
+          onChangeText={(newVal) => setFirstName(newVal)}
+          autoCapitalize="none"
+          label="Harry Styles"
+          inputStyle={styles.inputStyle}
+        />
+        <CustomText textStyle={styles.loginText1} label="Last Name" />
+        <InputField
+          profile={true}
+          value={lastName}
+          onChangeText={(newVal) => setLastName(newVal)}
           autoCapitalize="none"
           label="Harry Styles"
           inputStyle={styles.inputStyle}
@@ -82,6 +137,7 @@ const Setting = () => {
           placeholderStyle={{ color: "grey" }}
           dropDownContainerStyle={{
             borderColor: "#dbdbdb",
+            width: "96.5%",
           }}
           style={{
             borderColor: "#dbdbdb",
@@ -167,6 +223,7 @@ const Setting = () => {
         />
         <CustomText textStyle={styles.loginText1} label="Email" />
         <InputField
+          disabled
           profile={true}
           value={email}
           onChangeText={(newVal) => setEmail(newVal)}
@@ -174,12 +231,21 @@ const Setting = () => {
           label="harrystyles@gmail.com"
           inputStyle={styles.inputStyle}
         />
+        <TouchableOpacity activeOpacity={0.6} onPress={onSubmit}>
+          <View style={styles.saveChangesContainer}>
+            <CustomText
+              textStyle={styles.saveChangingText}
+              label="Save Changes"
+            />
+          </View>
+        </TouchableOpacity>
         <CustomText textStyle={styles.loginText1} label="Security" />
 
         <CustomText textStyle={styles.loginText1} label="Privacy" />
         <CustomText textStyle={styles.loginText1} label="Notifications" />
         <CustomText textStyle={styles.loginText1} label="Help" />
         <CustomText textStyle={styles.loginText1} label="About" />
+        <View style={{ height: 40 }} />
       </ScrollView>
     </View>
   );
@@ -192,6 +258,21 @@ const styles = ScaledSheet.create({
     paddingHorizontal: "20@s",
     backgroundColor: "#FFFFFF",
     flex: 1,
+  },
+  saveChangesContainer: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: "15@s",
+    paddingVertical: "7@s",
+    borderRadius: "20@s",
+    width: "38%",
+    alignSelf: "flex-end",
+    marginVertical: "10@s",
+    alignItems: "center",
+    marginHorizontal: "10@s",
+  },
+  saveChangingText: {
+    fontSize: "13@ms",
+    color: colors.white,
   },
   loginText: {
     fontSize: "15@ms",
