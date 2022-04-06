@@ -14,6 +14,7 @@ const Relations = ({ navigation }) => {
   const people = [0, 1, 2, 3, 4, 5];
   const [relationships, setRelationships] = useState([]);
   const [relatedUsers, setRelatedUsers] = useState([]);
+  const [relation, setRelation] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
   const userId = useSelector(selectUser);
@@ -41,43 +42,55 @@ const Relations = ({ navigation }) => {
       })
       .finally(() => setLoading(false));
 
+  // useEffect(() => {
+  //   if (searchText) {
+  //     setRelation(
+  //       relationships.filter((otherUser, index) => {
+  //         const re = new RegExp(searchText.replace(".", ""));
+  //         return !!otherUser.to.firstName.match(re);
+  //       })
+  //     );
+  //   } else {
+  //     setRelation(relationships);
+  //   }
+  // }, [searchText]);
   useEffect(() => {
-    if (searchText) {
+    if(searchText){
       setRelationships(
-        relatedUsers.filter((otherUser, index) => {
-          const user =
-            otherUser.from.id !== userId ? otherUser.from : otherUser.to;
-          const re = new RegExp(searchText.replace(".", ""));
-          return !!user.firstName.match(re) || !!user.lastName.match(re);
-        })
-      );
-    } else {
-      setRelationships(relatedUsers);
+        relatedUsers.filter((otherUser,index)=>{
+        const user = otherUser.from.id !== userId ? otherUser.from : otherUser.to;
+        const re = new RegExp(searchText.replace('.', ''));
+        return !!user.firstName.match(re) || !!user.lastName.match(re);
+      })
+      )
+    }else{
+      setRelationships(relatedUsers)
     }
-  }, [searchText]);
+}, [searchText]);
   return loading ? (
     <Loading />
   ) : (
     <ScrollView style={styles.container}>
       <Header label="Relationships" />
-      {console.log('---------Response', relationships)}
-    
+      {console.log("---------Response", relationships)}
+
       <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}
         container={styles.logoButton}
         label="Search"
+        onChangeText={(value) => setSearchText(value)}
       />
       <FlatList
         nestedScrollEnabled={true}
         columnWrapperStyle={{
-          flexWrap:'wrap',
+          flexWrap: "wrap",
           justifyContent: "space-between",
         }}
         data={relationships}
         numColumns={4}
-        keyExtractor={(item,index)=> item+index.toString()}
-        renderItem={({item})=> <RelationPeople item={item}/>}
+        keyExtractor={(item, index) => item + index.toString()}
+        renderItem={({ item }) => <RelationPeople item={item} />}
         // renderItem={(element) => {
         //   return <RelationPeople />;
         // }}

@@ -26,7 +26,7 @@ const RelationPeople = ({ isOnline, item }) => {
                 isOnline && { borderColor: colors.photoBorder, borderWidth: 2 },
               ]}
             >
-              <Image style={styles.img} source={element.item.img} />
+              <Image style={styles.img} source={{uri:item?.to?.profilePic}} />
             </View>
             <CustomText
               label={item?.to?.firstName + " " + item?.to?.lastName}

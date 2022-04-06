@@ -304,7 +304,7 @@ const styles = ScaledSheet.create({
     fontSize: "13@ms",
     color: colors.black,
     fontWeight: "500",
-    marginTop: "7@ms",
+    marginTop: "10@ms",
   },
   inputStyle: {
     height: "40@s",
