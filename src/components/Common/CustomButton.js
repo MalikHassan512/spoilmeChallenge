@@ -4,7 +4,7 @@ import { ScaledSheet } from "react-native-size-matters";
 import React from "react";
 import * as Progress from "react-native-progress";
 
-const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
+const CustomButton = ({ label, onPress, disabled, loading, btnContainer, textStyle }) => {
   return (
     <TouchableOpacity
       disabled={disabled}
@@ -16,7 +16,7 @@ const CustomButton = ({ label, onPress, disabled, loading, btnContainer }) => {
       onPress={onPress}
     >
       {!loading ? (
-        <CustomText textStyle={styles.signUpText} label={label} />
+        <CustomText textStyle={[textStyle ? textStyle:styles.signUpText]} label={label} />
       ) : (
         <Progress.Circle
           indeterminate

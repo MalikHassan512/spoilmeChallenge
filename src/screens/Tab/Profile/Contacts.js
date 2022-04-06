@@ -30,7 +30,7 @@ const Contacts = () => {
   return (
     <View style={styles.container}>
       <Header label="Contacts" />
-      {console.log('---------Response', relationships)}
+      
       <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}

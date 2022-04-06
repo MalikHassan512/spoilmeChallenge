@@ -71,15 +71,17 @@ const Relations = ({ navigation }) => {
       <FlatList
         nestedScrollEnabled={true}
         columnWrapperStyle={{
-          flexWrap: "wrap",
-          justifyContent: "space-around",
+          flexWrap:'wrap',
+          justifyContent: "space-between",
         }}
-        data={people}
-        numColumns={3}
-        renderItem={(element) => {
-          return <RelationPeople />;
-        }}
-      ></FlatList>
+        data={relationships}
+        numColumns={4}
+        keyExtractor={(item,index)=> item+index.toString()}
+        renderItem={({item})=> <RelationPeople item={item}/>}
+        // renderItem={(element) => {
+        //   return <RelationPeople />;
+        // }}
+      />
     </ScrollView>
   );
 };

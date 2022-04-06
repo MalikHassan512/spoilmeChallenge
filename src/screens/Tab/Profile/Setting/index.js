@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState, } from "react";
+import React, { useState } from "react";
 import Header from "../Molecules/Header";
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "../../../../components/CustomText";
@@ -18,6 +18,8 @@ import moment from "moment";
 import { width } from "react-native-dimension";
 import { useSelector } from "react-redux";
 import { contactList, selectUser } from "../../../../redux/features/userSlice";
+import { Loading } from "../../../../components/Common/Loading";
+import CustomButton from "../../../../components/Common/CustomButton";
 const Setting = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [isDisabled, setDisabled] = useState(true);
@@ -26,8 +28,13 @@ const Setting = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState(new Date());
+  const [phone, setPhone] = useState("");
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [onSubmitLoading, setOnSubmitLoading] = useState(false);
+  const [cityName, setCityName] = useState("");
+  const [countryName, setCountryName] = useState("");
   const [items, setItems] = useState([
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
@@ -99,7 +106,9 @@ const Setting = ({ navigation }) => {
       alert("Error occured. Try again");
     }
   };
-  return (
+  return initialLoading ? (
+    <Loading />
+  ) : (
     <View style={styles.container}>
       <Header label="Settings" />
       <ScrollView
@@ -107,22 +116,22 @@ const Setting = ({ navigation }) => {
         showsHorizontalScrollIndicator={false}
       >
         <CustomText textStyle={styles.loginText} label="My Account" />
-        <CustomText textStyle={styles.loginText1} label="First Name" />
+
         <InputField
           profile={true}
           value={firstName}
           onChangeText={(newVal) => setFirstName(newVal)}
           autoCapitalize="none"
-          label="Harry Styles"
+          label={firstName}
           inputStyle={styles.inputStyle}
         />
-        <CustomText textStyle={styles.loginText1} label="Last Name" />
+
         <InputField
           profile={true}
           value={lastName}
           onChangeText={(newVal) => setLastName(newVal)}
           autoCapitalize="none"
-          label="Harry Styles"
+          label={lastName}
           inputStyle={styles.inputStyle}
         />
         <CustomText textStyle={styles.loginText1} label="Gender" />
@@ -174,12 +183,13 @@ const Setting = ({ navigation }) => {
               value={gender}
               items={city}
               setOpen={setCityOpen}
-              setValue={setGender}
+              setValue={setCityName}
               setItems={setCity}
               placeholder="Paris"
               placeholderStyle={{ color: "grey" }}
               dropDownContainerStyle={{
                 borderColor: "#dbdbdb",
+                width:"96.5%"
               }}
               style={{
                 borderColor: "#dbdbdb",
@@ -196,12 +206,13 @@ const Setting = ({ navigation }) => {
               value={gender}
               items={country}
               setOpen={setCountryOpen}
-              setValue={setGender}
+              setValue={setCountryName}
               setItems={setCountry}
               placeholder="France"
               placeholderStyle={{ color: "grey" }}
               dropDownContainerStyle={{
                 borderColor: "#dbdbdb",
+                width:"96.5%"
               }}
               style={{
                 borderColor: "#dbdbdb",
@@ -215,29 +226,38 @@ const Setting = ({ navigation }) => {
         <CustomText textStyle={styles.loginText1} label="Phone" />
         <InputField
           profile={true}
-          value={email}
-          onChangeText={(newVal) => setEmail(newVal)}
+          value={phone}
+          disabled
+          onChangeText={(newVal) => setPhone(newVal)}
           autoCapitalize="none"
           label="+33-1995678"
           inputStyle={styles.inputStyle}
         />
-        <CustomText textStyle={styles.loginText1} label="Email" />
+        {/* <CustomText textStyle={styles.loginText1} label="Email" /> */}
+
         <InputField
           disabled
           profile={true}
           value={email}
           onChangeText={(newVal) => setEmail(newVal)}
           autoCapitalize="none"
-          label="harrystyles@gmail.com"
+          label={email}
           inputStyle={styles.inputStyle}
         />
         <TouchableOpacity activeOpacity={0.6} onPress={onSubmit}>
-          <View style={styles.saveChangesContainer}>
+          {/* <View style={styles.saveChangesContainer}>
             <CustomText
               textStyle={styles.saveChangingText}
               label="Save Changes"
             />
-          </View>
+          </View> */}
+          <CustomButton
+            label={"Save Changes"}
+            loading={onSubmitLoading}
+            btnContainer={styles.saveChangesContainer}
+            textStyle={styles.saveChangingText}
+            onPress={onSubmit}
+          />
         </TouchableOpacity>
         <CustomText textStyle={styles.loginText1} label="Security" />
 
@@ -262,16 +282,17 @@ const styles = ScaledSheet.create({
   saveChangesContainer: {
     backgroundColor: colors.primary,
     paddingHorizontal: "15@s",
-    paddingVertical: "7@s",
-    borderRadius: "20@s",
+    paddingVertical: "2@s",
+    borderRadius: "15@s",
     width: "38%",
     alignSelf: "flex-end",
     marginVertical: "10@s",
     alignItems: "center",
     marginHorizontal: "10@s",
+    height: "30@s",
   },
   saveChangingText: {
-    fontSize: "13@ms",
+    fontSize: "11@ms",
     color: colors.white,
   },
   loginText: {
@@ -287,6 +308,7 @@ const styles = ScaledSheet.create({
   },
   inputStyle: {
     height: "40@s",
+    marginVertical: "5@s",
   },
   dropDownContainer: {
     paddingVertical: "10@vs",

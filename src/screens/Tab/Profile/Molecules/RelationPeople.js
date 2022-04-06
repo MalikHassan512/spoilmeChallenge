@@ -5,7 +5,8 @@ import CustomText from "../../../../components/CustomText";
 import colors from "../../../../util/colors";
 import images from "../../../../assets/images";
 
-const RelationPeople = ({ isOnline }) => {
+const RelationPeople = ({ isOnline, item }) => {
+  console.log("------Item", item);
   const peoples = [
     {
       img: images.people1,
@@ -27,7 +28,10 @@ const RelationPeople = ({ isOnline }) => {
             >
               <Image style={styles.img} source={element.item.img} />
             </View>
-            <CustomText label={element.item.name} textStyle={styles.text} />
+            <CustomText
+              label={item?.to?.firstName + " " + item?.to?.lastName}
+              textStyle={styles.text}
+            />
           </View>
         );
       }}
