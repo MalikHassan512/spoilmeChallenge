@@ -37,10 +37,13 @@ import colors from "../../../util/colors";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import RadioButtonRN from "radio-buttons-react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useSelector } from "react-redux";
 const Home = () => {
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
+  const UserData = useSelector((state) => state.user);
+  console.log("-----------UserData", UserData);
   const options = {
     maxWidth: 300,
     maxHeight: 300,
