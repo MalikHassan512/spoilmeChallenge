@@ -59,7 +59,7 @@ export const Profile = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [dbImage, setDbImage] = useState("");
   const contacts = useSelector((state) => state.user.contactList);
-  console.log("contacts", contacts);
+  // console.log("contacts", contacts);
   const [modalVisible, setModalVisible] = useState(false);
 
   const onStartChange = (event, selectedDate) => {

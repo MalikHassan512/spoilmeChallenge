@@ -6,7 +6,7 @@ import colors from "../../../../util/colors";
 import images from "../../../../assets/images";
 
 const RelationPeopleWithBtn = ({ isOnline, item }) => {
-  console.log('------Item', item)
+  // console.log('------Item', item)
   const [spoil, setSpoil] = useState(true);
   const peoples = [
     {

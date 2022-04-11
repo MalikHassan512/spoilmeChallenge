@@ -17,7 +17,7 @@ export const signinWithGoogle = async () => {
       '402944316207-35kid85mrn6lg9pd98sap8ou4h3hu3sv.apps.googleusercontent.com',
   });
   const data = await GoogleSignin.signIn();
-  console.log("data",data)
+  // console.log("data",data)
   // const googleCredential = auth.GoogleAuthProvider.credential(idToken);
   // const userCredential = await auth().signInWithCredential(googleCredential);
   return userCredential.user.uid;

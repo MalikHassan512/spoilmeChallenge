@@ -47,7 +47,7 @@ export const getUserRelationships = async (userId) => {
 };
 
 export const checkUserRelationships = async (userId, otherUserId) => {
-  console.log("userId", userId, "otherUserId", otherUserId);
+  // console.log("userId", userId, "otherUserId", otherUserId);
   const result = await firestore().collection(`relationships`).get();
   let flag = null;
   result.forEach((item, index) => {

@@ -67,7 +67,7 @@ export const Map = ({ navigation }) => {
   const searchedUser = () => {
     getAllUsers().then((users) => {
       let user = users.find((user) =>user.id!=userId && user.email == searchText.trim().toLowerCase());
-      console.log('user',user)
+      // console.log('user',user)
       if(user){
       setRegion({
         latitude: user.location.coords.latitude,

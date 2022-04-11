@@ -14,8 +14,10 @@ import mapDummy from '../../assets/images/mapDummy.png'
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
-    name = 'Maria Pablos'
+    name = 'Maria Pablos',
+    image
 }) => {
+    console.log("image",image)
     const [spoils, setSpoils] = useState(['soda', 'burger', 'coin', 'yoga', 'chest'])
     const renderItems = ({ item }) => {
         let image = null
@@ -68,6 +70,9 @@ const Post = ({
                             <Text style={styles.btnText}>Find a Spoil</Text>
                         </TouchableOpacity>
                     </> :
+                   postType == 'Post' ?
+                   <Image source={{uri:image}} style={styles.mapImage} />
+                   : 
                     <View>
                         <Image source={mapDummy} style={styles.mapImage} />
                     </View>

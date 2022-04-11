@@ -95,7 +95,7 @@ export const getUsersByLocation = async (latitude, longitude, setUsers) => {
 };
 
 export const changeUserData = async (user) => {
-  console.log(user);
+  // console.log(user);
   try {
   await firestore().doc(`users/${user.id}`).update(user);
   } catch (error) {

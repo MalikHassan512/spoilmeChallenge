@@ -40,7 +40,8 @@ const UploadPhoto = (props) => {
     );
   };
     return (
-        <View style={styles.container}>
+        <View style={!props.renderButton && styles.container}>
+         {!props.renderButton ?  <>
         <View style={props.imageContainer}>
             <Image
               source={image ? {uri:image.uri} :props.image ? {uri:props.image} :   (props.placeholder || {uri:"https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"})}
@@ -50,6 +51,9 @@ const UploadPhoto = (props) => {
         {!props.disabled &&  <TouchableOpacity activeOpacity={0.6} style={[styles.iconStyle,props.iconStyle]} onPress={() => setImageModal(true)} >
           <Entypo name="camera" color={props.iconColor || 'black'} size={17} />
           </TouchableOpacity>}
+          </>:
+          props.renderButton(() => setImageModal(true))
+}
           <Modal transparent={true} visible={imageModal} animationType="slide">
         <TouchableOpacity
           style={styles.headModalContainer}

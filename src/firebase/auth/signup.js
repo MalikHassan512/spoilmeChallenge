@@ -5,7 +5,7 @@ import {deleteProfilePic, uploadProfilePic} from '../storage/profilPic';
 import {deleteAccount} from './deleteAccount';
 
 export const signupWithEmail = async user => {
-  console.log('user',user)
+  // console.log('user',user)
   const userCredentials = await auth().createUserWithEmailAndPassword(
     user.email,
     user.password,

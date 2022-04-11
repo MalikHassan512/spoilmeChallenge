@@ -1,27 +1,22 @@
 /* eslint-disable react-native/no-inline-styles */
 import {
-  StyleSheet,
   View,
-  ScrollView,
   FlatList,
   Image,
   Text,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator
 } from "react-native";
-import { ScaledSheet } from "react-native-size-matters";
+import { ScaledSheet, verticalScale } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
 //components
 import Logo from "components/Logo";
-import Map from "../../../components/Common/Map";
-import TextWithIcon from "../../../components/Common/TextWithIcon";
 //icons
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 //Molecules
-import { Heading, Box, ImagesContainer, OpportunityBox } from "./Molecules";
-import Images from "assets/images";
 import Colors from "util/colors";
 import CustomText from "../../../components/CustomText";
 import defualtImage from "../../../assets/images/defaultImage.jpg";
@@ -34,22 +29,45 @@ import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
 import CustomModal from "../../../components/CustomModal";
 import colors from "../../../util/colors";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import RadioButtonRN from "radio-buttons-react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
+import UploadPhoto from "components/UploadPhoto";
+import {
+  uploadProfilePic,
+} from "../../../firebase/storage/profilPic";
+import {
+  createPost,
+} from "../../../firebase/firestore/posts";
+import RadioButtonRN from 'radio-buttons-react-native'
 const Home = () => {
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
-  const UserData = useSelector((state) => state.user);
-  console.log("-----------UserData", UserData);
-  const options = {
-    maxWidth: 300,
-    maxHeight: 300,
-    mediaType: "photo",
-    quality: 0.3,
-  };
+  const userId = useSelector((state) => state.user.userId);
+  const [loading, setLoading] = useState(false)
+  const onSubmit = async()=>{
+    try {
+      setLoading(true)
+      const data={
+        userId,
+        type,
+        title,
+      }
+      data.image = await uploadProfilePic(image, userId,"posts");
+        await createPost(data)
+      setLoading(false)
+      setType("")
+      setTitle("")
+      setImage("")
+      setVisible(false)
+
+    } catch (error) {
+      console.log("error line 63 onSubmit",error)
+      setLoading(false)
+      setVisible(false)
+    }
+  
+  }
   const data = [
     {
       label: "Story",
@@ -58,65 +76,9 @@ const Home = () => {
       label: "Post",
     },
   ];
-  const takePhotoFromCamera = async () => {
-    const {
-      assets: [result],
-    } = await launchCamera(options);
-    setImage(result);
 
-    console.log("takePhotoFromCamera", result);
-  };
-  const takePhotoFromLibrary = async () => {
-    const {
-      assets: [result],
-    } = await launchImageLibrary(options);
-    setImage(result);
-
-    console.log("takePhotoFromLibrary", result);
-  };
-  const [stories, setStories] = useState([
-    {
-      id: "1",
-      title: "Your story",
-      image: defualtImage,
-    },
-    {
-      id: "2",
-      title: "Carla",
-      image: defualtImage,
-    },
-    {
-      id: "3",
-      title: "Steven",
-      image: defualtImage,
-    },
-    {
-      id: "4",
-      title: "Terry",
-      image: defualtImage,
-    },
-    {
-      id: "5",
-      title: "Steven",
-      image: defualtImage,
-    },
-    {
-      id: "6",
-      title: "Terry",
-      image: defualtImage,
-    },
-  ]);
-  const [storyImages, setStoryImages] = useState([
-    {
-      uri: "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      uri: "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      uri: "https://wallpaperaccess.com/full/3678503.png",
-    },
-  ]);
+  const [stories,setStories] = useState([]);
+  const [storyImages, setStoryImages] = useState([]);
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [showStory, setShowStory] = useState(false);
@@ -126,7 +88,29 @@ const Home = () => {
   }, []);
   const loadData = async () => {
     const users = await getAllOfCollection("users");
+    const postData = await getAllOfCollection("posts");
+    console.log("postsData",postData)
     let posts = [];
+    let stories = [];
+    postData.map(post=>{
+      if(post.type=="Post"){
+     posts.push({
+       id:post.id,
+       description:post.title,
+       postType:post.type,
+       image:post.image,
+     })
+    }else{
+      stories.push({
+        id:post.id,
+        description:post.title,
+        postType:post.type,
+        image:post.image,
+
+      })
+    }
+    })
+    setStories(stories)
     users.map((user) => {
       let dob = new Date(user?.dob?.seconds * 1000);
       let formatedDate = moment(dob).format("DD-MM-YYYY");
@@ -167,11 +151,11 @@ const Home = () => {
       <View style={styles.storyContainer}>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => setShowStory(true)}
+          onPress={() =>{setStoryImages([{uri:item.image}]); setShowStory(true)}}
           style={styles.avatarContainer}
         >
           <Image
-            source={defualtImage}
+            source={{uri:item.image}}
             style={styles.avatar}
             resizeMode={"cover"}
           />
@@ -181,6 +165,7 @@ const Home = () => {
     );
   };
   const renderPost = ({ item }) => {
+    console.log("item",item)
     if (item?.postType == "MAP") {
       return (
         <Post
@@ -190,7 +175,7 @@ const Home = () => {
         />
       );
     } else {
-      return <Post description={item.description} name={item?.name} />;
+      return <Post postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
     }
   };
   const renderEmpty = ({ item }) => {
@@ -260,14 +245,21 @@ const Home = () => {
         visible={showStory}
         onRequestClose={() => setShowStory(false)}
       />
-      <CustomModal isModalVisible={visible} setModalVisible={setVisible}>
+      <CustomModal isModalVisible={visible} setModalVisible={()=>{
+        setVisible(false)
+        setType("")
+        setTitle("")
+        setImage("")
+      }}>
         <View style={styles.modalContainer}>
           <CustomText label="Create Post" textStyle={styles.CreatePostTitle} />
           <View style={styles.textInputContainer}>
             <TextInput
-              placeholder="Enter title"
+              placeholder="What's on your mind"
+              multiline={true}
+              value={title}
               placeholderTextColor={colors.darkGrey}
-              style={styles.textInput}
+              style={[styles.textInput,{maxHeight:verticalScale(30)}]}
               onChangeText={(value) => setTitle(value)}
             />
           </View>
@@ -275,7 +267,7 @@ const Home = () => {
             <RadioButtonRN
               data={data}
               style={{ height: 50 }}
-              selectedBtn={(e) => setType(e)}
+              selectedBtn={(e) => setType(e.label)}
               icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
             />
           </View>
@@ -288,16 +280,37 @@ const Home = () => {
             <View />
           )}
 
-          <TouchableOpacity
+          
+          <View>
+           {!image ?<UploadPhoto
+          handleChange={(res) => setImage(res)}
+          renderButton={(handleChange)=><TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => takePhotoFromLibrary()}
+            onPress={handleChange}
           >
             <CustomText
               label="Upload image"
               container={styles.uploadImageContainer}
               textStyle={styles.uploadimageText}
             />
-          </TouchableOpacity>
+          </TouchableOpacity>}
+          />
+         :
+         <TouchableOpacity
+         activeOpacity={0.6}
+         onPress={onSubmit}
+       >
+         {!loading ?<CustomText
+           label="Create"
+           container={styles.uploadImageContainer}
+           textStyle={styles.uploadimageText}
+        />:
+        <ActivityIndicator color={'white'} size="small" />
+        }
+       </TouchableOpacity>
+        }
+        
+        </View>
         </View>
       </CustomModal>
     </ScreenWrapper>

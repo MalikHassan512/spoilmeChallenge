@@ -6,7 +6,7 @@ import colors from "../../../../util/colors";
 import images from "../../../../assets/images";
 
 const RelationPeople = ({ isOnline, item }) => {
-  console.log("------Item", item);
+  // console.log("------Item", item);
   const peoples = [
     {
       img: images.people1,

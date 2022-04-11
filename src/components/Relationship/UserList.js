@@ -23,6 +23,7 @@ export const UserList = ({
       data={otherUsers}
       refreshing={loading}
       onRefresh={getRelations}
+      keyExtractor={(item,index)=>item.id+index.toString()}
       ListEmptyComponent={() =>
         !loading ? (
           <View style={{ marginTop: "30%" }}>
