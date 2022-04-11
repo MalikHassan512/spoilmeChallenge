@@ -12,7 +12,7 @@ import {
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "../../components/Common/CustomText";
 import InputField from "../../components/Common/InputField";
-import { signinWithEmail, signinWithGoogle } from "../../firebase/auth/signin";
+import { signinWithEmail, signinWithGoogle,onFacebookButtonPress } from "../../firebase/auth/signin";
 import {changeUserData} from "../../firebase/firestore/users";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useDispatch } from "react-redux";
@@ -21,6 +21,7 @@ import firestore from '@react-native-firebase/firestore';
 import CustomButton from "../../components/Common/CustomButton";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from '../../util/getLocation'
+import { Button } from "react-native-paper";
 export const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
@@ -78,7 +79,15 @@ export const Signin = ({ navigation }) => {
       }
     }
   };
-
+  const onSigninWithFacebook = async ()=>{
+    try {
+      const userId = await onFacebookButtonPress();
+      console.log("userId",userId)
+      dispatch(changeUser(userId));
+    } catch (error) {
+      console.log("fb error",error)
+    }
+  }
   return (
     <ScreenWrapper scrollEnabled>
       <View style={styles.mainContainer}>
@@ -131,6 +140,16 @@ export const Signin = ({ navigation }) => {
             onPress={onSigninWithGoogle}
             size={GoogleSigninButton.Size.Wide}
           />
+        </View>
+        <View style={styles.googleBtnContainer}>
+          {/* <GoogleSigninButton
+            style={styles.googleBtn}
+            onPress={onSigninWithFacebook}
+            size={GoogleSigninButton.Size.Wide}
+          /> */}
+          <Button  onPress={onSigninWithFacebook}>
+            Facebook Login
+            </Button>
         </View>
         <View style={styles.signUpTextContainer}>
           <CustomText
