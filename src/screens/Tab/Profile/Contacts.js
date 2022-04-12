@@ -18,9 +18,9 @@ const Contacts = () => {
   useEffect(() => {
     if (searchText) {
       setRelationships(
-        contacts.filter((otherUser, index) => {
+        contacts.filter((otherUser) => {
           const re = new RegExp(searchText.replace(".", ""));
-          return !!otherUser.givenName.match(re);
+          return !!otherUser?.givenName?.match(re);
         })
       );
     } else {

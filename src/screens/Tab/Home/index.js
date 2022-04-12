@@ -24,6 +24,7 @@ import { height, width } from "react-native-dimension";
 import Post from "../../../components/Post";
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
+import { getUser } from "../../../firebase/firestore/users";
 import moment from "moment";
 import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
@@ -48,8 +49,10 @@ const Home = () => {
   const onSubmit = async()=>{
     try {
       setLoading(true)
+      const userData= await getUser(userId)
       const data={
         userId,
+        userData,
         type,
         title,
       }
@@ -89,7 +92,6 @@ const Home = () => {
   const loadData = async () => {
     const users = await getAllOfCollection("users");
     const postData = await getAllOfCollection("posts");
-    console.log("postsData",postData)
     let posts = [];
     let stories = [];
     postData.map(post=>{

@@ -6,12 +6,13 @@ export const RelationshipHeader = ({searchText, setSearchText}) => {
   return (
     <View>
       <View style={styles.logoContainer}>
-        <Image source={require('../../assets/images/bar_left.png')} />
+        {/* <Image source={require('../../assets/images/bar_left.png')} /> */}
+        <View />
         <Image style={{width:125,height:31}} source={require('../../assets/images/logo.png')} />
         <TouchableOpacity
           style={styles.searchButton}
           onPress={() => setShowSearch(!showSearch)}>
-          <Image source={require('../../assets/images/search.png')} />
+          <Image resizeMode='contain' style={{width:18,height:18}} source={require('../../assets/images/search.png')} />
         </TouchableOpacity>
       </View>
       {showSearch && (
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     backgroundColor: 'white',
     borderRadius: 5,
-    paddingHorizontal: 2,
+    paddingHorizontal: 6,
     shadowOpacity: 1,
     alignItems: 'center',
     justifyContent: 'center',

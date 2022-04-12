@@ -17,7 +17,7 @@ export const ChatBody = ({ userId, relatedUserId, relationId }) => {
 
     return () => messageSubscriber();
   }, [userId, relatedUserId]);
-  const updateStatus = (message, status) => {
+  const updateStatus = (message, status, index) => {
     updateSpoilStatus(message, status);
     if (messages.length - 1 == index) {
       const flag = checkUserRelationships(userId, relatedUserId);
@@ -55,11 +55,11 @@ export const ChatBody = ({ userId, relatedUserId, relationId }) => {
             {message.spoilStatus === 0 && !isUser ? (
               <View style={{ flexDirection: "row" }}>
                 <ChatButton
-                  onPress={() => updateStatus(message, 1)}
+                  onPress={() => updateStatus(message, 1,index)}
                   text="Approve"
                 />
                 <ChatButton
-                  onPress={() => updateStatus(message, 2)}
+                  onPress={() => updateStatus(message, 2,index)}
                   text="Decline"
                 />
               </View>

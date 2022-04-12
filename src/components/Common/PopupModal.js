@@ -6,8 +6,23 @@ import { ScaledSheet } from "react-native-size-matters";
 import LogoButton from "./LogoButton";
 import images from "../../assets/images";
 import { useNavigation } from "@react-navigation/native";
+import CustomButton from "./CustomButton";
+import { changeUserData, } from "../../firebase/firestore/users";
+import { signout } from "../../firebase/auth/signout";
+import firestore from "@react-native-firebase/firestore";
+import {useSelector} from 'react-redux'
 const PopupModal = ({ visible, onPress, bgPress }) => {
   const navigation = useNavigation();
+  const userId = useSelector(state=>state.user.userId);
+
+  const signoutUser = () => {
+    changeUserData({
+      id: userId,
+      isActive: false,
+      lastActive: firestore.Timestamp.now(),
+    });
+    signout();
+  };
   return (
     <Modal visible={visible} transparent={true}>
       <View style={styles.firstContainer}>
@@ -27,7 +42,9 @@ const PopupModal = ({ visible, onPress, bgPress }) => {
             <Image source={images.setting} style={styles.settingIcon} />
             <CustomText label="Settings" textStyle={styles.settingText} />
           </TouchableOpacity>
-          <LogoButton
+          <CustomText textStyle={{alignSelf:'center',marginBottom:20}} label="Deactivate account" />
+          <CustomButton onPress={signoutUser} label={"Log out"} />
+          {/* <LogoButton
             imgPath={images.faceBook}
             label="Connect with Facebook"
             container={styles.logoButton}
@@ -41,7 +58,7 @@ const PopupModal = ({ visible, onPress, bgPress }) => {
             imgPath={images.linkedin}
             container={styles.logoButton}
             label="Connect with LinkedIn"
-          />
+          /> */}
         </View>
       </View>
     </Modal>
@@ -57,7 +74,7 @@ const styles = ScaledSheet.create({
   },
   secondContainer: {
     backgroundColor: "#ffffff",
-    height: "40%",
+    height: "30%",
     borderRadius: "30@ms",
     alignSelf: "flex-end",
     width: "100%",

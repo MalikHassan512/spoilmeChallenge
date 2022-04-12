@@ -1,22 +1,85 @@
 import {
   View,
   ScrollView,
-  Image,
+  Text,
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import CustomText from "../../../components/CustomText";
-import { ScaledSheet } from "react-native-size-matters";
+import { ScaledSheet, verticalScale } from "react-native-size-matters";
 import images from "../../../assets/images";
 import colors from "../../../util/colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import SocialIconWithText from "../../../components/Common/SocialIconWithText";
 import PopupModal from "../../../components/Common/PopupModal";
-import Post from "./Molecules/Post";
+// import Post from "./Molecules/Post";
+import {getUser } from "../../../firebase/firestore/users";
+import {getUserRelationships} from '../../../firebase/firestore/relationships'
+import {useSelector} from 'react-redux'
+import UploadPhoto from "components/UploadPhoto";
+import Post from "components/Post";
+import { height, width } from "react-native-dimension";
+import Colors from "util/colors";
+
+import moment from 'moment'
+import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
 export const Profile = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState({})
+  const [relation, setRelation] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
+  const [posts, setPosts] = useState([])
+  const userId = useSelector(state=>state.user.userId);
+  const contacts = useSelector((state) => state.user.contactList);
+ 
+  
+  const [image, setImage] = useState("")
   const post = [0, 1, 2, 3, 4, 5];
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getUser(userId)
+        .then((user) => {
+          console.log("user",user)
+          setUser(user)
+          setImage(user.profilePic)
+        })
+        .catch((e) => {
+          // alert('An error occured.Try again');
+          console.log(e);
+        });
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+  useEffect(() => {
+    loadData()
+    getUserRelationships(userId).then((res) => {
+      setRelation(res)
+    })
+    .catch((e) => {
+      console.log("relation eorror line 54",e);
+    })
+  }, [])
+  const loadData = async () => {
+    const postData = await getAllOfCollection("posts")
+    let posts = [];
+    postData.map(post=>{
+      if(post.type=="Post" && post.userId == userId){
+     posts.push({
+       id:post.id,
+       description:post.title,
+       postType:post.type,
+       image:post.image,
+     })
+    }
+    })
+    console.log("postsData",posts)
+    setRefreshing(false);
+
+    setPosts(posts);
+  };
   return (
     <ScrollView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -24,26 +87,26 @@ export const Profile = ({ navigation }) => {
           onPress={() => setShowModal(true)}
           style={styles.headTextCont}
         >
-          <CustomText label="harrystyles10" textStyle={styles.headerText} />
+          <CustomText label={user.email} textStyle={styles.headerText} />
           <View>
             <Entypo name="chevron-down" style={styles.headerTextIcon} />
           </View>
         </TouchableOpacity>
-        <Image source={images.menu} style={styles.headerIcon} />
+        {/* <Image source={images.menu} style={styles.headerIcon} /> */}
       </View>
-      <View style={styles.profile}>
-        <TouchableOpacity
-          onPress={() => console.log("camera")}
-          style={styles.profileIconContainer}
-        >
-          <Image source={images.camera} style={styles.profileIcon} />
-        </TouchableOpacity>
-      </View>
-      <CustomText label="Harry Styles, 22" textStyle={styles.harryText} />
-      <CustomText
+      <UploadPhoto
+          image={image}
+          handleChange={(res) => setImage(res)}
+          iconColor={"white"}
+          imageContainer={styles.logoContainer}
+          placeholder={images.placeholder}
+          iconStyle={{ backgroundColor: colors.primary }}
+        />
+      <CustomText label={user.firstName + " " + moment().diff(moment(user.dob), 'years')} textStyle={styles.harryText} />
+      {/* <CustomText
         label="Marketing and PR specialist"
         textStyle={styles.marketingText}
-      />
+      /> */}
       <View
         style={{
           flexDirection: "row",
@@ -52,23 +115,23 @@ export const Profile = ({ navigation }) => {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigation.navigate("Relations")}
+          onPress={() => navigation.navigate("Relations",{relation})}
           style={styles.relationContainer}
         >
-          <CustomText textStyle={styles.text55} label="55" />
+          <CustomText textStyle={styles.text55} label={relation?.length || 0} />
           <CustomText textStyle={styles.relationText} label="Relationships" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate("Contacts")}
           style={styles.relationContainer}
         >
-          <CustomText textStyle={styles.text55} label="110" />
+          <CustomText textStyle={styles.text55} label={contacts?.length || 0 } />
           <CustomText textStyle={styles.relationText} label="Contacts" />
         </TouchableOpacity>
       </View>
       {showModal ? null : (
         <>
-          <SocialIconWithText
+          {/* <SocialIconWithText
             source={images.homeIcon}
             label="Lives in "
             title="Paris, France"
@@ -79,13 +142,22 @@ export const Profile = ({ navigation }) => {
           <SocialIconWithText
             source={images.linkedinIcon}
             label="harrystyles"
-          />
+          /> */}
           <FlatList
-            data={post}
-            renderItem={(element) => {
-              return <Post />;
+          data={posts}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={renderEmpty}
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            loadData();
+          }}
+            renderItem={({item}) => {
+              return <Post item={item} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
             }}
-          ></FlatList>
+          />
+          <View style={{height:verticalScale(40)}} />
         </>
       )}
       {showModal && (
@@ -98,7 +170,13 @@ export const Profile = ({ navigation }) => {
     </ScrollView>
   );
 };
-
+const renderEmpty = () => {
+  return (
+    <View style={styles.empty}>
+      <Text style={styles.emptyText}>No posts available</Text>
+    </View>
+  );
+};
 const styles = ScaledSheet.create({
   mainContainer: {
     padding: "25@ms",
@@ -109,6 +187,28 @@ const styles = ScaledSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: "15@vs",
+  },
+  empty: {
+    height: height(20),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyText: {
+    color: Colors.black,
+    fontWeight: "bold",
+    fontSize: width(4),
+  },
+  logoContainer: {
+    width: "100@s",
+    height: "100@s",
+    borderRadius: "130@s",
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "white",
+    marginVertical: "5@vs",
+    marginBottom: "10@vs",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headTextCont: {
     flexDirection: "row",

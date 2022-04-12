@@ -10,37 +10,38 @@ import { getUserRelationships } from "../../../firebase/firestore/relationships"
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/features/userSlice";
 import { Loading } from "../../../components/Common/Loading";
-const Relations = ({ navigation }) => {
+const Relations = ({ navigation,route }) => {
   const people = [0, 1, 2, 3, 4, 5];
-  const [relationships, setRelationships] = useState([]);
-  const [relatedUsers, setRelatedUsers] = useState([]);
+  const relationData=route?.params?.relation;
+  const [relationships, setRelationships] = useState(relationData);
+  const [relatedUsers, setRelatedUsers] = useState(relationData);
   const [relation, setRelation] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
   const userId = useSelector(selectUser);
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener(
-      "focus",
-      () => {
-        setLoading(true);
-        getRelations();
-        // Return the function to unsubscribe from the event so it gets removed on unmount
-        return unsubscribe;
-      },
-      [navigation]
-    );
-  });
-  const getRelations = () =>
-    getUserRelationships(userId)
-      .then((res) => {
-        setRelationships(res);
-        setRelatedUsers(res);
-      })
-      .catch((e) => {
-        console.log(e);
-        alert("Error occured. Please Try again");
-      })
-      .finally(() => setLoading(false));
+  // React.useEffect(() => {
+  //   const unsubscribe = navigation.addListener(
+  //     "focus",
+  //     () => {
+  //       setLoading(true);
+  //       getRelations();
+  //       // Return the function to unsubscribe from the event so it gets removed on unmount
+  //       return unsubscribe;
+  //     },
+  //     [navigation]
+  //   );
+  // });
+  // const getRelations = () =>
+  //   getUserRelationships(userId)
+  //     .then((res) => {
+  //       setRelationships(res);
+  //       setRelatedUsers(res);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //       alert("Error occured. Please Try again");
+  //     })
+  //     .finally(() => setLoading(false));
 
   // useEffect(() => {
   //   if (searchText) {
@@ -58,22 +59,18 @@ const Relations = ({ navigation }) => {
     if(searchText){
       setRelationships(
         relatedUsers.filter((otherUser,index)=>{
-        const user = otherUser.from.id !== userId ? otherUser.from : otherUser.to;
+        const user = otherUser?.from?.id !== userId ? otherUser?.from : otherUser?.to;
         const re = new RegExp(searchText.replace('.', ''));
-        return !!user.firstName.match(re) || !!user.lastName.match(re);
+        return !!user?.firstName?.match(re) || !!user?.lastName?.match(re);
       })
       )
     }else{
       setRelationships(relatedUsers)
     }
 }, [searchText]);
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <ScrollView style={styles.container}>
       <Header label="Relationships" />
-      {console.log("---------Response", relationships)}
-
       <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}

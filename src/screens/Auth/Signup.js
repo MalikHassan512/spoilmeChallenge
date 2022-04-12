@@ -177,7 +177,6 @@ export const Signup = ({ navigation }) => {
           }}
           style={{
             borderColor: "#dbdbdb",
-            // marginVertical: 10,
             marginBottom: scale(10),
             shadowColor: "#000",
             shadowOffset: {
@@ -186,7 +185,7 @@ export const Signup = ({ navigation }) => {
             },
             shadowOpacity: 0.22,
             shadowRadius: 2.22,
-            elevation: 3,
+            elevation: 1,
           }}
         />
         {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
@@ -227,7 +226,7 @@ export const Signup = ({ navigation }) => {
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
-        <LogoButton
+        {/* <LogoButton
           onChangeText={setFb}
           value={fb}
           imgPath={images.faceBook}
@@ -245,7 +244,7 @@ export const Signup = ({ navigation }) => {
           value={twitter}
           imgPath={images.twitter}
           label="Twitter link"
-        />
+        /> */}
 
         <CustomButton
           btnContainer={{ marginBottom: 23,marginTop:scale(5) }}
@@ -257,9 +256,6 @@ export const Signup = ({ navigation }) => {
             !email ||
             !password ||
             !location ||
-            !fb ||
-            !linkedin ||
-            !twitter ||
             !image?.uri
           }
           loading={loading}
@@ -360,6 +356,6 @@ const styles = ScaledSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
 
-    elevation: 3,
+    elevation: 1,
   },
 });

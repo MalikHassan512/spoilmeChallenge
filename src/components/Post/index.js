@@ -15,9 +15,10 @@ const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
     name = 'Maria Pablos',
-    image
+    image,
+    userData
 }) => {
-    console.log("image",image)
+    console.log("image",userData)
     const [spoils, setSpoils] = useState(['soda', 'burger', 'coin', 'yoga', 'chest'])
     const renderItems = ({ item }) => {
         let image = null

@@ -4,13 +4,15 @@ import CustomText from "../../../../components/CustomText";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import colors from "../../../../util/colors";
 import { ScaledSheet } from "react-native-size-matters";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = ({ label }) => {
+  const navigation=useNavigation()
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          console.log("back");
+          navigation.goBack()
         }}
       >
         <AntDesign style={styles.icon} name="arrowleft" />

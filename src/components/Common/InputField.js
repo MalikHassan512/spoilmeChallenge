@@ -27,7 +27,6 @@ const InputField = ({
 }) => {
   return (
     <View style={styles.surface}>
-      {/* {withLabel && <CustomText label={withLabel} textStyle={styles.withLabel} />} */}
       <TextInput
         mode="outlined"
         outlineColor="#ebebeb"
@@ -79,8 +78,10 @@ const styles = ScaledSheet.create({
     color: "#878787",
     width: "300@s",
     height: "45@vs",
+    
   },
   surface: {
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -88,8 +89,6 @@ const styles = ScaledSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-
-    elevation: 3,
   },
   withLabel: {
     fontSize: "16@ms",
