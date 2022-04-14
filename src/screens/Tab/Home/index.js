@@ -125,7 +125,7 @@ const Home = () => {
      })
     }
     if(post.type!="Post"){
-      if(!moment(post.createdAt).fromNow.includes('day')){
+      if(!moment(post.createdAt).fromNow().includes('day')){
       stories.push({
         id:post.id,
         description:post.title,
