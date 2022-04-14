@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  RefreshControl
 } from "react-native";
 import React, { useState,useEffect } from "react";
 import CustomText from "../../../components/CustomText";
@@ -35,12 +36,10 @@ export const Profile = ({ navigation }) => {
  
   
   const [image, setImage] = useState("")
-  const post = [0, 1, 2, 3, 4, 5];
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getUser(userId)
         .then((user) => {
-          console.log("user",user)
           setUser(user)
           setImage(user.profilePic)
         })
@@ -62,6 +61,7 @@ export const Profile = ({ navigation }) => {
       console.log("relation eorror line 54",e);
     })
   }, [])
+  
   const loadData = async () => {
     const postData = await getAllOfCollection("posts")
     let posts = [];
@@ -72,16 +72,23 @@ export const Profile = ({ navigation }) => {
        description:post.title,
        postType:post.type,
        image:post.image,
+       userData:post.userData,
+       createdAt:post.createdAt
+
      })
     }
     })
-    console.log("postsData",posts)
     setRefreshing(false);
-
     setPosts(posts);
   };
   return (
-    <ScrollView style={styles.mainContainer}>
+    <ScrollView  refreshControl={
+      <RefreshControl refreshing={refreshing}
+      onRefresh={() => {
+        setRefreshing(true);
+        loadData();
+      }} />
+    } style={styles.mainContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => setShowModal(true)}
@@ -131,30 +138,16 @@ export const Profile = ({ navigation }) => {
       </View>
       {showModal ? null : (
         <>
-          {/* <SocialIconWithText
-            source={images.homeIcon}
-            label="Lives in "
-            title="Paris, France"
-          />
-          <SocialIconWithText source={images.phonIcon} title="+33-119568" />
-          <SocialIconWithText source={images.fbIcon} label="harrystyles" />
-          <SocialIconWithText source={images.twitterIcon} label="harrystyles" />
-          <SocialIconWithText
-            source={images.linkedinIcon}
-            label="harrystyles"
-          /> */}
+        
           <FlatList
           data={posts}
+          nestedScrollEnabled
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
-          refreshing={refreshing}
-          onRefresh={() => {
-            setRefreshing(true);
-            loadData();
-          }}
+          
             renderItem={({item}) => {
-              return <Post item={item} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+              return <Post  createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
             }}
           />
           <View style={{height:verticalScale(40)}} />

@@ -52,7 +52,7 @@ export default function MapModal({
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      console.log("messages", messages);
+      // console.log("messages", messages);
       await createRelationship(
         user,
         relatedUser,
@@ -60,7 +60,7 @@ export default function MapModal({
         0,
         messages
       );
-      console.log("relation created");
+      // console.log("relation created");
     } else {
       messages = await sendMessage(
         user,
@@ -70,7 +70,7 @@ export default function MapModal({
         0
       );
       await updateRelationStatus(relationStatus, messages);
-      console.log("relation already exist");
+      // console.log("relation already exist");
     }
     setLoadingId("")
     SimpleToast.show("Spoil sent")

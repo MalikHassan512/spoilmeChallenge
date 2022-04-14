@@ -5,9 +5,7 @@ import {height, width} from 'react-native-dimension';
 import Colors from '../../util/colors';
 
 const styles = ScaledSheet.create({
-  container: {
-     
-  },
+   
   post: {
     borderBottomRightRadius: width(3),
     borderBottomLeftRadius: width(3),
@@ -87,7 +85,18 @@ const styles = ScaledSheet.create({
       alignSelf: 'center',
       height: height(30),
       borderRadius: width(2)
-  }
+  },
+  profilePic: {
+    marginRight: 20,
+    width: 70,
+    height: 70,
+    borderWidth: 2,
+    borderRadius: 50,
+  },
+  spoilTypes: {
+    justifyContent: "center",
+    marginRight: 10,
+  },
 
 });
 export default styles;

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import SimpleToast from "react-native-simple-toast";
 import React, { useState } from "react";
 import Header from "../Molecules/Header";
 import { ScaledSheet } from "react-native-size-matters";
@@ -100,10 +101,12 @@ const Setting = ({ navigation }) => {
     try {
       await changeUserData(temp);
       setOnSubmitLoading(false);
+      
       setDisabled(true);
+      SimpleToast.show("Profile Updated")
     } catch (e) {
       setOnSubmitLoading(false);
-      alert("Error occured. Try again");
+      console.log("eeprofile update",e)
     }
   };
   return initialLoading ? (
@@ -122,7 +125,7 @@ const Setting = ({ navigation }) => {
           value={firstName}
           onChangeText={(newVal) => setFirstName(newVal)}
           autoCapitalize="none"
-          label={firstName}
+          label={"First Name"}
           inputStyle={styles.inputStyle}
         />
 
@@ -131,7 +134,16 @@ const Setting = ({ navigation }) => {
           value={lastName}
           onChangeText={(newVal) => setLastName(newVal)}
           autoCapitalize="none"
-          label={lastName}
+          label={"Last Name"}
+          inputStyle={styles.inputStyle}
+        />
+         <InputField
+          disabled
+          profile={true}
+          value={email}
+          onChangeText={(newVal) => setEmail(newVal)}
+          autoCapitalize="none"
+          label={"Email"}
           inputStyle={styles.inputStyle}
         />
         <CustomText textStyle={styles.loginText1} label="Gender" />
@@ -174,7 +186,7 @@ const Setting = ({ navigation }) => {
             onChange={onStartChange}
           />
         )}
-
+{/* 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ width: "48%" }}>
             <CustomText textStyle={styles.loginText1} label="City" />
@@ -222,8 +234,8 @@ const Setting = ({ navigation }) => {
               }}
             />
           </View>
-        </View>
-        <CustomText textStyle={styles.loginText1} label="Phone" />
+        </View> */}
+        {/* <CustomText textStyle={styles.loginText1} label="Phone" />
         <InputField
           profile={true}
           value={phone}
@@ -232,33 +244,18 @@ const Setting = ({ navigation }) => {
           autoCapitalize="none"
           label="+33-1995678"
           inputStyle={styles.inputStyle}
-        />
+        /> */}
         {/* <CustomText textStyle={styles.loginText1} label="Email" /> */}
 
-        <InputField
-          disabled
-          profile={true}
-          value={email}
-          onChangeText={(newVal) => setEmail(newVal)}
-          autoCapitalize="none"
-          label={email}
-          inputStyle={styles.inputStyle}
-        />
-        <TouchableOpacity activeOpacity={0.6} onPress={onSubmit}>
-          {/* <View style={styles.saveChangesContainer}>
-            <CustomText
-              textStyle={styles.saveChangingText}
-              label="Save Changes"
-            />
-          </View> */}
-          <CustomButton
+       
+        <CustomButton
             label={"Save Changes"}
             loading={onSubmitLoading}
             btnContainer={styles.saveChangesContainer}
             textStyle={styles.saveChangingText}
             onPress={onSubmit}
+            isSmall
           />
-        </TouchableOpacity>
         <CustomText textStyle={styles.loginText1} label="Security" />
 
         <CustomText textStyle={styles.loginText1} label="Privacy" />

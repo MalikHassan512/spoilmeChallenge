@@ -9,11 +9,11 @@ const UploadPhoto = (props) => {
   const options = {
     maxWidth: 300,
     maxHeight: 300,
-    mediaType:'photo',
-    quality:0.3,
+    mediaType:'mixed',
+    quality:0.1,
   };
   const takePhotoFromCamera = () => {
-    setImageModal(false)
+  setImageModal(false)
     setTimeout(async() => {
       const {assets:[result]} = await launchCamera(options);
       setImage(result)
@@ -27,6 +27,7 @@ const UploadPhoto = (props) => {
     setImageModal(false)
     const {assets:[result]}= await launchImageLibrary(options);
     setImage(result)
+    console.log("takePhotoFromLibrary",result)
     props.handleChange(result)
   };
   const ModalIcons = ({ source, title, onPress }) => {

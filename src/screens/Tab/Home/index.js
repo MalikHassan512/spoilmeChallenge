@@ -8,7 +8,7 @@ import {
   TextInput,
   ActivityIndicator
 } from "react-native";
-import { ScaledSheet, verticalScale } from "react-native-size-matters";
+import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
 //components
 import Logo from "components/Logo";
@@ -29,16 +29,19 @@ import moment from "moment";
 import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
 import CustomModal from "../../../components/CustomModal";
+import VideoPlayer from 'react-native-video-player'
 import colors from "../../../util/colors";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 import UploadPhoto from "components/UploadPhoto";
 import {
   uploadProfilePic,
+  uploadVideo
 } from "../../../firebase/storage/profilPic";
 import {
   createPost,
 } from "../../../firebase/firestore/posts";
+import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import RadioButtonRN from 'radio-buttons-react-native'
 const Home = () => {
   const [image, setImage] = useState("");
@@ -56,7 +59,12 @@ const Home = () => {
         type,
         title,
       }
-      data.image = await uploadProfilePic(image, userId,"posts");
+      if(image.type.includes('video')){
+        data.image = await uploadProfilePic(image, userId,"posts");
+      }else{
+        data.image = await uploadVideo(image, userId,);
+      }
+      
         await createPost(data)
       setLoading(false)
       setType("")
@@ -86,9 +94,20 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showStory, setShowStory] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [spoilTypes, setSpoilTypes] = useState([]);
   useEffect(() => {
     loadData();
+    getSpoilType()
+
   }, []);
+  const getSpoilType=() => {
+    getAllSpoilTypes()
+      .then((res) => setSpoilTypes(res))
+      .catch((e) => {
+        console.log(e);
+        alert("Error occured");
+      });
+  }
   const loadData = async () => {
     const users = await getAllOfCollection("users");
     const postData = await getAllOfCollection("posts");
@@ -101,18 +120,33 @@ const Home = () => {
        description:post.title,
        postType:post.type,
        image:post.image,
+       userData:post.userData,
+       createdAt:post.createdAt
      })
-    }else{
+    }
+    if(post.type!="Post"){
+      if(!moment(post.createdAt).fromNow.includes('day')){
       stories.push({
         id:post.id,
         description:post.title,
         postType:post.type,
         image:post.image,
+        name:post.userId == userId ? "Your Story" : post.userData?.firstName
 
       })
     }
+    }
     })
     setStories(stories)
+    posts.push({
+      id:893234,
+      description:'My Videos',
+      postType:'Post',
+      image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      dataType:'video',
+
+
+    })
     users.map((user) => {
       let dob = new Date(user?.dob?.seconds * 1000);
       let formatedDate = moment(dob).format("DD-MM-YYYY");
@@ -124,6 +158,7 @@ const Home = () => {
             postType: "BIRTHDAY",
             description: `${user?.firstName} ${user?.lastName} has their birthday today! Spoil him!`,
             name: `${user?.firstName} ${user?.lastName}`,
+            userData:user,
           });
         }
         if (user?.isHired) {
@@ -132,6 +167,8 @@ const Home = () => {
             postType: "HIRED",
             description: `${user?.firstName} ${user?.lastName} has been hired recently! Spoil him!`,
             name: `${user?.firstName} ${user?.lastName}`,
+            userData:user,
+
           });
         }
         if (user?.isEngaged) {
@@ -140,10 +177,18 @@ const Home = () => {
             postType: "ENGAGED",
             description: `${user?.firstName} ${user?.lastName} has been engaged recently! Spoil him!`,
             name: `${user?.firstName} ${user?.lastName}`,
+            userData:user,
           });
         }
       }
     });
+    posts.push({
+      id:5435435,
+      description:'My Videos',
+      postType:'Post',
+      image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      dataType:'video',
+    })
     posts.push({ postType: "MAP" });
     setPosts(posts);
     setRefreshing(false);
@@ -162,22 +207,22 @@ const Home = () => {
             resizeMode={"cover"}
           />
         </TouchableOpacity>
-        <Text style={styles.name}>{item?.title}</Text>
+        <Text style={styles.name}>{item?.name}</Text>
       </View>
     );
   };
   const renderPost = ({ item }) => {
-    console.log("item",item)
     if (item?.postType == "MAP") {
       return (
         <Post
           description={item.description}
           name={item?.name}
           postType={"MAP"}
+          spoilTypes={spoilTypes}
         />
       );
     } else {
-      return <Post postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+      return <Post spoilTypes={spoilTypes} createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
     }
   };
   const renderEmpty = ({ item }) => {
@@ -276,7 +321,9 @@ const Home = () => {
           <View style={{ flex: 1 }} />
           {image ? (
             <View>
-              <Image source={image} style={styles.image} />
+              {image.type.includes('video') ?
+              <VideoPlayer videoWidth={scale(200)} videoHeight={verticalScale(200)} video={image} />:
+              <Image source={image} style={styles.image} />}
             </View>
           ) : (
             <View />
@@ -291,7 +338,7 @@ const Home = () => {
             onPress={handleChange}
           >
             <CustomText
-              label="Upload image"
+              label="Upload"
               container={styles.uploadImageContainer}
               textStyle={styles.uploadimageText}
             />
@@ -302,13 +349,13 @@ const Home = () => {
          activeOpacity={0.6}
          onPress={onSubmit}
        >
-         {!loading ?<CustomText
-           label="Create"
+        <CustomText
+           label={loading ? <ActivityIndicator color={'white'} size="small" /> :"Create"}
            container={styles.uploadImageContainer}
            textStyle={styles.uploadimageText}
-        />:
-        <ActivityIndicator color={'white'} size="small" />
-        }
+        />
+       
+        
        </TouchableOpacity>
         }
         
@@ -464,7 +511,7 @@ const styles = ScaledSheet.create({
   },
   image: {
     width: "200@s",
-    height: "250@s",
+    height: "250@vs",
     alignSelf: "center",
     resizeMode: "cover",
   },
