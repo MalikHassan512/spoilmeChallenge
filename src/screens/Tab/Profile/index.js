@@ -4,11 +4,12 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  Image
 } from "react-native";
 import React, { useState,useEffect } from "react";
 import CustomText from "../../../components/CustomText";
-import { ScaledSheet, verticalScale } from "react-native-size-matters";
+import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import images from "../../../assets/images";
 import colors from "../../../util/colors";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -22,46 +23,48 @@ import UploadPhoto from "components/UploadPhoto";
 import Post from "components/Post";
 import { height, width } from "react-native-dimension";
 import Colors from "util/colors";
-
+import HomeHeader from 'components/HomeHeader'
 import moment from 'moment'
 import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
+import { ActivityIndicator } from "react-native-paper";
+import VideoPlayer from 'react-native-video-player';
+
 export const Profile = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({})
   const [relation, setRelation] = useState([])
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(false)
   const userId = useSelector(state=>state.user.userId);
   const contacts = useSelector((state) => state.user.contactList);
  
   
   const [image, setImage] = useState("")
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      getUser(userId)
-        .then((user) => {
-          setUser(user)
-          setImage(user.profilePic)
-        })
-        .catch((e) => {
-          // alert('An error occured.Try again');
-          console.log(e);
-        });
-    });
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
   useEffect(() => {
-    loadData()
-    getUserRelationships(userId).then((res) => {
-      setRelation(res)
-    })
-    .catch((e) => {
-      console.log("relation eorror line 54",e);
-    })
+    getAllData()
   }, [])
   
+  const getAllData =async ()=>{
+    try {
+      setLoading(true)
+
+      loadData()
+      const relation=await getUserRelationships(userId)
+      setRelation(relation)
+      const userData= await getUser(userId)
+      setUser(userData)
+      setImage(userData?.profilePic)
+      setLoading(false)
+      setRefreshing(false)
+    } catch (error) {
+      console.log('profile error',error)
+      setRefreshing(false)
+
+    }
+   
+   
+  }
   const loadData = async () => {
     const postData = await getAllOfCollection("posts")
     let posts = [];
@@ -73,35 +76,59 @@ export const Profile = ({ navigation }) => {
        postType:post.type,
        image:post.image,
        userData:post.userData,
-       createdAt:post.createdAt
-
+       createdAt:post.createdAt,
+        dataType:post.dataType,
      })
     }
     })
-    setRefreshing(false);
     setPosts(posts);
   };
+  if(loading){
+    return <View style={{marginTop:40}}> 
+    <ActivityIndicator color="black"  />
+
+    </View>
+    
+  }
   return (
+    <>
+      <HomeHeader renderFirst={<TouchableOpacity
+          onPress={() => setShowModal(true)}
+          style={styles.headTextCont}
+        >
+          <CustomText label={user?.email?.split("@")?.[0]} textStyle={styles.headerText} />
+          <View>
+            <Entypo name="chevron-down" style={styles.headerTextIcon} />
+          </View>
+        </TouchableOpacity>} />
+    
     <ScrollView  refreshControl={
       <RefreshControl refreshing={refreshing}
       onRefresh={() => {
         setRefreshing(true);
-        loadData();
+        getAllData();
       }} />
     } style={styles.mainContainer}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          onPress={() => setShowModal(true)}
-          style={styles.headTextCont}
-        >
-          <CustomText label={user.email} textStyle={styles.headerText} />
-          <View>
-            <Entypo name="chevron-down" style={styles.headerTextIcon} />
-          </View>
-        </TouchableOpacity>
-        {/* <Image source={images.menu} style={styles.headerIcon} /> */}
+      <View style={{padding:scale(20)}}>
+      <View style={styles.profileContainer}>
+            <Image style={styles.logoContainer} source={image ?{uri:image} : images.placeholder} />
+            <View style={{alignItems:'center'}}>
+              <CustomText  fontWeight={'bold'} label={relation?.length || 0} fontSize={18}  />
+              <CustomText marginTop={2}  label={'Relations'}   />
+            </View>
+            <View style={{alignItems:'center'}}>
+              <CustomText  fontWeight={'bold'} label={posts?.length || 0} fontSize={18}  />
+              <CustomText marginTop={2}  label={'Posts'}   />
+            </View>
+            <View style={{alignItems:'center'}}>
+              <CustomText  fontWeight={'bold'} label={contacts?.length || 0} fontSize={18}  />
+              <CustomText marginTop={2}  label={'Friends'}   />
+            </View>
       </View>
-      <UploadPhoto
+      <CustomText fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
+      <CustomText label={"Marketing and PR specialist"} />
+      </View>
+      {/* <UploadPhoto
           image={image}
           handleChange={(res) => setImage(res)}
           iconColor={"white"}
@@ -109,11 +136,8 @@ export const Profile = ({ navigation }) => {
           placeholder={images.placeholder}
           iconStyle={{ backgroundColor: colors.primary }}
         />
-      <CustomText label={user.firstName + " " + moment().diff(moment(user.dob), 'years')} textStyle={styles.harryText} />
-      {/* <CustomText
-        label="Marketing and PR specialist"
-        textStyle={styles.marketingText}
-      /> */}
+      <CustomText label={user?.firstName + " " + moment().diff(moment(user?.dob), 'years')} textStyle={styles.harryText} />
+      
       <View
         style={{
           flexDirection: "row",
@@ -135,7 +159,7 @@ export const Profile = ({ navigation }) => {
           <CustomText textStyle={styles.text55} label={contacts?.length || 0 } />
           <CustomText textStyle={styles.relationText} label="Contacts" />
         </TouchableOpacity>
-      </View>
+      </View> */}
       {showModal ? null : (
         <>
         
@@ -145,9 +169,22 @@ export const Profile = ({ navigation }) => {
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
-          
-            renderItem={({item}) => {
-              return <Post  createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+          numColumns={3}
+            renderItem={({item,index}) => {
+              // return <Post  createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+              return(
+                <>
+                <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index})} style={styles.imageContainer}>
+                  {item?.dataType=='video' ?
+                   <VideoPlayer video={{uri:item.image}} style={styles.image} /> :
+                   <Image style={styles.image} source={{uri:item.image}} />
+                }
+                 
+                 
+                </TouchableOpacity>
+                
+                </>
+              ) 
             }}
           />
           <View style={{height:verticalScale(40)}} />
@@ -161,6 +198,8 @@ export const Profile = ({ navigation }) => {
         />
       )}
     </ScrollView>
+    </>
+
   );
 };
 const renderEmpty = () => {
@@ -172,8 +211,13 @@ const renderEmpty = () => {
 };
 const styles = ScaledSheet.create({
   mainContainer: {
-    padding: "25@ms",
     backgroundColor: colors.white,
+  },
+  profileContainer:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    marginRight:'10@s',
   },
   headerContainer: {
     flexDirection: "row",
@@ -192,16 +236,14 @@ const styles = ScaledSheet.create({
     fontSize: width(4),
   },
   logoContainer: {
-    width: "100@s",
-    height: "100@s",
+    width: "70@s",
+    height: "70@s",
     borderRadius: "130@s",
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "white",
-    marginVertical: "5@vs",
     marginBottom: "10@vs",
-    justifyContent: "center",
-    alignItems: "center",
+   
   },
   headTextCont: {
     flexDirection: "row",
@@ -279,4 +321,13 @@ const styles = ScaledSheet.create({
     fontSize: "16@ms",
     color: colors.white,
   },
+  image:{
+    width:width(30),
+    height:'100@s',
+    borderRadius:5,
+  },
+  imageContainer:{
+    marginTop:'5@vs',
+    marginHorizontal:width(1.3)
+  }
 });

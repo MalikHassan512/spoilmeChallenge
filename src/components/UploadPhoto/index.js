@@ -10,7 +10,8 @@ const UploadPhoto = (props) => {
     maxWidth: 300,
     maxHeight: 300,
     mediaType:'mixed',
-    quality:0.1,
+    quality:0.3,
+    ...props.options
   };
   const takePhotoFromCamera = () => {
   setImageModal(false)

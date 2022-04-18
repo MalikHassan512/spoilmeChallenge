@@ -43,6 +43,8 @@ import {
 } from "../../../firebase/firestore/posts";
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import RadioButtonRN from 'radio-buttons-react-native'
+import HomeHeader from 'components/HomeHeader';
+import {uploadImage} from '../../../firebase/HelperFunctions/HelperFunctions'
 const Home = () => {
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
@@ -58,12 +60,14 @@ const Home = () => {
         userData,
         type,
         title,
+        dataType: image.type.includes('video') ?'video' : 'image',
       }
-      if(image.type.includes('video')){
-        data.image = await uploadProfilePic(image, userId,"posts");
-      }else{
-        data.image = await uploadVideo(image, userId,);
-      }
+      data.image=await uploadImage(image.uri,userId)
+      // if(!image.type.includes('video')){
+      //   data.image = await uploadProfilePic(image, userId,"posts");
+      // }else{
+      //   data.image = await uploadVideo(image, userId,);
+      // }
       
         await createPost(data)
       setLoading(false)
@@ -121,7 +125,8 @@ const Home = () => {
        postType:post.type,
        image:post.image,
        userData:post.userData,
-       createdAt:post.createdAt
+       createdAt:post.createdAt,
+       dataType:post.dataType,
      })
     }
     if(post.type!="Post"){
@@ -138,15 +143,15 @@ const Home = () => {
     }
     })
     setStories(stories)
-    posts.push({
-      id:893234,
-      description:'My Videos',
-      postType:'Post',
-      image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      dataType:'video',
+    // posts.push({
+    //   id:893234,
+    //   description:'My Videos',
+    //   postType:'Post',
+    //   image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    //   dataType:'video',
 
 
-    })
+    // })
     users.map((user) => {
       let dob = new Date(user?.dob?.seconds * 1000);
       let formatedDate = moment(dob).format("DD-MM-YYYY");
@@ -182,13 +187,13 @@ const Home = () => {
         }
       }
     });
-    posts.push({
-      id:5435435,
-      description:'My Videos',
-      postType:'Post',
-      image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      dataType:'video',
-    })
+    // posts.push({
+    //   id:5435435,
+    //   description:'My Videos',
+    //   postType:'Post',
+    //   image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    //   dataType:'video',
+    // })
     posts.push({ postType: "MAP" });
     setPosts(posts);
     setRefreshing(false);
@@ -235,33 +240,7 @@ const Home = () => {
   return (
     <ScreenWrapper>
       <View style={{ flex: 1 }}>
-        <View style={styles.headerContainer}>
-          <Logo />
-          <View style={styles.headerIconContainer}>
-            <AntDesign
-              color={Colors.darkGrey}
-              name="heart"
-              style={styles.icon}
-            />
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => setVisible(!visible)}
-            >
-              <AntDesign
-                color={Colors.darkGrey}
-                name="pluscircle"
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-
-            <FontAwesome
-              color={Colors.darkGrey}
-              name="comment"
-              style={styles.icon}
-            />
-          </View>
-        </View>
-
+        <HomeHeader onPlusCircle={() => setVisible(!visible)}  />
         <FlatList
           horizontal
           data={stories}
@@ -270,8 +249,9 @@ const Home = () => {
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
         />
+        
         <FlatList
-          data={posts}
+          data={posts.sort((a,b)=>new Date(a.createdAt) - new Date(b.createdAt))}
           style={styles.flatlist2}
           contentContainerStyle={{ paddingBottom: height(2) }}
           renderItem={renderPost}

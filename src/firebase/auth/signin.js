@@ -21,8 +21,11 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
   // Create a Firebase credential with the AccessToken
   const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
   const userCredential = await auth().signInWithCredential(facebookCredential);
-  console.log("userCredential",userCredential)
-  return userCredential.user.uid;
+  
+  return {
+   userId: userCredential.user.uid,
+   userData:userCredential.additionalUserInfo.profile,
+  }
 }
 
 
@@ -35,12 +38,15 @@ export const signinWithEmail = async (email, password) => {
 };
 
 export const signinWithGoogle = async () => {
-  await GoogleSignin.configure({
+  GoogleSignin.configure({
     webClientId:
       '402944316207-7l9hmjdeoac3t4n5pbfgfih23p7smsop.apps.googleusercontent.com',
   });
-  const {idToken} = await GoogleSignin.signIn();
+  const {idToken,user} = await GoogleSignin.signIn();
   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
   const userCredential = await auth().signInWithCredential(googleCredential);
-  return userCredential.user.uid;
+  return {
+   userId: userCredential.user.uid,
+   userData: user,
+  }
 };

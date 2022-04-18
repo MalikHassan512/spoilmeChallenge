@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer,DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Signup } from "./screens/Auth/Signup";
 import { Signin } from "./screens/Auth/Signin";
@@ -28,6 +28,13 @@ const Main = () => {
   const Stack = createNativeStackNavigator();
   const [loading, setLoading] = useState(true);
   const appState = useRef(AppState.currentState);
+  const theme= {
+    ...DefaultTheme,
+    colors:{
+      ...DefaultTheme.colors,
+      background:'#fff'
+    }
+  }
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (
@@ -104,7 +111,7 @@ const Main = () => {
   return loading ? (
     <Loading />
   ) : (
-    <NavigationContainer>
+    <NavigationContainer theme={theme}>
       {!userId ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Signup" component={Signup} />

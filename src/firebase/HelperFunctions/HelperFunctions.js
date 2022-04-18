@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import storage from '@react-native-firebase/storage'
-
+import uuid from 'react-native-uuid'
 export async function saveData(collection, doc, jsonObject) {
     firestore()
         .collection(collection)
@@ -59,7 +59,7 @@ export async function uploadImage(uri, path) {
     try {
         const response = await fetch(uri);
         const blob = await response.blob();
-        const ref = storage().ref(path);
+        const ref = storage().ref(path+uuid.v4());
         const task = ref.put(blob);
         return new Promise((resolve, reject) => {
             task.on(

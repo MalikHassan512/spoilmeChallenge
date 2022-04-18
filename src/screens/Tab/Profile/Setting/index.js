@@ -67,11 +67,10 @@ const Setting = ({ navigation }) => {
   const showDatePicker = () => {
     showMode("date");
   };
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
+  useEffect(() => {
       getUser(userId)
         .then((user) => {
-          // console.log("user",user)
+          console.log("user",user)
           setFirstName(user?.firstName);
           setLastName(user?.lastName);
           setEmail(user?.email);
@@ -80,14 +79,10 @@ const Setting = ({ navigation }) => {
           setInitialLoading(false);
         })
         .catch((e) => {
-          // alert('An error occured.Try again');
           console.log("----error", e);
         });
-    });
 
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
   const onSubmit = async () => {
     setOnSubmitLoading(true);
 

@@ -64,7 +64,18 @@ export const Signin = ({ navigation }) => {
 
   const onSigninWithGoogle = async () => {
     try {
-      const userId = await signinWithGoogle();
+      const {userId,userData} = await signinWithGoogle();
+      await changeUserData({
+        id:userId,
+        isActive:true,
+        lastActive:firestore.Timestamp.now(),
+        location,
+        email:userData.email,
+        firstName:userData.givenName,
+        lastName:userData.familyName,
+        profilePic:userData.photo
+      })
+
       dispatch(changeUser(userId));
     } catch (error) {
       console.log("userId", error);
@@ -81,8 +92,17 @@ export const Signin = ({ navigation }) => {
   };
   const onSigninWithFacebook = async ()=>{
     try {
-      const userId = await onFacebookButtonPress();
-      console.log("userId",userId)
+      const {userId,userData} = await onFacebookButtonPress();
+      await changeUserData({
+        id:userId,
+        isActive:true,
+        lastActive:firestore.Timestamp.now(),
+        location,
+        email:userData.email,
+        firstName:userData.first_name,
+        lastName:userData.last_name,
+        profilePic:userData.picture.data.url
+      })
       dispatch(changeUser(userId));
     } catch (error) {
       console.log("fb error",error)

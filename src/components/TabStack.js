@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Platform } from "react-native";
 import Setting from "../screens/Tab/Profile/Setting";
+import Posts from "../screens/Tab/Profile/Posts";
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 export function TabStack() {
@@ -80,5 +81,6 @@ const ProfileStack = () => (
     <Stack.Screen name="Contacts" component={Contacts} />
     <Stack.Screen name="Relations" component={Relations} />
     <Stack.Screen name="Setting" component={Setting}/>
+    <Stack.Screen name="Posts" component={Posts}/>
   </Stack.Navigator>
 );
