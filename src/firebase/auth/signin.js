@@ -12,8 +12,6 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
   // Once signed in, get the users AccesToken
   const data = await AccessToken.getCurrentAccessToken();
-  console.log("data",data)
-
   if (!data) {
     throw 'Something went wrong obtaining access token';
   }

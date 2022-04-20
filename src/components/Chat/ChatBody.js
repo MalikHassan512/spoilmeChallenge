@@ -10,6 +10,7 @@ import moment from "moment";
 import ChatButton from "./ChatButton";
 import CustomText from "../CustomText";
 import colors from "../../util/colors";
+import {chatFormat} from "../../util/helper";
 export const ChatBody = ({ userId, relatedUserId, relationId }) => {
   const [messages, setMessages] = useState([]);
   useEffect(() => {
@@ -81,9 +82,9 @@ export const ChatBody = ({ userId, relatedUserId, relationId }) => {
           </View>
           <MyText
             textStyle={isUser && { alignSelf: "flex-end" }}
-            text={`${isUser ? "Sent on" : "Received on"}  ${moment(
-              message.date
-            ).format("M.D.YY hh:MM")}`}
+            text={`${isUser ? "Sent on" : "Received on"}  ${
+              chatFormat(message.date,"M.D.YY hh:MM")
+              }`}
           />
           <LoadingImage
             source={{ uri: message?.spoil?.image }}

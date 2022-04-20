@@ -16,7 +16,7 @@ export const addUserData = async (
   linkedin,
 
 ) => {
-  await firestore().doc(`users/${id}`).set({
+  const user={
     id,
     firstName,
     lastName,
@@ -35,7 +35,12 @@ export const addUserData = async (
     isActive:true,
     isScrapedfb: false,
     isScrapedli: false,
-  });
+  }
+  
+   await firestore().collection('users')
+   .doc(id)
+   .set(user, { merge: true })
+   return user;
 };
 
 export const getUser = async userId => {
@@ -98,7 +103,7 @@ export const changeUserData = async (user) => {
   // console.log(user);
   try {
   await firestore()
-  .collection(user)
+  .collection('users')
         .doc(user.id)
         .set(user, { merge: true })
   } catch (error) {

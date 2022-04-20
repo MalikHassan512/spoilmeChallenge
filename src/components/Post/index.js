@@ -8,7 +8,9 @@ import { LoadingImage } from "../Common/LoadingImage";
 import mapDummy from '../../assets/images/mapDummy.png'
 import * as Progress from "react-native-progress";
 import colors from "../../util/colors";
+import {fromNow} from "../../util/helper";
 import InViewPort from "@coffeebeanslabs/react-native-inviewport";
+import { getUser } from "../../firebase/firestore/users";
 
 import VideoPlayer from 'react-native-video-player';
 import moment from 'moment';
@@ -19,6 +21,7 @@ import {
   } from "../../firebase/firestore/relationships";
 import { sendMessage } from "../../firebase/firestore/chats";
 import { useSelector } from 'react-redux';
+import CustomText from '../CustomText';
 
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
@@ -99,10 +102,11 @@ const Post = ({
                 <Image source={userData?.profilePic?{uri:userData?.profilePic}:defualtImage} style={styles.avatar} />
                 <View style={styles.info}>
                     <Text style={styles.name}>{(userData?.firstName || "Name")+" "+(userData?.lastName|| "")}</Text>
-                    <Text style={styles.time}>{createdAt ? moment(createdAt).fromNow():moment().fromNow()}</Text>
+                    <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
             </View>
             <View style={styles.post}>
+              <CustomText textStyle={styles.description} label={description}  />
                    {postType == 'Post' ?
                         dataType== 'video' ?
                         <InViewPort onChange={(visible)=>visible?videoRef?.current?.resume(true):videoRef?.current?.pause(true) }>
@@ -113,7 +117,9 @@ const Post = ({
                     <View>
                         <Image source={mapDummy} style={styles.mapImage} />
                     </View>}
-                        <FlatList
+                       {userId !=userData?.id ?
+                       <>
+                       <FlatList
                             horizontal
                             data={spoilTypes}
                             style={[styles.flatlist,{alignSelf:'center',marginTop:20}]}
@@ -125,6 +131,7 @@ const Post = ({
                             style={styles.postBtn}>
                             <Text style={styles.btnText}>Find a Spoil</Text>
                         </TouchableOpacity>
+                        </>:null}
             </View>
         </View>
     );

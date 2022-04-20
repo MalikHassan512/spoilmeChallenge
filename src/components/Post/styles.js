@@ -53,7 +53,8 @@ const styles = ScaledSheet.create({
   },
   description: {
       color: Colors.black,
-      marginStart: width(3)
+      marginStart: width(3),
+      padding:width(2),
   },
   postBtn: {
       width: '95%',

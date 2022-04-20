@@ -26,6 +26,7 @@ import Colors from "util/colors";
 import HomeHeader from 'components/HomeHeader'
 import moment from 'moment'
 import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
+import { getPosts } from "../../../firebase/firestore/posts";
 import { ActivityIndicator } from "react-native-paper";
 import VideoPlayer from 'react-native-video-player';
 
@@ -66,7 +67,7 @@ export const Profile = ({ navigation }) => {
    
   }
   const loadData = async () => {
-    const postData = await getAllOfCollection("posts")
+    const postData = await getPosts()
     let posts = [];
     postData.map(post=>{
       if(post.type=="Post" && post.userId == userId){

@@ -24,7 +24,7 @@ import { AppState, Platform, PermissionsAndroid } from "react-native";
 
 const Main = () => {
   const dispatch = useDispatch();
-  const userId = useSelector(selectUser);
+  const userId = useSelector(state=>state.user.userId);
   const Stack = createNativeStackNavigator();
   const [loading, setLoading] = useState(true);
   const appState = useRef(AppState.currentState);
@@ -47,7 +47,7 @@ const Main = () => {
       appState.current = nextAppState;
       // console.log("AppState", appState.current);
       if (appState.current == "active") {
-        console.log("user is active");
+        console.log("user is active",userId);
         if (userId)
           changeUserData({
             id: userId,
@@ -62,7 +62,7 @@ const Main = () => {
             lastActive: firestore.Timestamp.now(),
           });
 
-        console.log("user is inactive");
+        console.log("user is inactive", userId);
       }
     });
 

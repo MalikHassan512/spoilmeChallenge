@@ -27,13 +27,14 @@ import colors from "util/colors";
 import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from "../../util/getLocation";
+import {changeUser,setUser} from '../../redux/features/userSlice'
 export const Signup = ({ navigation }) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const genderRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-
+  const dispatch =useDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -96,9 +97,10 @@ export const Signup = ({ navigation }) => {
         twitter,
         linkedin,
       };
-      const userId = await signupWithEmail(tempUser);
-      console.log("userId", userId);
-      // dispatch(changeUser(userId));
+      const userData = await signupWithEmail(tempUser);
+      dispatch(changeUser(userData.id));
+      dispatch(setUser(userData));
+
     } catch (e) {
       console.log("error line 154 handlesubmit", e);
       switch (e.code) {

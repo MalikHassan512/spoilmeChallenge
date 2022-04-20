@@ -20,8 +20,7 @@ import {
 import colors from "../../util/colors";
 import SimpleToast from "react-native-simple-toast";
 import CustomText from "../CustomText";
-import moment from "moment";
-
+import {fromNow} from '../../util/helper'
 export default function MapModal({
   userId,
   user,
@@ -95,7 +94,7 @@ export default function MapModal({
             <MyHeading
               text={`${relatedUser.firstName} ${relatedUser.lastName}`}
             />
-            <CustomText marginTop={3} color={"#A1A1A1"} label={relatedUser?.isActive ? "Active now" : `Last active ${moment(relatedUser?.lastActive || new Date()).fromNow()}`}  />
+            <CustomText marginTop={3} color={"#A1A1A1"} label={relatedUser?.isActive ? "Active now" : `Last active ${ fromNow(relatedUser?.lastActive || new Date())}`}  />
             </View>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>

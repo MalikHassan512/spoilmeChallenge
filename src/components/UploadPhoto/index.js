@@ -9,7 +9,7 @@ const UploadPhoto = (props) => {
   const options = {
     maxWidth: 300,
     maxHeight: 300,
-    mediaType:'mixed',
+    mediaType:'photo',
     quality:0.3,
     ...props.options
   };

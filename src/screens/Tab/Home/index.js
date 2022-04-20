@@ -34,12 +34,10 @@ import colors from "../../../util/colors";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 import UploadPhoto from "components/UploadPhoto";
-import {
-  uploadProfilePic,
-  uploadVideo
-} from "../../../firebase/storage/profilPic";
+import {fromNow} from '../../../util/helper'
 import {
   createPost,
+  getPosts
 } from "../../../firebase/firestore/posts";
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import RadioButtonRN from 'radio-buttons-react-native'
@@ -51,6 +49,7 @@ const Home = () => {
   const [type, setType] = useState("");
   const userId = useSelector((state) => state.user.userId);
   const [loading, setLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false)
   const onSubmit = async()=>{
     try {
       setLoading(true)
@@ -70,6 +69,7 @@ const Home = () => {
       // }
       
         await createPost(data)
+        loadData()
       setLoading(false)
       setType("")
       setTitle("")
@@ -99,6 +99,7 @@ const Home = () => {
   const [showStory, setShowStory] = useState(false);
   const [visible, setVisible] = useState(false);
   const [spoilTypes, setSpoilTypes] = useState([]);
+
   useEffect(() => {
     loadData();
     getSpoilType()
@@ -113,8 +114,9 @@ const Home = () => {
       });
   }
   const loadData = async () => {
+    setPageLoading(true)
     const users = await getAllOfCollection("users");
-    const postData = await getAllOfCollection("posts");
+    const postData = await getPosts();
     let posts = [];
     let stories = [];
     postData.map(post=>{
@@ -130,7 +132,7 @@ const Home = () => {
      })
     }
     if(post.type!="Post"){
-      if(!moment(post.createdAt).fromNow().includes('day')){
+      if(!fromNow(post.createdAt).includes('day')){
       stories.push({
         id:post.id,
         description:post.title,
@@ -187,16 +189,11 @@ const Home = () => {
         }
       }
     });
-    // posts.push({
-    //   id:5435435,
-    //   description:'My Videos',
-    //   postType:'Post',
-    //   image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    //   dataType:'video',
-    // })
-    posts.push({ postType: "MAP" });
+   
     setPosts(posts);
     setRefreshing(false);
+    setPageLoading(false)
+
   };
   const renderStoryAvatar = ({ item }) => {
     return (
@@ -233,7 +230,12 @@ const Home = () => {
   const renderEmpty = ({ item }) => {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyText}>No posts available</Text>
+        {pageLoading ?
+        
+      <ActivityIndicator color={'black'}  />:
+      <Text style={styles.emptyText}>No posts available</Text>
+
+      }
       </View>
     );
   };
@@ -241,15 +243,15 @@ const Home = () => {
     <ScreenWrapper>
       <View style={{ flex: 1 }}>
         <HomeHeader onPlusCircle={() => setVisible(!visible)}  />
-        <FlatList
+        {stories.length>0 ?<FlatList
           horizontal
           data={stories}
           style={styles.flatlist}
           renderItem={renderStoryAvatar}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
-        />
-        
+        />:null
+        }
         <FlatList
           data={posts.sort((a,b)=>new Date(a.createdAt) - new Date(b.createdAt))}
           style={styles.flatlist2}
@@ -483,11 +485,13 @@ const styles = ScaledSheet.create({
     borderRadius: "25@s",
     width: "45%",
     alignItems: "center",
+    justifyContent:'center',
     marginVertical: "10@s",
   },
   uploadimageText: {
     color: colors.white,
     fontSize: "12@ms",
+    alignSelf:'center'
   },
   image: {
     width: "200@s",
