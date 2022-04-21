@@ -154,23 +154,43 @@ export const Signin = ({ navigation }) => {
           label="Or sign in with"
           textStyle={styles.orSignInWithText}
         />
-        <View style={styles.googleBtnContainer}>
+         <Button theme={{
+           roundness:10,
+           colors:{
+             primary:'#000'
+           }
+         }}
+         labelStyle={{paddingVertical:5,}}
+         style={{marginBottom:10}}
+          uppercase={false} icon={()=><Image style={{width:20,height:20,resizeMode:'contain'}} source={require('../../assets/images/fb.png')} />} mode="outlined"  onPress={onSigninWithFacebook}>
+            Sign in with Facebook
+            </Button>
+            <Button theme={{
+           roundness:10,
+           colors:{
+             primary:'#000'
+           }
+         }}
+         labelStyle={{paddingVertical:5,paddingHorizontal:8}}
+         style={{marginBottom:10}}
+          uppercase={false} icon={()=><Image style={{width:20,height:20,resizeMode:'contain'}} source={{uri:'https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png'}} />} mode="outlined"   onPress={onSigninWithGoogle}>
+            Sign in with Google
+            </Button>
+        {/* <View style={styles.googleBtnContainer}>
           <GoogleSigninButton
             style={styles.googleBtn}
             onPress={onSigninWithGoogle}
             size={GoogleSigninButton.Size.Wide}
           />
-        </View>
-        <View style={styles.googleBtnContainer}>
+        </View> */}
+        {/* <View style={styles.googleBtnContainer}> */}
           {/* <GoogleSigninButton
             style={styles.googleBtn}
             onPress={onSigninWithFacebook}
             size={GoogleSigninButton.Size.Wide}
           /> */}
-          <Button  onPress={onSigninWithFacebook}>
-            Facebook Login
-            </Button>
-        </View>
+         
+        {/* </View> */}
         <View style={styles.signUpTextContainer}>
           <CustomText
             textStyle={styles.dontHaveText}

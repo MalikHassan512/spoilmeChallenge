@@ -14,7 +14,7 @@ export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
     date: firestore.Timestamp.now(),
     read: false,
   }
-  await firestore().doc(`chats/${id}`).set(message);
+  await firestore().doc(`chats/${id}`).set(message,{merge:true});
   addSpoilData(spoil.name, spoil.image, from, to,id);
   return {id,spoilStatus,text,from:from.id,to:to.id}
 };

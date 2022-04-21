@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useRef} from "react";
 import { Image } from "react-native";
 import { Profile } from "../screens/Tab/Profile";
 import Relations from "../screens/Tab/Profile/Relations";
@@ -9,12 +9,55 @@ import Home from "../screens/Tab/Home";
 import { Spoil } from "../screens/Tab/Spoil";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Platform } from "react-native";
 import Setting from "../screens/Tab/Profile/Setting";
 import Posts from "../screens/Tab/Profile/Posts";
+import {useSelector} from 'react-redux'
+import firestore from "@react-native-firebase/firestore";
+import { changeUserData } from "../firebase/firestore/users";
+import { AppState,  } from "react-native";
+
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 export function TabStack() {
+const userId= useSelector(state=>state.user.userId)
+const appState = useRef(AppState.currentState);
+
+useEffect(() => {
+  const subscription = AppState.addEventListener("change", (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+    }
+
+    appState.current = nextAppState;
+    // console.log("AppState", appState.current);
+    if (appState.current == "active") {
+      console.log("user is active",userId);
+      if (userId)
+        changeUserData({
+          id: userId,
+          isActive: true,
+          lastActive: firestore.Timestamp.now(),
+        });
+    } else {
+      if (userId)
+        changeUserData({
+          id: userId,
+          isActive: false,
+          lastActive: firestore.Timestamp.now(),
+        });
+
+      console.log("user is inactive", userId);
+    }
+  });
+
+  return () => {
+    subscription.remove();
+  };
+}, []);
+
   return (
     <Tab.Navigator
       tabBarPosition={"bottom"}

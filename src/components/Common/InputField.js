@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { TextInput, Text } from "react-native-paper";
+import { TextInput, Surface } from "react-native-paper";
 import { moderateScale, ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import colors from "util/colors";

@@ -180,14 +180,14 @@ export const Signup = ({ navigation }) => {
           style={{
             borderColor: "#dbdbdb",
             marginBottom: scale(10),
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.22,
-            shadowRadius: 2.22,
-            elevation: 1,
+            // shadowColor: "#000",
+            // shadowOffset: {
+            //   width: 0,
+            //   height: 1,
+            // },
+            // shadowOpacity: 0.22,
+            // shadowRadius: 2.22,
+            // elevation: 1,
           }}
         />
         {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
@@ -350,14 +350,14 @@ const styles = ScaledSheet.create({
     marginTop: "3@s",
     justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.22,
+    // shadowRadius: 2.22,
 
-    elevation: 1,
+    // elevation: 1,
   },
 });

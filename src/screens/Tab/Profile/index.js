@@ -42,9 +42,19 @@ export const Profile = ({ navigation }) => {
  
   
   const [image, setImage] = useState("")
-  useEffect(() => {
-    getAllData()
-  }, [])
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener(
+      "focus",
+      () => {
+        getAllData()
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+      },
+      [navigation]
+    );
+   
+  });
+ 
   
   const getAllData =async ()=>{
     try {
@@ -61,6 +71,8 @@ export const Profile = ({ navigation }) => {
     } catch (error) {
       console.log('profile error',error)
       setRefreshing(false)
+      setLoading(false)
+
 
     }
    

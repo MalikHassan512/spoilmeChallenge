@@ -11,7 +11,7 @@ export const addSpoilData = async (name, image, from, to,relationId) => {
     to,
     date: firestore.Timestamp.now(),
     relationId
-  });
+  },{merge:true});
 };
 
 export const getSpoils = (userId, setSpoils) => {

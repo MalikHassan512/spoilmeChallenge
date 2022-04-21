@@ -17,7 +17,7 @@ export const createRelationship = async (
     lastMessage,
     date: firestore.Timestamp.now(),
     LastMessage:messages
-  });
+  },{merge:true});
 };
 
 export const getUserRelationships = async (userId) => {
