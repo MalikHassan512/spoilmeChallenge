@@ -29,7 +29,7 @@ import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunc
 import { getPosts } from "../../../firebase/firestore/posts";
 import { ActivityIndicator } from "react-native-paper";
 import VideoPlayer from 'react-native-video-player';
-
+import CreatePostModal from '../Molecules/CreatePostModal'
 export const Profile = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({})
@@ -39,7 +39,7 @@ export const Profile = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const userId = useSelector(state=>state.user.userId);
   const contacts = useSelector((state) => state.user.contactList);
- 
+ const [postModal, setPostModal] = useState(false)
   
   const [image, setImage] = useState("")
   React.useEffect(() => {
@@ -105,7 +105,7 @@ export const Profile = ({ navigation }) => {
   }
   return (
     <>
-      <HomeHeader renderFirst={<TouchableOpacity
+      <HomeHeader onPlusCircle={()=>setPostModal(true)} renderFirst={<TouchableOpacity
           onPress={() => setShowModal(true)}
           style={styles.headTextCont}
         >
@@ -114,7 +114,7 @@ export const Profile = ({ navigation }) => {
             <Entypo name="chevron-down" style={styles.headerTextIcon} />
           </View>
         </TouchableOpacity>} />
-    
+    <CreatePostModal visible={postModal} setVisible={setPostModal} loadData={loadData} />
     <ScrollView  refreshControl={
       <RefreshControl refreshing={refreshing}
       onRefresh={() => {

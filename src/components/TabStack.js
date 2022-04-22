@@ -105,6 +105,7 @@ useEffect(() => {
         tabBarActiveTintColor: "#C71F1E",
         tabBarInactiveTintColor: "#878787",
       })}
+      initialRouteName="Home"
     >
       <Tab.Screen name="Spoil" component={Spoil} />
       <Tab.Screen name="Relationship" component={Relationship} />

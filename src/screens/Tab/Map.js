@@ -14,11 +14,12 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/features/userSlice";
 import { getUser, getAllUsers } from "../../firebase/firestore/users";
 import { LoadingImage } from "../../components/Common/LoadingImage";
-import MapHeader from "../../components/Map/MapHeader";
 import MapModal from "../../components/Map/MapModal";
-import { MyText } from "../../components/Common/MyText";
 import Header from "../../components/Header";
 import SimpleToast from "react-native-simple-toast";
+import requestLocationPermission  from '../../util/getLocation'
+import { changeUserData } from "../../firebase/firestore/users";
+
 const { width, height } = Dimensions.get("window");
 
 const ASPECT_RATIO = width / height;
@@ -39,26 +40,50 @@ export const Map = ({ navigation }) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getUser(userId).then((user) => {
+      getUser(userId).then(async (user) => {
         if (user) {
           setUser(user);
+            if(user?.location?.coords){
+              setRegion({
+                latitude: user?.location?.coords?.latitude ||  31.3914008,
+                longitude: user?.location.coords?.longitude || 32.8377671,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              });
+            }else{
+            const permission = await requestLocationPermission(async(location)=>{
+              setRegion({
+                latitude:location?.coords?.latitude ||  31.3914008,
+                longitude:location.coords?.longitude || 32.8377671,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              });
+             await changeUserData({
+                id: userId,
+                location: location,
+              });
+              })
+              if(!permission){
+                setRegion({
+                  latitude:  31.3914008,
+                  longitude: 32.8377671,
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                });
+              }
+            }
+          getAllUsers().then((users) => setRelatedUsers(users));
+        } else {
+
           setRegion({
-            latitude: user.location.coords.latitude,
-            longitude: user.location.coords.longitude,
+            latitude:31.3914008,
+            longitude: 32.8377671,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
-          });
-        } else {
-          setRegion({
-            latitude: 31.3914008,
-            longitude: 32.8377671,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
           });
         }
       });
 
-      getAllUsers().then((users) => setRelatedUsers(users));
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -84,25 +109,16 @@ export const Map = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        searchedUser={searchedUser}
-        searchText={searchText}
-        setSearchText={setSearchText}
-        sImgContainerStyle={styles.searchIcon}
-        sImgPath={require("../../assets/images/search.png")}
-        containerStyle={styles.headerContainer}
-      />
-      {/* <View style={[{ alignItems: "center", padding: 20 }]}>
-        <Image source={require("../../assets/images/bar_left.png")} />
-        <Image
-          style={{ width: 125, height: 31 }}
-          source={require("../../assets/images/logo.png")}
+      {(region && relatedUsers) ? (
+        <>
+          <Header
+          searchedUser={searchedUser}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          sImgContainerStyle={styles.searchIcon}
+          sImgPath={require("../../assets/images/search.png")}
+          containerStyle={styles.headerContainer}
         />
-        <TouchableOpacity style={styles.searchButton}>
-          <Image source={require("../../assets/images/search.png")} />
-        </TouchableOpacity>
-      </View> */}
-      {region && relatedUsers && (
         <MapView
           style={{ width: "100%", height: "100%" }}
           region={region}
@@ -151,7 +167,13 @@ export const Map = ({ navigation }) => {
             );
           })}
         </MapView>
-      )}
+        </>
+      ):
+          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+      <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
+
+          </View>
+      }
       {selectedRelatedUser && (
         <MapModal
           userId={userId}
@@ -190,5 +212,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  emptyText: {
+    color: '#000',
+    fontWeight: "bold",
+    fontSize: 22,
+    paddingHorizontal:20,
+    textAlign:'center'
   },
 });

@@ -1,15 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
   View,
-  StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
   Image,
-  PermissionsAndroid,
 } from "react-native";
 import { moderateScale, scale, ScaledSheet } from "react-native-size-matters";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -17,7 +10,6 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import InputField from "../../components/Common/InputField";
 import CustomButton from "../../components/Common/CustomButton";
 import CustomText from "../../components/Common/CustomText";
-import LogoButton from "../../components/Common/LogoButton";
 import images from "../../assets/images";
 import { useDispatch } from "react-redux";
 import { signupWithEmail } from "../../firebase/auth/signup";
@@ -28,6 +20,8 @@ import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from "../../util/getLocation";
 import {changeUser,setUser} from '../../redux/features/userSlice'
+import Geocoder from 'react-native-geocoding';
+Geocoder.init("AIzaSyA8Ac4lZjmu55x5PIMiDuBGHedpGm8GCq8");
 export const Signup = ({ navigation }) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
@@ -49,7 +43,7 @@ export const Signup = ({ navigation }) => {
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
+  const [showAddressInput, setShowAddressInput] = useState(false)
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -70,12 +64,29 @@ export const Signup = ({ navigation }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    requestLocationPermission(setLocation);
+    (async function() {
+     const permission= await requestLocationPermission(setLocation);
+      if(!permission){
+        setShowAddressInput(true)
+      }
+     
+    })()
+    
   }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
     setError({});
+    if(showAddressInput){
+      Geocoder.from(location)
+      .then(json => {
+        var location = json.results[0].geometry.location;
+        console.log(location);
+      })
+      .catch(error => console.warn(error));
+    }
+    
+
     if (password.length < 8) {
       setError({
         password: "Password should be atleast 8 characters long",
@@ -171,7 +182,7 @@ export const Signup = ({ navigation }) => {
           setOpen={setOpen}
           setValue={setGender}
           setItems={setItems}
-          placeholder="Gender"
+          placeholder="Gender *"
           placeholderStyle={{ color: "grey" }}
           onChangeValue={() => emailRef.current.focus()}
           dropDownContainerStyle={{
@@ -228,6 +239,13 @@ export const Signup = ({ navigation }) => {
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
+          <InputField
+            label="Address"
+            inputStyle={[styles.inputStyle,]}
+            value={location}
+            onChangeText={(newVal) => setLocation(newVal)}
+            profile
+          />
         {/* <LogoButton
           onChangeText={setFb}
           value={fb}
@@ -257,7 +275,6 @@ export const Signup = ({ navigation }) => {
             !gender ||
             !email ||
             !password ||
-            !location ||
             !image?.uri
           }
           loading={loading}

@@ -5,18 +5,10 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  TextInput,
   ActivityIndicator
 } from "react-native";
 import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
-//components
-import Logo from "components/Logo";
-//icons
-import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-//Molecules
 import Colors from "util/colors";
 import CustomText from "../../../components/CustomText";
 import defualtImage from "../../../assets/images/defaultImage.jpg";
@@ -24,73 +16,23 @@ import { height, width } from "react-native-dimension";
 import Post from "../../../components/Post";
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
-import { getUser } from "../../../firebase/firestore/users";
 import moment from "moment";
 import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
-import CustomModal from "../../../components/CustomModal";
-import VideoPlayer from 'react-native-video-player'
 import colors from "../../../util/colors";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
-import UploadPhoto from "components/UploadPhoto";
 import {fromNow} from '../../../util/helper'
 import {
-  createPost,
   getPosts
 } from "../../../firebase/firestore/posts";
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
-import RadioButtonRN from 'radio-buttons-react-native'
+import CreatePostModal from '../Molecules/CreatePostModal'
 import HomeHeader from 'components/HomeHeader';
-import {uploadImage} from '../../../firebase/HelperFunctions/HelperFunctions'
 const Home = () => {
-  const [image, setImage] = useState("");
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("");
-  const userId = useSelector((state) => state.user.userId);
-  const [loading, setLoading] = useState(false)
-  const [pageLoading, setPageLoading] = useState(false)
-  const onSubmit = async()=>{
-    try {
-      setLoading(true)
-      const userData= await getUser(userId)
-      const data={
-        userId,
-        userData,
-        type,
-        title,
-        dataType: image.type.includes('video') ?'video' : 'image',
-      }
-      data.image=await uploadImage(image.uri,userId)
-      // if(!image.type.includes('video')){
-      //   data.image = await uploadProfilePic(image, userId,"posts");
-      // }else{
-      //   data.image = await uploadVideo(image, userId,);
-      // }
-      
-        await createPost(data)
-        loadData()
-      setLoading(false)
-      setType("")
-      setTitle("")
-      setImage("")
-      setVisible(false)
-
-    } catch (error) {
-      console.log("error line 63 onSubmit",error)
-      setLoading(false)
-      setVisible(false)
-    }
   
-  }
-  const data = [
-    {
-      label: "Story",
-    },
-    {
-      label: "Post",
-    },
-  ];
+  const userId = useSelector((state) => state.user.userId);
+  const [pageLoading, setPageLoading] = useState(false)
+  
 
   const [stories,setStories] = useState([]);
   const [storyImages, setStoryImages] = useState([]);
@@ -198,6 +140,7 @@ const Home = () => {
   const renderStoryAvatar = ({ item }) => {
     return (
       <View style={styles.storyContainer}>
+        <CreatePostModal visible={visible} setVisible={setVisible} loadData={loadData} />
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() =>{setStoryImages([{uri:item.image}]); setShowStory(true)}}
@@ -274,76 +217,7 @@ const Home = () => {
         visible={showStory}
         onRequestClose={() => setShowStory(false)}
       />
-      <CustomModal isModalVisible={visible} setModalVisible={()=>{
-        setVisible(false)
-        setType("")
-        setTitle("")
-        setImage("")
-      }}>
-        <View style={styles.modalContainer}>
-          <CustomText label="Create Post" textStyle={styles.CreatePostTitle} />
-          <View style={styles.textInputContainer}>
-            <TextInput
-              placeholder="What's on your mind"
-              multiline={true}
-              value={title}
-              placeholderTextColor={colors.darkGrey}
-              style={[styles.textInput,{maxHeight:verticalScale(30)}]}
-              onChangeText={(value) => setTitle(value)}
-            />
-          </View>
-          <View style={{ width: "90%", alignSelf: "center" }}>
-            <RadioButtonRN
-              data={data}
-              style={{ height: 50 }}
-              selectedBtn={(e) => setType(e.label)}
-              icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
-            />
-          </View>
-          <View style={{ flex: 1 }} />
-          {image ? (
-            <View>
-              {image.type.includes('video') ?
-              <VideoPlayer videoWidth={scale(200)} videoHeight={verticalScale(200)} video={image} />:
-              <Image source={image} style={styles.image} />}
-            </View>
-          ) : (
-            <View />
-          )}
-
-          
-          <View>
-           {!image ?<UploadPhoto
-          handleChange={(res) => setImage(res)}
-          renderButton={(handleChange)=><TouchableOpacity
-            activeOpacity={0.6}
-            onPress={handleChange}
-          >
-            <CustomText
-              label="Upload"
-              container={styles.uploadImageContainer}
-              textStyle={styles.uploadimageText}
-            />
-          </TouchableOpacity>}
-          />
-         :
-         <TouchableOpacity
-         activeOpacity={0.6}
-         onPress={onSubmit}
-       >
-        <CustomText
-           label={loading ? <ActivityIndicator color={'white'} size="small" /> :"Create"}
-           container={styles.uploadImageContainer}
-           textStyle={styles.uploadimageText}
-        />
-       
-        
-       </TouchableOpacity>
-        }
-        
-        </View>
-        </View>
-      </CustomModal>
+      
     </ScreenWrapper>
   );
 };
@@ -359,13 +233,7 @@ const styles = ScaledSheet.create({
     paddingVertical: "16@vs",
     backgroundColor: "white",
   },
-  CreatePostTitle: {
-    fontSize: "18@ms",
-    fontWeight: "700",
-    color: colors.black,
-    alignSelf: "center",
-    marginTop: "10@s",
-  },
+ 
   headerContainer: {
     marginTop: "12@vs",
     flexDirection: "row",
@@ -458,45 +326,5 @@ const styles = ScaledSheet.create({
   flatlist2: {
     // backgroundColor: 'red',
   },
-  modalContainer: {
-    backgroundColor: colors.white,
-    width: "90%",
-    height: "90%",
-    alignSelf: "center",
-    borderRadius: "10@s",
-  },
-  textInputContainer: {
-    borderColor: colors.primary,
-    borderWidth: "1@s",
-    width: "90%",
-    alignSelf: "center",
-    marginVertical: "10@s",
-    borderRadius: "5@s",
-  },
-  textInput: {
-    fontSize: "12@ms",
-    color: colors.darkGrey,
-    fontWeight: "600",
-  },
-  uploadImageContainer: {
-    alignSelf: "center",
-    padding: "10@s",
-    backgroundColor: colors.primary,
-    borderRadius: "25@s",
-    width: "45%",
-    alignItems: "center",
-    justifyContent:'center',
-    marginVertical: "10@s",
-  },
-  uploadimageText: {
-    color: colors.white,
-    fontSize: "12@ms",
-    alignSelf:'center'
-  },
-  image: {
-    width: "200@s",
-    height: "250@vs",
-    alignSelf: "center",
-    resizeMode: "cover",
-  },
+  
 });

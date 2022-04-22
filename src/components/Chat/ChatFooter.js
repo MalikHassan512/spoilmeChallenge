@@ -34,14 +34,13 @@ export const ChatFooter = ({ userId, relatedUserId }) => {
   const handleSend = async () => {
     try {
       setMessage('');
+      closeModal();
       const messageData=await sendMessage(userId, relatedUserId, selectedSpoilType, message);
       const flag=await checkUserRelationships(userId.id,relatedUserId.id)
       updateRelationStatus(flag,messageData)
     } catch (error) {
       console.log(e);
       alert('Error occured. Please try again');
-    } finally {
-      closeModal();
     }
   };
   return (

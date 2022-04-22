@@ -41,7 +41,6 @@ export const Signin = ({ navigation }) => {
     try {
       const userId = await signinWithEmail(email.trim(), password);
       await changeUserData({id:userId,isActive:true,lastActive:firestore.Timestamp.now(),location})
-
       dispatch(changeUser(userId));
     } catch (e) {
       if (e.code) {

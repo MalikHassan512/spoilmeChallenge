@@ -20,6 +20,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { AppState, Platform, PermissionsAndroid } from "react-native";
 import { PersistGate } from 'redux-persist/integration/react'
 
+
 const Main = () => {
   const dispatch = useDispatch();
   const userId = useSelector(state=>state.user.userId);
