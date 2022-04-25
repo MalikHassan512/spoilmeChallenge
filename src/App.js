@@ -19,7 +19,7 @@ import Contacts from "react-native-contacts";
 import React, { useRef, useState, useEffect } from "react";
 import { AppState, Platform, PermissionsAndroid } from "react-native";
 import { PersistGate } from 'redux-persist/integration/react'
-
+import CameraScreen from './screens/CameraScreen'
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -86,7 +86,7 @@ const Main = () => {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Tab" component={TabStack} />
           <Stack.Screen name="Chat" component={Chat} />
-
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
           <Stack.Screen
             name="CreateRelationship"
             component={CreateRelationship}

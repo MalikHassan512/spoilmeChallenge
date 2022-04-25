@@ -20,13 +20,12 @@ const styles = ScaledSheet.create({
       width: width(90),
       alignSelf: 'center',
       flexDirection: 'row',
-      alignItems: 'center',
       marginTop: height(2),
       borderTopRightRadius: width(3),
       borderTopLeftRadius: width(3),
       paddingHorizontal: width(2),
-      paddingVertical: height(1.5)
-
+      paddingVertical: height(1.5),
+      justifyContent:'space-between'
   },
   imageContainer: {
     height: height(7),

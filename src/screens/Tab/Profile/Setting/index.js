@@ -6,9 +6,9 @@ import {
   ScrollView,
 } from "react-native";
 import SimpleToast from "react-native-simple-toast";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Molecules/Header";
-import { ScaledSheet } from "react-native-size-matters";
+import { ScaledSheet, verticalScale } from "react-native-size-matters";
 import CustomText from "../../../../components/CustomText";
 import InputField from "../../../../components/Common/InputField";
 import { changeUserData, getUser } from "../../../../firebase/firestore/users";
@@ -113,7 +113,7 @@ const Setting = ({ navigation }) => {
         nestedScrollEnabled={true}
         showsHorizontalScrollIndicator={false}
       >
-        <CustomText textStyle={styles.loginText} label="My Account" />
+        <CustomText  label="My Account" />
 
         <InputField
           profile={true}
@@ -141,7 +141,7 @@ const Setting = ({ navigation }) => {
           label={"Email"}
           inputStyle={styles.inputStyle}
         />
-        <CustomText textStyle={styles.loginText1} label="Gender" />
+        <CustomText marginTop={10}  label="Gender" />
         <DropDownPicker
           open={open}
           value={gender}
@@ -162,7 +162,7 @@ const Setting = ({ navigation }) => {
             width: "96.5%",
           }}
         />
-        <CustomText textStyle={styles.loginText1} label="Date of birth" />
+        <CustomText marginTop={verticalScale(10)} label="Date of birth" />
         <TouchableOpacity
           style={styles.dropDownContainer}
           onPress={showDatePicker}
@@ -252,7 +252,6 @@ const Setting = ({ navigation }) => {
             isSmall
           />
         <CustomText textStyle={styles.loginText1} label="Security" />
-
         <CustomText textStyle={styles.loginText1} label="Privacy" />
         <CustomText textStyle={styles.loginText1} label="Notifications" />
         <CustomText textStyle={styles.loginText1} label="Help" />
@@ -293,7 +292,7 @@ const styles = ScaledSheet.create({
     fontWeight: "500",
   },
   loginText1: {
-    fontSize: "13@ms",
+    fontSize: "16@ms",
     color: colors.black,
     fontWeight: "500",
     marginTop: "10@ms",

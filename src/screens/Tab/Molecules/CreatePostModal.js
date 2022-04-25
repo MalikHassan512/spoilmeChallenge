@@ -13,7 +13,7 @@ import UploadPhoto from "components/UploadPhoto";
 import CustomModal from "components/CustomModal";
 import {useSelector} from 'react-redux';
 import colors from '../../../util/colors';
-import {verticalScale,ScaledSheet} from 'react-native-size-matters'
+import {ScaledSheet} from 'react-native-size-matters'
 const CreatePostModal = ({visible,setVisible,loadData}) => {
   const userId = useSelector((state) => state.user.userId);
 
@@ -87,7 +87,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
           {image ? (
             <View>
               {image.type.includes('video') ?
-              <VideoPlayer  style={styles.image} />:
+              <VideoPlayer style={styles.image} />:
               <Image source={image} style={styles.image} />}
             </View>
           ) : (

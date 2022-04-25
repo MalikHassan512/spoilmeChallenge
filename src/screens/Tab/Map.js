@@ -19,6 +19,7 @@ import Header from "../../components/Header";
 import SimpleToast from "react-native-simple-toast";
 import requestLocationPermission  from '../../util/getLocation'
 import { changeUserData } from "../../firebase/firestore/users";
+import { ActivityIndicator } from "react-native-paper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,12 +35,14 @@ export const Map = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [user, setUser] = useState({});
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(true)
   const closeModal = () => {
     setModalVisible(false);
   };
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
+      setLoading(true)
       getUser(userId).then(async (user) => {
         if (user) {
           setUser(user);
@@ -82,6 +85,11 @@ export const Map = ({ navigation }) => {
             longitudeDelta: LONGITUDE_DELTA,
           });
         }
+        setLoading(false)
+
+      }).catch(error=>{
+        console.log('map error line 90',error)
+        setLoading(false)
       });
 
     });
@@ -91,8 +99,7 @@ export const Map = ({ navigation }) => {
   }, [navigation]);
   const searchedUser = () => {
     getAllUsers().then((users) => {
-      let user = users.find((user) =>user.id!=userId && user.email == searchText.trim().toLowerCase());
-      // console.log('user',user)
+      let user = users.find((user) =>user.id!=userId && user?.email?.split("@")?.[0] == searchText.trim().toLowerCase());
       if(user){
       setRegion({
         latitude: user.location.coords.latitude,
@@ -101,10 +108,8 @@ export const Map = ({ navigation }) => {
         longitudeDelta: LONGITUDE_DELTA,
       });
     }else{
-      // console.log("helos")
       SimpleToast.show("User not found")
     }
-      // console.log("tempUser", tempUser);
     });
   };
   return (
@@ -169,9 +174,9 @@ export const Map = ({ navigation }) => {
         </MapView>
         </>
       ):
+      loading ? <ActivityIndicator style={{marginTop:50}} animating color="#000" /> :
           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-      <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
-
+            <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
           </View>
       }
       {selectedRelatedUser && (

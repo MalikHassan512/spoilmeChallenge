@@ -13,11 +13,6 @@ const HomeHeader = (props) => {
         {props.renderFirst ? props.renderFirst:  <Logo />
         }
           <View style={styles.headerIconContainer}>
-            <AntDesign
-              color={Colors.darkGrey}
-              name="heart"
-              style={styles.icon}
-            />
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={props.onPlusCircle}

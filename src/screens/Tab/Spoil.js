@@ -9,12 +9,19 @@ import {selectUser} from '../../redux/features/userSlice';
 import {LoadingImage} from '../../components/Common/LoadingImage';
 import {getUsersById} from '../../firebase/firestore/users';
 import {Loading} from '../../components/Common/Loading';
-
+import {useSwipe} from '../../util/useSwipe'
 export const Spoil = ({navigation}) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
-  const [users, setUsers] = useState([]);
+  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6)
 
+  function onSwipeLeft(){
+      console.log('SWIPE_LEFT')
+  }
+
+  function onSwipeRight(){
+      navigation.navigate('CameraScreen')
+  }
   useEffect(() => {
     const spoilSubscriber = getSpoils(userId, setSpoils);
     return () => {
@@ -22,7 +29,7 @@ export const Spoil = ({navigation}) => {
     };
   }, [userId]);
   return (
-    <SafeAreaView style={styles.outerContainer}>
+    <SafeAreaView onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={styles.outerContainer}>
       <View>
         <MyHeading text="Your Spoils" fontSize={23} />
         <View style={styles.infosContainer}>

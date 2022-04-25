@@ -7,11 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from "react-native";
-import { scale, ScaledSheet, verticalScale } from "react-native-size-matters";
+import { ScaledSheet } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
 import Colors from "util/colors";
-import CustomText from "../../../components/CustomText";
-import defualtImage from "../../../assets/images/defaultImage.jpg";
 import { height, width } from "react-native-dimension";
 import Post from "../../../components/Post";
 import ScreenWrapper from "../../../components/ScreenWrapper";
@@ -19,7 +17,6 @@ import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunc
 import moment from "moment";
 import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
-import colors from "../../../util/colors";
 import { useSelector } from "react-redux";
 import {fromNow} from '../../../util/helper'
 import {
@@ -28,7 +25,7 @@ import {
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import CreatePostModal from '../Molecules/CreatePostModal'
 import HomeHeader from 'components/HomeHeader';
-const Home = () => {
+const Home = ({navigation}) => {
   
   const userId = useSelector((state) => state.user.userId);
   const [pageLoading, setPageLoading] = useState(false)
@@ -43,8 +40,15 @@ const Home = () => {
   const [spoilTypes, setSpoilTypes] = useState([]);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener(
+      "focus",
+      () => {
     loadData();
     getSpoilType()
+    return unsubscribe;
+  },
+  [navigation]
+);
 
   }, []);
   const getSpoilType=() => {
@@ -87,15 +91,6 @@ const Home = () => {
     }
     })
     setStories(stories)
-    // posts.push({
-    //   id:893234,
-    //   description:'My Videos',
-    //   postType:'Post',
-    //   image:'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    //   dataType:'video',
-
-
-    // })
     users.map((user) => {
       let dob = new Date(user?.dob?.seconds * 1000);
       let formatedDate = moment(dob).format("DD-MM-YYYY");
@@ -140,7 +135,6 @@ const Home = () => {
   const renderStoryAvatar = ({ item }) => {
     return (
       <View style={styles.storyContainer}>
-        <CreatePostModal visible={visible} setVisible={setVisible} loadData={loadData} />
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() =>{setStoryImages([{uri:item.image}]); setShowStory(true)}}
@@ -185,6 +179,7 @@ const Home = () => {
   return (
     <ScreenWrapper>
       <View style={{ flex: 1 }}>
+      <CreatePostModal visible={visible} setVisible={setVisible} loadData={loadData} />
         <HomeHeader onPlusCircle={() => setVisible(!visible)}  />
         {stories.length>0 ?<FlatList
           horizontal
@@ -196,7 +191,7 @@ const Home = () => {
         />:null
         }
         <FlatList
-          data={posts.sort((a,b)=>new Date(a.createdAt) - new Date(b.createdAt))}
+          data={posts}
           style={styles.flatlist2}
           contentContainerStyle={{ paddingBottom: height(2) }}
           renderItem={renderPost}

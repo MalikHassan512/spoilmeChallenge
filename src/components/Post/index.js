@@ -1,5 +1,5 @@
 import React, { useState,useRef } from 'react';
-import { ActivityIndicator, Image, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import { Image, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import SimpleToast from "react-native-simple-toast";
 import styles from './styles';
 import { height, width } from 'react-native-dimension'
@@ -11,7 +11,7 @@ import colors from "../../util/colors";
 import {fromNow} from "../../util/helper";
 import InViewPort from "@coffeebeanslabs/react-native-inviewport";
 import { getUser } from "../../firebase/firestore/users";
-
+import Entypo from 'react-native-vector-icons/Entypo'
 import VideoPlayer from 'react-native-video-player';
 import moment from 'moment';
 import {
@@ -22,7 +22,8 @@ import {
 import { sendMessage } from "../../firebase/firestore/chats";
 import { useSelector } from 'react-redux';
 import CustomText from '../CustomText';
-
+import { moderateScale } from 'react-native-size-matters';
+import PostOptionModal from '../Common/PostOptionModal'
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
@@ -33,8 +34,9 @@ const Post = ({
     createdAt,
     spoilTypes
 }) => {
-    const videoRef = useRef(null)
+  const videoRef = useRef(null)
   const [loadingId, setLoadingId] = useState(-1);
+  const [visible, setVisible] = useState(false)
   const userId= useSelector(state=>state.user.userId)
   const handleSpoilPress = async (spoilType) => {
     setLoadingId(spoilType.name)
@@ -98,12 +100,18 @@ const Post = ({
     }
     return (
         <View styles={styles.container}>
+          <PostOptionModal visible={visible} setVisible={setVisible} />
             <View style={styles.userInfo}>
+              <View style={{flexDirection:'row',alignItems:'center'}}>
                 <Image source={userData?.profilePic?{uri:userData?.profilePic}:defualtImage} style={styles.avatar} />
                 <View style={styles.info}>
                     <Text style={styles.name}>{(userData?.firstName || "Name")+" "+(userData?.lastName|| "")}</Text>
                     <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
+                </View>
+                <TouchableOpacity style={{padding:'2%'}} onPress={()=>setVisible(true)} >
+                <Entypo color={'#000'} size={moderateScale(15)} name='dots-three-vertical' />
+                </TouchableOpacity>
             </View>
             <View style={styles.post}>
               <CustomText textStyle={styles.description} label={description}  />

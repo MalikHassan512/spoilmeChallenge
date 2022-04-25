@@ -1,48 +1,45 @@
-import { View, Modal, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import CustomText from "../CustomText";
 import colors from "../../util/colors";
-import { ScaledSheet } from "react-native-size-matters";
+import { moderateScale, ScaledSheet } from "react-native-size-matters";
 import images from "../../assets/images";
 import { useNavigation } from "@react-navigation/native";
-import CustomButton from "./CustomButton";
-import { changeUserData, } from "../../firebase/firestore/users";
-import { signout } from "../../firebase/auth/signout";
-import firestore from "@react-native-firebase/firestore";
 import {useSelector} from 'react-redux'
-const PopupModal = ({ visible, onPress, bgPress }) => {
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+
+import Modal from 'react-native-modal'
+const PopupModal = ({ visible, setVisible,  }) => {
   const navigation = useNavigation();
   const userId = useSelector(state=>state.user.userId);
-
-  const signoutUser = () => {
-    changeUserData({
-      id: userId,
-      isActive: false,
-      lastActive: firestore.Timestamp.now(),
-    });
-    signout();
-  };
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal 
+    style={{margin: 0}}
+    onBackdropPress={setVisible} onBackButtonPress={setVisible} visible={visible}>
       <View style={styles.firstContainer}>
-        <TouchableOpacity
-          onPress={bgPress}
+      <TouchableOpacity
+          onPress={()=>setVisible(false)}
           style={{ flex: 1 }}
         ></TouchableOpacity>
         <View style={styles.secondContainer}>
-          <TouchableOpacity
-            onPress={onPress}
-            style={styles.emptyView}
-          ></TouchableOpacity>
+          <View style={styles.emptyView} />
           <TouchableOpacity
             onPress={() => navigation.navigate("Setting")}
             style={styles.settingContainer}
           >
-            <Image source={images.setting} style={styles.settingIcon} />
-            <CustomText label="Settings" textStyle={styles.settingText} />
+            <AntDesign name="sharealt" size={moderateScale(16)} />
+            <CustomText marginLeft={10} fontWeight={'700'} label="Share" />
           </TouchableOpacity>
-          <CustomText textStyle={{alignSelf:'center',marginBottom:20}} label="Deactivate account" />
-          <CustomButton onPress={signoutUser} label={"Log out"} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Setting")}
+            style={styles.settingContainer}
+          >
+<MaterialIcons color={colors.primary} name="report" size={moderateScale(17)} />
+
+            <CustomText marginLeft={10} fontWeight={'700'} color={colors.primary} label="Report"  />
+          </TouchableOpacity>
+        
         </View>
       </View>
     </Modal>
@@ -58,7 +55,7 @@ const styles = ScaledSheet.create({
   },
   secondContainer: {
     backgroundColor: "#ffffff",
-    height: "30%",
+    height: "20%",
     borderRadius: "30@ms",
     alignSelf: "flex-end",
     width: "100%",
@@ -66,6 +63,7 @@ const styles = ScaledSheet.create({
     position: "absolute",
     bottom: -10,
     paddingVertical: "15@vs",
+    paddingTop:'10@vs'
   },
   emptyView: {
     width: "45@s",
@@ -92,8 +90,5 @@ const styles = ScaledSheet.create({
     marginRight: "12@s",
     marginLeft: "15@s",
   },
-  settingText: {
-    fontSize: "16@ms",
-    color: colors.text,
-  },
+ 
 });

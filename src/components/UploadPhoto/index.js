@@ -6,14 +6,15 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 const UploadPhoto = (props) => {
   const [imageModal, setImageModal] = useState(false);
   const [image, setImage] = useState('')
-  const options = {
+  
+  const takePhotoFromCamera = () => {
+    const options = {
     maxWidth: 300,
     maxHeight: 300,
     mediaType:'photo',
-    quality:0.3,
+    quality:0.8,
     ...props.options
   };
-  const takePhotoFromCamera = () => {
   setImageModal(false)
     setTimeout(async() => {
       const {assets:[result]} = await launchCamera(options);

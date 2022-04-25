@@ -125,18 +125,18 @@ export const Profile = ({ navigation }) => {
       <View style={{padding:scale(20)}}>
       <View style={styles.profileContainer}>
             <Image style={styles.logoContainer} source={image ?{uri:image} : images.placeholder} />
-            <View style={{alignItems:'center'}}>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('Relations')} style={{alignItems:'center'}}>
               <CustomText  fontWeight={'bold'} label={relation?.length || 0} fontSize={18}  />
               <CustomText marginTop={2}  label={'Relations'}   />
-            </View>
+            </TouchableOpacity>
             <View style={{alignItems:'center'}}>
               <CustomText  fontWeight={'bold'} label={posts?.length || 0} fontSize={18}  />
               <CustomText marginTop={2}  label={'Posts'}   />
             </View>
-            <View style={{alignItems:'center'}}>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('Contacts')}  style={{alignItems:'center'}}>
               <CustomText  fontWeight={'bold'} label={contacts?.length || 0} fontSize={18}  />
               <CustomText marginTop={2}  label={'Friends'}   />
-            </View>
+            </TouchableOpacity>
       </View>
       <CustomText fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
       <CustomText label={"Marketing and PR specialist"} />

@@ -107,9 +107,9 @@ useEffect(() => {
       })}
       initialRouteName="Home"
     >
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Spoil" component={Spoil} />
       <Tab.Screen name="Relationship" component={Relationship} />
-      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Map" component={Map} />
       <Tab.Screen
         options={{ tabBarLabel: "Profile" }}
