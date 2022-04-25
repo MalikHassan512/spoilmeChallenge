@@ -25,8 +25,18 @@ import {
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import CreatePostModal from '../Molecules/CreatePostModal'
 import HomeHeader from 'components/HomeHeader';
+import {useSwipe} from '../../../util/useSwipe'
+
 const Home = ({navigation}) => {
-  
+  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6)
+
+  function onSwipeLeft(){
+      console.log('SWIPE_LEFT')
+  }
+
+  function onSwipeRight(){
+      navigation.navigate('CameraScreen')
+  }
   const userId = useSelector((state) => state.user.userId);
   const [pageLoading, setPageLoading] = useState(false)
   
@@ -178,7 +188,7 @@ const Home = ({navigation}) => {
   };
   return (
     <ScreenWrapper>
-      <View style={{ flex: 1 }}>
+      <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ flex: 1 }}>
       <CreatePostModal visible={visible} setVisible={setVisible} loadData={loadData} />
         <HomeHeader onPlusCircle={() => setVisible(!visible)}  />
         {stories.length>0 ?<FlatList

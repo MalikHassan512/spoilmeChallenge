@@ -109,7 +109,7 @@ const Post = ({
                     <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
                 </View>
-                <TouchableOpacity style={{padding:'2%'}} onPress={()=>setVisible(true)} >
+                <TouchableOpacity style={{padding:'2%'}} >
                 <Entypo color={'#000'} size={moderateScale(15)} name='dots-three-vertical' />
                 </TouchableOpacity>
             </View>

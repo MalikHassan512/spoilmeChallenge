@@ -37,7 +37,7 @@ export const Signup = ({ navigation }) => {
   const [dob, setDob] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState('');
   const [image, setImage] = useState("");
   const [fb, setFb] = useState("");
   const [linkedin, setLinkedin] = useState("");
@@ -66,7 +66,8 @@ export const Signup = ({ navigation }) => {
   useEffect(() => {
     (async function() {
      const permission= await requestLocationPermission(setLocation);
-      if(!permission){
+     console.log('permission',permission)
+      if(permission === false){
         setShowAddressInput(true)
       }
      
@@ -78,12 +79,12 @@ export const Signup = ({ navigation }) => {
     setLoading(true);
     setError({});
     if(showAddressInput){
-      Geocoder.from(location)
-      .then(json => {
-        var location = json.results[0].geometry.location;
-        console.log(location);
-      })
-      .catch(error => console.warn(error));
+      // Geocoder.from(location)
+      // .then(json => {
+      //   var location = json.results[0].geometry.location;
+      //   console.log(location);
+      // })
+      // .catch(error => console.warn(error));
     }
     
 
@@ -239,13 +240,13 @@ export const Signup = ({ navigation }) => {
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
-          <InputField
+        {showAddressInput &&  <InputField
             label="Address"
             inputStyle={[styles.inputStyle,]}
             value={location}
             onChangeText={(newVal) => setLocation(newVal)}
             profile
-          />
+          />}
         {/* <LogoButton
           onChangeText={setFb}
           value={fb}
