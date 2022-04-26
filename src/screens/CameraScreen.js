@@ -15,7 +15,6 @@ import { ActivityIndicator } from 'react-native-paper';
 const {width,height} = Dimensions.get('window')
 const CameraScreen = ({navigation}) => {
     const [image, setImage] = useState('')
-    const [isSelected, setIsSelected] = useState(true)
     const [loading, setLoading] = useState(false)
   const userId = useSelector((state) => state.user.userId);
 
@@ -26,7 +25,7 @@ const CameraScreen = ({navigation}) => {
           const data={
             userId,
             userData,
-            type:isSelected ? 'Post' : 'Story',
+            type:'Story',
             title: '',
             dataType: image.type.includes('video') ?'video' : 'image',
           }
@@ -43,9 +42,10 @@ const CameraScreen = ({navigation}) => {
       
       }
 useEffect(() => {
-    const options = {
-        // maxWidth: 300,
-        // maxHeight: 300,
+  openPicker()
+}, [])
+    const openPicker =()=>{
+      const options = {
         mediaType:'photo',
         quality:0.8,
       };
@@ -57,24 +57,22 @@ useEffect(() => {
               setImage(assets[0])
           }
         }, 500);
-}, [])
-    
+    }
   return (
     <View style={styles.container}>
         <Image source={image} style={styles.imageContainer} />
         {image?.uri && <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={()=>setIsSelected(true)} style={[styles.btnCapsule,isSelected && {backgroundColor:'#fff'}]}>
-                <CustomText alignSelf={'center'} color={isSelected ? '#000' : '#fff'} fontWeight={'bold'} label="Create Post" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>setIsSelected(false)} style={[styles.btnCapsule,!isSelected && {backgroundColor:'#fff'}]}>
-                <CustomText alignSelf={'center'} color={!isSelected ? '#000' : '#fff'} fontWeight={'bold'} label="Create Story" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onSubmit} disabled={loading} style={styles.btnSubmit}>
+        <TouchableOpacity onPress={openPicker} style={styles.btnSubmit}>
+               
+               <AntDesign name='left' size={verticalScale(23)} />
+           </TouchableOpacity>
+            <TouchableOpacity onPress={onSubmit} disabled={loading} style={styles.btnCapsule}>
                 {loading ? 
-                <ActivityIndicator animating color='#000' />   : 
-                <AntDesign name='right' size={verticalScale(23)} />
+                <ActivityIndicator animating color={'#fff'} />   : 
+                <CustomText  color={'#fff'} fontWeight={'bold'} label="Post" />
             }
             </TouchableOpacity>
+            
         </View>}
         <View />
         <View />
@@ -105,7 +103,9 @@ const styles = StyleSheet.create({
         borderColor:'#fff',
         marginEnd:20,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        height:40,
+
     },
     btnSubmit:{
         backgroundColor:'#FFF',
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
         height:40,
         borderRadius:999,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        marginRight:20,
     }
 })

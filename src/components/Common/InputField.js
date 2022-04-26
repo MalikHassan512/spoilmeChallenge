@@ -23,12 +23,13 @@ const InputField = ({
   blurOnSubmit = false,
   secureTextEntry = false,
   disabled = false,
+  mode="outlined",
   right,
 }) => {
   return (
     <View style={styles.surface}>
       <TextInput
-        mode="outlined"
+        mode={mode}
         outlineColor="#ebebeb"
         disabled={disabled}
         style={[styles.inputStyle, inputStyle]}

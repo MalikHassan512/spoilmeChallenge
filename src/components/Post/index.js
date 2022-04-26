@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import CustomText from '../CustomText';
 import { moderateScale } from 'react-native-size-matters';
 import PostOptionModal from '../Common/PostOptionModal'
+import { useNavigation } from '@react-navigation/native';
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
@@ -34,6 +35,7 @@ const Post = ({
     createdAt,
     spoilTypes
 }) => {
+  const navigation=useNavigation()
   const videoRef = useRef(null)
   const [loadingId, setLoadingId] = useState(-1);
   const [visible, setVisible] = useState(false)
@@ -102,13 +104,13 @@ const Post = ({
         <View styles={styles.container}>
           <PostOptionModal visible={visible} setVisible={setVisible} />
             <View style={styles.userInfo}>
-              <View style={{flexDirection:'row',alignItems:'center'}}>
+              <TouchableOpacity activeOpacity={1} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userData?.id}})} style={{flexDirection:'row',alignItems:'center'}}>
                 <Image source={userData?.profilePic?{uri:userData?.profilePic}:defualtImage} style={styles.avatar} />
                 <View style={styles.info}>
                     <Text style={styles.name}>{(userData?.firstName || "Name")+" "+(userData?.lastName|| "")}</Text>
                     <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity style={{padding:'2%'}} >
                 <Entypo color={'#000'} size={moderateScale(15)} name='dots-three-vertical' />
                 </TouchableOpacity>

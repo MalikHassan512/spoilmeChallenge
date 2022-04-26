@@ -18,10 +18,39 @@ export async function getPosts() {
   let querySnapshot = await firestore().collection("posts")
   .orderBy('createdAt', 'desc')
   .get();
+  
   querySnapshot.forEach(function (doc) {
       if (doc.exists) {
-          //console.log(doc.data());
           data.push(doc.data());
+      } else {
+          console.log('No document found!');
+      }
+  });
+  return data;
+}
+
+export async function getProfilePosts(userId) {
+  let data = [];
+  let querySnapshot = await firestore().collection("posts")
+  .orderBy('createdAt', 'desc')
+  .get();
+  console.log("querySnapshot",querySnapshot)
+
+  querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+          post =doc.data()
+          if(post.type=="Post" && post.userId == userId){
+            data.push({
+             id:post.id,
+             description:post.title,
+             postType:post.type,
+             image:post.image,
+             userData:post.userData,
+             createdAt:post.createdAt,
+              dataType:post.dataType,
+           })
+          }
+
       } else {
           console.log('No document found!');
       }

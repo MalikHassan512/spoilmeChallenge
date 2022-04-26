@@ -15,6 +15,7 @@ import {useSelector} from 'react-redux'
 import firestore from "@react-native-firebase/firestore";
 import { changeUserData } from "../firebase/firestore/users";
 import { AppState,  } from "react-native";
+import { scale, verticalScale } from "react-native-size-matters";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,9 +64,7 @@ useEffect(() => {
       tabBarPosition={"bottom"}
       screenOptions={({ route }) => ({
         tabBarIndicator: () => {},
-        tabBarItemStyle: { padding: 0 },
-        tabBarLabelStyle: { fontSize: 10 },
-        // keyboardHidesTabBar: Platform.OS === 'ios' ? false : true,
+        tabBarShowLabel:false,
         unmountOnBlur: true,
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
@@ -77,25 +76,26 @@ useEffect(() => {
               : require("../assets/images/spoil.png");
           } else if (route.name === "Relationship") {
             icon = focused
-              ? require("../assets/images/hearts.png")
-              : require("../assets/images/hearts.png");
+              ? require("../assets/images/heart_red.png")
+              : require("../assets/images/heart_black.png");
           } else if (route.name === "Map") {
             icon = focused
-              ? require("../assets/images/mapClick.png")
-              : require("../assets/images/map.png");
+              ? require("../assets/images/map_red.png")
+              : require("../assets/images/map_black.png");
           } else if (route.name === "ProfileStack") {
             icon = focused
-              ? require("../assets/images/profileClick.png")
-              : require("../assets/images/profile.png");
+              ? require("../assets/images/avatar_red.png")
+              : require("../assets/images/avatar_black.png");
           } else if (route.name === "Home") {
-            icon = require("../assets/images/home.png");
+            icon = focused
+            ? require("../assets/images/home_red.png")
+            : require("../assets/images/home_black.png");
           }
           return (
             <Image
               style={{
-                width: 22,
-                height: 25,
-                tintColor: focused ? "#C71F1E" : "#878787",
+                width: scale(23),
+                height: verticalScale(23),
               }}
               resizeMode={"contain"}
               source={icon}
@@ -103,7 +103,7 @@ useEffect(() => {
           );
         },
         tabBarActiveTintColor: "#C71F1E",
-        tabBarInactiveTintColor: "#878787",
+        tabBarInactiveTintColor: "#000",
       })}
       initialRouteName="Home"
     >
@@ -112,7 +112,6 @@ useEffect(() => {
       <Tab.Screen name="Relationship" component={Relationship} />
       <Tab.Screen name="Map" component={Map} />
       <Tab.Screen
-        options={{ tabBarLabel: "Profile" }}
         name="ProfileStack"
         component={ProfileStack}
       />

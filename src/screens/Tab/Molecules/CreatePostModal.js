@@ -13,13 +13,14 @@ import UploadPhoto from "components/UploadPhoto";
 import CustomModal from "components/CustomModal";
 import {useSelector} from 'react-redux';
 import colors from '../../../util/colors';
-import {ScaledSheet} from 'react-native-size-matters'
+import {scale, ScaledSheet, verticalScale} from 'react-native-size-matters'
+import InputField from "components/Common/InputField";
+
 const CreatePostModal = ({visible,setVisible,loadData}) => {
   const userId = useSelector((state) => state.user.userId);
 
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
-  const [type, setType] = useState("");
   const [loading, setLoading] = useState(false)
   const onSubmit = async()=>{
     try {
@@ -28,7 +29,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
       const data={
         userId,
         userData,
-        type,
+        type:'Post',
         title,
         dataType: image.type.includes('video') ?'video' : 'image',
       }
@@ -36,7 +37,6 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
         await createPost(data)
         loadData()
       setLoading(false)
-      setType("")
       setTitle("")
       setImage("")
       setVisible(false)
@@ -48,46 +48,28 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
     }
   
   }
-  const data = [
-    {
-      label: "Story",
-    },
-    {
-      label: "Post",
-    },
-  ];
+ 
   return (
     <CustomModal isModalVisible={visible} setModalVisible={()=>{
         setVisible(false)
-        setType("")
         setTitle("")
         setImage("")
       }}>
         <View style={styles.modalContainer}>
           <CustomText label="Create Post" textStyle={styles.CreatePostTitle} />
-          {/* <View style={styles.textInputContainer}> */}
-            <TextInput
-              placeholder="What's on your mind"
-              multiline={true}
-              value={title}
-              placeholderTextColor={colors.darkGrey}
-              style={styles.textInput}
-              onChangeText={(value) => setTitle(value)}
-            />
-          {/* </View> */}
-          <View style={{ width: "90%", alignSelf: "center" }}>
-            <RadioButtonRN
-              data={data}
-              style={{ height: 50 }}
-              selectedBtn={(e) => setType(e.label)}
-              icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
-            />
-          </View>
+            
+          <TextInput
+          value={title}
+          onChangeText={(newVal) => setTitle(newVal)}
+          placeholder="What’s on your mind?"
+          multiline={true}
+          style={styles.inputStyle}
+        />
           <View style={{ flex: 1 }} />
           {image ? (
             <View>
               {image.type.includes('video') ?
-              <VideoPlayer style={styles.image} />:
+              <VideoPlayer source={image}   style={styles.image} />:
               <Image source={image} style={styles.image} />}
             </View>
           ) : (
@@ -98,7 +80,10 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
           <View>
            {!image ?<UploadPhoto
           handleChange={(res) => setImage(res)}
-          options={{mediaType:'mixed'}}
+          options={{mediaType:'mixed'
+        ,  maxWidth: scale(312),
+          maxHeight: verticalScale(240),
+        }}
           renderButton={(handleChange)=><TouchableOpacity
             activeOpacity={0.6}
             onPress={handleChange}
@@ -158,6 +143,7 @@ const styles = ScaledSheet.create({
         margin: "10@s",
         paddingStart:10,
         borderRadius: "5@s",
+        height:50
         
       },
       uploadImageContainer: {
@@ -176,7 +162,19 @@ const styles = ScaledSheet.create({
         alignSelf:'center'
       },
       image: {
-        width: "100%",
-        marginBottom:20
+        width: "312@s",
+      alignSelf: 'center',
+      height: "240@vs",
+      borderRadius: 10
       },
+      inputStyle:{
+        height:'140@vs',
+        marginVertical:20,
+        textAlignVertical:'top',
+        borderColor: 'grey',
+        padding:20,
+        borderWidth:1.5,
+        marginHorizontal:15,
+        borderRadius:10
+      }
 })

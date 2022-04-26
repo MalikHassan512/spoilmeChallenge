@@ -26,6 +26,11 @@ const UploadPhoto = (props) => {
   };
 
   const takePhotoFromLibrary = async() => {
+    const options = {
+      mediaType:'photo',
+      quality:0.8,
+      ...props.options
+    };
     setImageModal(false)
     const {assets:[result]}= await launchImageLibrary(options);
     setImage(result)

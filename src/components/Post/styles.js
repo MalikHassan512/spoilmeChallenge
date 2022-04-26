@@ -10,7 +10,7 @@ const styles = ScaledSheet.create({
     borderBottomRightRadius: width(3),
     borderBottomLeftRadius: width(3),
     paddingHorizontal: width(2),
-    paddingBottom: height(1.5),
+    paddingBottom: 0,
     backgroundColor: Colors.lightGrey,
     width: width(90),
     alignSelf: 'center'
@@ -33,8 +33,8 @@ const styles = ScaledSheet.create({
     borderRadius: height(3.5)
   },
   avatar: {
-      height: height(7),
-      width: height(7),
+      height: '35@vs',
+      width:'35@vs',
       borderRadius: height(3.5),
       borderWidth: 1.5,
       borderColor: Colors.white
@@ -57,7 +57,7 @@ const styles = ScaledSheet.create({
   },
   postBtn: {
       width: '95%',
-      marginTop: height(2),
+      marginVertical: height(2),
       alignSelf: 'center',
       backgroundColor: '#00000010',
       borderRadius: width(4),
@@ -81,9 +81,9 @@ const styles = ScaledSheet.create({
       marginRight: width(2)
   },
   mapImage: {
-      width: '98%',
+      width: "312@s",
       alignSelf: 'center',
-      height: height(30),
+      height: "240@vs",
       borderRadius: width(2)
   },
   profilePic: {

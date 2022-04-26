@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/features/userSlice";
 import { Loading } from "../../../components/Common/Loading";
 const Relations = ({ navigation,route }) => {
-  const people = [0, 1, 2, 3, 4, 5];
   const relationData=route?.params?.relation;
   const [relationships, setRelationships] = useState(relationData);
   const [relatedUsers, setRelatedUsers] = useState(relationData);

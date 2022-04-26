@@ -12,7 +12,7 @@ const HomeHeader = (props) => {
         
         {props.renderFirst ? props.renderFirst:  <Logo />
         }
-          <View style={styles.headerIconContainer}>
+          {!props.hideIcon && <View style={styles.headerIconContainer}>
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={props.onPlusCircle}
@@ -29,7 +29,7 @@ const HomeHeader = (props) => {
               name="comment"
               style={styles.icon}
             />
-          </View>
+          </View>}
         </View>
   )
 }
