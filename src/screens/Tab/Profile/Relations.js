@@ -12,6 +12,7 @@ import { selectUser } from "../../../redux/features/userSlice";
 import { Loading } from "../../../components/Common/Loading";
 const Relations = ({ navigation,route }) => {
   const relationData=route?.params?.relation;
+  const userIdProps=route?.params?.userId;
   const [relationships, setRelationships] = useState(relationData);
   const [relatedUsers, setRelatedUsers] = useState(relationData);
   const [relation, setRelation] = useState([]);
@@ -69,7 +70,7 @@ const Relations = ({ navigation,route }) => {
 }, [searchText]);
   return (
     <ScrollView style={styles.container}>
-      <Header label="Relationships" />
+      <Header onBackPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})} label="Relationships" />
       <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}

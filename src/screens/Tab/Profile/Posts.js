@@ -4,8 +4,8 @@ import Header from "./Molecules/Header";
 import {height} from 'react-native-dimension'
 import Post from "components/Post";
 
-const Posts = ({route}) => {
-    const {posts,itemIndex}=route?.params
+const Posts = ({route,navigation}) => {
+    const {posts,itemIndex,userId}=route?.params
     const renderEmpty = ({ item }) => {
         return (
           <View style={styles.empty}>
@@ -29,7 +29,7 @@ const Posts = ({route}) => {
       };
   return (
     <View style={styles.container}>
-        <Header label={"Posts"} />
+        <Header onBackPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userId}})}  label={"Posts"} />
         <FlatList
           data={posts || []}
           initialScrollIndex={itemIndex}

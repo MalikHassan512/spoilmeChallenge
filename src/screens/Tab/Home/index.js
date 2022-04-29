@@ -17,6 +17,8 @@ import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunc
 import moment from "moment";
 import ImageView from "react-native-image-viewing";
 import auth from "@react-native-firebase/auth";
+import { Loading } from "components/Common/Loading";
+
 import { useSelector } from "react-redux";
 import {fromNow} from '../../../util/helper'
 import {
@@ -179,7 +181,7 @@ const Home = ({navigation}) => {
       <View style={styles.empty}>
         {pageLoading ?
         
-      <ActivityIndicator color={'black'}  />:
+      <Loading  />:
       <Text style={styles.emptyText}>No posts available</Text>
 
       }

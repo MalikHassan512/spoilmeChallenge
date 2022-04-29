@@ -1,9 +1,13 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 import {moderateScale, verticalScale,scale} from 'react-native-size-matters';
 const CustomText = props => {
   return (
-    <View style={[props.container]}>
+    <TouchableOpacity
+      activeOpacity={0.6}
+      onPress={props.onPress}
+      disabled={!props.onPress}
+      style={[props.container]}>
       <Text
         style={[
           {
@@ -21,7 +25,7 @@ const CustomText = props => {
         ]}>
         {props.label}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

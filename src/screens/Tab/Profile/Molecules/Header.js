@@ -6,12 +6,13 @@ import colors from "../../../../util/colors";
 import { ScaledSheet } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
 
-const Header = ({ label }) => {
+const Header = ({ label,onBackPress }) => {
   const navigation=useNavigation()
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
+          onBackPress? onBackPress?.():
           navigation.goBack()
         }}
       >

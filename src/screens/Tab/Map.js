@@ -19,7 +19,7 @@ import Header from "../../components/Header";
 import SimpleToast from "react-native-simple-toast";
 import requestLocationPermission  from '../../util/getLocation'
 import { changeUserData } from "../../firebase/firestore/users";
-import { ActivityIndicator } from "react-native-paper";
+import { Loading } from "components/Common/Loading";
 
 const { width, height } = Dimensions.get("window");
 
@@ -174,7 +174,7 @@ export const Map = ({ navigation }) => {
         </MapView>
         </>
       ):
-      loading ? <ActivityIndicator style={{marginTop:50}} animating color="#000" /> :
+      loading ? <Loading  /> :
           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
             <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
           </View>

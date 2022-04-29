@@ -70,7 +70,6 @@ const Setting = ({ navigation }) => {
   useEffect(() => {
       getUser(userId)
         .then((user) => {
-          console.log("user",user)
           setFirstName(user?.firstName);
           setLastName(user?.lastName);
           setEmail(user?.email);
@@ -93,6 +92,7 @@ const Setting = ({ navigation }) => {
       gender,
       dob,
     };
+
     try {
       await changeUserData(temp);
       setOnSubmitLoading(false);
@@ -249,6 +249,12 @@ const Setting = ({ navigation }) => {
             btnContainer={styles.saveChangesContainer}
             textStyle={styles.saveChangingText}
             onPress={onSubmit}
+            disabled={
+              !firstName ||
+              !lastName ||
+              !gender ||
+              !dob
+            }
             isSmall
           />
         <CustomText textStyle={styles.loginText1} label="Security" />

@@ -16,21 +16,18 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import PopupModal from "../../../components/Common/PopupModal";
-// import Post from "./Molecules/Post";
 import {getUser } from "../../../firebase/firestore/users";
 import {getUserRelationships} from '../../../firebase/firestore/relationships'
 import {useSelector} from 'react-redux'
-import UploadPhoto from "components/UploadPhoto";
-import Post from "components/Post";
 import { height, width } from "react-native-dimension";
 import Colors from "util/colors";
 import HomeHeader from 'components/HomeHeader'
-import moment from 'moment'
-import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
-import { getPosts,getProfilePosts } from "../../../firebase/firestore/posts";
+import {getProfilePosts } from "../../../firebase/firestore/posts";
 import { ActivityIndicator } from "react-native-paper";
 import VideoPlayer from 'react-native-video-player';
 import CreatePostModal from '../Molecules/CreatePostModal'
+import MapModal from "components/Map/MapModal";
+import { Loading } from "components/Common/Loading";
 
 export const Profile = ({ navigation,route }) => {
   const otherUserId = route?.params?.userId;
@@ -42,15 +39,19 @@ export const Profile = ({ navigation,route }) => {
   const [loading, setLoading] = useState(true)
   const id = useSelector(state=>state.user.userId)
   const userId =otherUserId || id;
-  console.log("otherUserId",otherUserId, 'myID',id)
-
   const contacts =useSelector((state) => state.user.contactList);
   const [postModal, setPostModal] = useState(false)
+  const [authUser, setAuthUser] = useState(null);
   
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   const [image, setImage] = useState("")
   useEffect(() => {
     setPosts([])
     getAllData()
+    
   }, [userId])
   
   useEffect(() => {
@@ -59,12 +60,11 @@ export const Profile = ({ navigation,route }) => {
       () => {
         setPosts([])
         setLoading(true)
-        navigation.setParams({userId:undefined})        // Return the function to unsubscribe from the event so it gets removed on unmount
-        return unsubscribe;
+        navigation.setParams({userId:undefined})    
       },
       [navigation]
     );
-   
+   return unsubscribe
   },[]);
 
  
@@ -72,14 +72,19 @@ export const Profile = ({ navigation,route }) => {
   const getAllData =async ()=>{
     try {
       setLoading(true)
-      // console.log('onFocus',userId)
       const relation=await getUserRelationships(userId)
       setRelation(relation)
       const userData= await getUser(userId)
       setUser(userData)
+      if(otherUserId && otherUserId!=id){
+       const authUserData= await getUser(id)
+       setAuthUser(authUserData)
+       
+      }else{
+        setAuthUser(userData)
+      }
       setImage(userData?.profilePic)
        await loadData()
-     
     } catch (error) {
       console.log('profile error',error)
       setRefreshing(false)
@@ -97,8 +102,8 @@ export const Profile = ({ navigation,route }) => {
   return (
   
     loading ?
-    <View style={{marginTop:40}}>
-    <ActivityIndicator color="#000" />
+    <View style={{flex:1}}>
+    <Loading  />
     </View>:
     <>
     <HomeHeader hideIcon={otherUserId ? otherUserId != id : false} onPlusCircle={()=>setPostModal(true)} renderFirst={<TouchableOpacity
@@ -121,29 +126,36 @@ export const Profile = ({ navigation,route }) => {
     <View style={{padding:scale(20)}}>
     <View style={styles.profileContainer}>
           <Image style={styles.logoContainer} source={image ?{uri:image} : images.placeholder} />
-          <TouchableOpacity activeOpacity={0.8} style={{alignItems:'center'}}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Relations",{relation:relation,userId})} activeOpacity={0.8} style={{alignItems:'center'}}>
             <CustomText  fontWeight={'bold'} label={relation?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Relations'}   />
           </TouchableOpacity>
-          <View style={{alignItems:'center'}}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:0,userId})} style={{alignItems:'center'}}>
             <CustomText  fontWeight={'bold'} label={posts?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Posts'}   />
-          </View>
-          {otherUserId ? otherUserId != id ? <View />:<View />: <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('Contacts')}  style={{alignItems:'center'}}>
+          </TouchableOpacity>
+          {otherUserId ? otherUserId != id ? <View />:<View />: <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('Contacts',{userId})}  style={{alignItems:'center'}}>
           <CustomText  fontWeight={'bold'} label={contacts?.length || 0} fontSize={18}  />
           <CustomText marginTop={2}  label={'Friends'}   />
         </TouchableOpacity>}
     </View>
-    <CustomText fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
+    <CustomText textStyle={{textTransform:'capitalize'}} fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
   {otherUserId ?otherUserId != id  ?<View style={{flexDirection:'row',justifyContent:'space-between'}}>
-    <CustomText color={'#fff'} alignSelf={'center'} label="Spoil" container={styles.btn} />
+    <CustomText onPress={()=>setModalVisible(true)} color={'#fff'} alignSelf={'center'} label="Spoil" container={styles.btn} />
     <CustomText color={'#000'} alignSelf={'center'} label="Relation" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
-    <CustomText color={'#000'} alignSelf={'center'} label="Message" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
-  </View>: null:null}
+    <CustomText onPress={()=>navigation.navigate('Chat', {
+                      user:authUser,
+                      relatedUser:user,
+                      relationId:-1,
+                      userId
+                    })}  color={'#000'} alignSelf={'center'} label="Message" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
+  </View>: null:
+    <CustomText onPress={()=>navigation.navigate('Setting')} alignSelf={'center'} container={styles.editProfile} fontWeight={'bold'} label="Edit Profile" />
+  }
     </View>
    
       
-       {loading ? <ActivityIndicator color="#000" />: <FlatList
+       {loading ? <Loading  />: <FlatList
         data={posts}
         nestedScrollEnabled
         keyExtractor={(item) => item.id}
@@ -153,7 +165,7 @@ export const Profile = ({ navigation,route }) => {
           renderItem={({item,index}) => {
             return(
               <>
-              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index})} style={styles.imageContainer}>
+              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index,userId})} style={styles.imageContainer}>
                 {item?.dataType=='video' ?
                  <VideoPlayer video={{uri:item.image}} style={styles.image} /> :
                  <Image style={styles.image} source={{uri:item.image}} />
@@ -174,6 +186,15 @@ export const Profile = ({ navigation,route }) => {
         visible={true}
       />
     )}
+    {authUser && (
+        <MapModal
+          userId={id}
+          user={authUser}
+          relatedUser={user}
+          closeModal={closeModal}
+          modalVisible={modalVisible}
+        />
+      )}
   </ScrollView>
   </>
   
@@ -319,4 +340,11 @@ const styles = ScaledSheet.create({
     marginTop: "20@vs",
 
   },
+  editProfile:{
+    margin:'10@s',
+    padding:'7@s',
+    borderColor:colors.borderColor,
+    borderWidth: 1,
+    borderRadius:5,
+  }
 });

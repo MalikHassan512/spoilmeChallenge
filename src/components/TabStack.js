@@ -1,8 +1,8 @@
 import React,{useEffect,useRef} from "react";
-import { Image } from "react-native";
+import { Image,PermissionsAndroid } from "react-native";
 import { Profile } from "../screens/Tab/Profile";
 import Relations from "../screens/Tab/Profile/Relations";
-import Contacts from "../screens/Tab/Profile/Contacts";
+import ContactsScreen from "../screens/Tab/Profile/Contacts";
 import { Relationship } from "../screens/Tab/Relationship";
 import { Map } from "../screens/Tab/Map";
 import Home from "../screens/Tab/Home";
@@ -11,19 +11,55 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Setting from "../screens/Tab/Profile/Setting";
 import Posts from "../screens/Tab/Profile/Posts";
-import {useSelector} from 'react-redux'
+import {useSelector,useDispatch} from 'react-redux'
 import firestore from "@react-native-firebase/firestore";
 import { changeUserData } from "../firebase/firestore/users";
 import { AppState,  } from "react-native";
 import { scale, verticalScale } from "react-native-size-matters";
+import {
+  contactList,
+} from "../redux/features/userSlice";
+import Contacts from 'react-native-contacts';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
+
+
 export function TabStack() {
 const userId= useSelector(state=>state.user.userId)
 const appState = useRef(AppState.currentState);
-
+const dispatch = useDispatch();
+const requestContacts = async () => {
+  try {
+    if (Platform.OS === "ios") {
+      const contacts = await Contacts.getAll()
+      dispatch(contactList(contacts));
+    }else{
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+      {
+        title: "Spoil Me Contacts Permission",
+        message:
+          "Spoil Me Need Access to Your contacts " +
+          "to send users Spoils.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+         const contacts = await Contacts.getAll()
+          dispatch(contactList(contacts));
+    } else {
+      console.log("PermissionsAndroid.PERMISSIONS.READ_CONTACTS ",granted);
+    }
+  }
+  } catch (err) {
+    console.warn("requestContactsAndroid" + err);
+  }
+};
 useEffect(() => {
+  requestContacts()
   const subscription = AppState.addEventListener("change", (nextAppState) => {
     if (
       appState.current.match(/inactive|background/) &&
@@ -33,7 +69,6 @@ useEffect(() => {
     }
 
     appState.current = nextAppState;
-    // console.log("AppState", appState.current);
     if (appState.current == "active") {
       console.log("user is active",userId);
       if (userId)
@@ -121,7 +156,7 @@ useEffect(() => {
 const ProfileStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Profile" component={Profile} />
-    <Stack.Screen name="Contacts" component={Contacts} />
+    <Stack.Screen name="Contacts" component={ContactsScreen} />
     <Stack.Screen name="Relations" component={Relations} />
     <Stack.Screen name="Setting" component={Setting}/>
     <Stack.Screen name="Posts" component={Posts}/>

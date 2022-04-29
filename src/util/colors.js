@@ -11,4 +11,5 @@ export default {
   inputBg: "#E3E5E8",
   photoBorder: "#46DA2E",
   postBg: "#DADADA",
+  borderColor:'#B7B7B7'
 };

@@ -9,15 +9,12 @@ import { store,persistor } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   changeUser,
-  contactList,
 } from "./redux/features/userSlice";
 import { checkAuth } from "./firebase/auth/checkAuth";
 import { Loading } from "./components/Common/Loading";
 import { TabStack } from "./components/TabStack";
 import { CreateRelationship } from "./screens/CreateRelationship";
-import Contacts from "react-native-contacts";
-import React, { useRef, useState, useEffect } from "react";
-import { AppState, Platform, PermissionsAndroid } from "react-native";
+import React, { useState, useEffect } from "react";
 import { PersistGate } from 'redux-persist/integration/react'
 import CameraScreen from './screens/CameraScreen'
 
@@ -33,6 +30,8 @@ const Main = () => {
       background:'#fff'
     }
   }
+
+  
  
   useEffect(() => {
     setTimeout(() => {
@@ -42,34 +41,6 @@ const Main = () => {
     return () => {
       if (authSubscriber) authSubscriber();
     };
-  }, []);
-
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      Contacts.getAll((err, contacts) => {
-        if (err) {
-          throw err;
-        }
-        dispatch(contactList(contacts));
-      });
-    } else {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-        title: "Contacts",
-        message: "Spoil-ME would like to view your contacts.",
-        buttonPositive: "Please accept bare mortal",
-      }).then(
-        Contacts.getAll()
-          .then((contacts) => {
-            // work with contacts
-            dispatch(contactList(contacts));
-
-            // console.log(contacts)
-          })
-          .catch((e) => {
-            console.log("contacts error", e);
-          })
-      );
-    }
   }, []);
 
   return loading ? (

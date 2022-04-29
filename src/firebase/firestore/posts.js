@@ -34,8 +34,6 @@ export async function getProfilePosts(userId) {
   let querySnapshot = await firestore().collection("posts")
   .orderBy('createdAt', 'desc')
   .get();
-  console.log("querySnapshot",querySnapshot)
-
   querySnapshot.forEach(function (doc) {
       if (doc.exists) {
           post =doc.data()

@@ -3,10 +3,15 @@ import {LoadingImage} from '../Common/LoadingImage';
 import {MyHeading} from '../Common/MyHeading';
 import React from 'react';
 
-export const ChatHeader = ({relatedUser, navigation}) => {
+export const ChatHeader = ({relatedUser, navigation,userIdProps}) => {
   return (
     <View style={styles.header}>
-      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() =>{
+         userIdProps ?
+        navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})
+         :navigation.goBack()
+        
+      }}>
         <Image source={require('../../assets/images/back.png')} />
       </TouchableOpacity>
       <View>

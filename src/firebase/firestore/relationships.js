@@ -63,7 +63,7 @@ export const checkUserRelationships = async (userId, otherUserId) => {
 };
 export const updateRelationStatus =async(message,LastMessage)=>{
   try {
-    await firestore().doc(`relationships/${message.id}`).update({...message,LastMessage});
+    await firestore().doc(`relationships/${message.id}`).set({...message,LastMessage},{merge:true});
   } catch (error) {
     
   }
