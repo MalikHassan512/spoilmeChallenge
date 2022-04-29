@@ -3,7 +3,7 @@ import uuid from 'react-native-uuid';
 import {addSpoilData} from './spoils';
 
 export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
-  const id = uuid.v4();
+  const id = from > to ? (from+"__"+to+"__" +uuid.v4()) : (to+"__"+from+"__" +uuid.v4());
   const message={
     id,
     from,
@@ -12,11 +12,10 @@ export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
     text,
     spoilStatus,
     date: firestore.Timestamp.now(),
-    read: false,
   }
   await firestore().doc(`chats/${id}`).set(message,{merge:true});
   addSpoilData(spoil.name, spoil.image, from, to,id);
-  return {id,spoilStatus,text,from:from.id,to:to.id}
+  return {id,spoilStatus,text,from,to}
 };
 
 export const getMessages = (user1, user2, setMessages) => {

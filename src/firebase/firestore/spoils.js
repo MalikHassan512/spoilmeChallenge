@@ -25,7 +25,6 @@ export const getSpoils = (userId, setSpoils) => {
 
   return firestore()
     .collection('spoils')
-    // .where('to', '==', `${userId}`)
     .orderBy('date', 'desc')
     .onSnapshot(spoilsSnapshot => {
       const tempSpoils = [];
@@ -35,7 +34,7 @@ export const getSpoils = (userId, setSpoils) => {
         const tempSpoil = spoilSnapshot.data();
         const spoilDate = tempSpoil.date.toDate();
         tempSpoil.date = spoilDate;
-        if( (tempSpoil.to.id === userId || tempSpoil.from.id === userId)){
+        if( (tempSpoil.to === userId || tempSpoil.from === userId)){
         if (i !== 0 && !isDateEqual(tempDate, spoilDate)) {
           tempSpoils.push(tempSpoilDateGroup);
           tempSpoilDateGroup = [];

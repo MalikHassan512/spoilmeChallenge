@@ -6,9 +6,9 @@ export const createRelationship = async (
   to,
   lastMessage,
   relationStatus = 0,
-  messages
+  spoilStatus
 ) => {
-  const id = uuid.v4();
+  const id = from > to ? (from+"__"+to) : (to+"__"+from);
   await firestore().doc(`relationships/${id}`).set({
     id,
     from,
@@ -16,8 +16,8 @@ export const createRelationship = async (
     relationStatus,
     lastMessage,
     date: firestore.Timestamp.now(),
-    LastMessage:messages
-  },{merge:true});
+    spoilStatus
+    },{merge:true});
 };
 
 export const getUserRelationships = async (userId) => {
@@ -46,25 +46,21 @@ export const getUserRelationships = async (userId) => {
   return relationships;
 };
 
-export const checkUserRelationships = async (userId, otherUserId) => {
-  // console.log("userId", userId, "otherUserId", otherUserId);
-  const result = await firestore().collection(`relationships`).get();
-  let flag = null;
-  result.forEach((item, index) => {
-    if (
-      (item?.data()?.from?.id == userId &&
-        item?.data()?.to?.id == otherUserId) ||
-      (item?.data()?.from?.id == otherUserId && item?.data()?.to?.id == userId)
-    ) {
-      flag = item?.data();
-    }
-  });
-  return flag;
+export const checkUserRelationships = async (from, to) => {
+  const id = from > to ? (from+"__"+to) : (to+"__"+from);
+  const result = await firestore().collection(`relationships`).doc(id).get();
+ 
+  return result.data();
 };
-export const updateRelationStatus =async(message,LastMessage)=>{
+export const updateRelationStatus =async(from,to,lastMessage)=>{
+  const id = from > to ? (from+"__"+to) : (to+"__"+from);
+
   try {
-    await firestore().doc(`relationships/${message.id}`).set({...message,LastMessage},{merge:true});
+    await firestore().doc(`relationships/${id}`).set({
+      date: firestore.Timestamp.now(),
+      lastMessage:lastMessage,
+    },{merge:true});
   } catch (error) {
-    
+    console.log("updateRelationStatus",error)
   }
 }

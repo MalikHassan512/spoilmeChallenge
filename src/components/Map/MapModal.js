@@ -34,42 +34,41 @@ export default function MapModal({
     getAllSpoilTypes()
       .then((res) => setSpoilTypes(res))
       .catch((e) => {
-        console.log(e);
-        alert("Error occured");
+        console.log('error in line 37 getAllSpoilTypes',e);
       });
   }, []);
 
   const handleSpoilPress = async (spoilType) => {
     setLoadingId(spoilType.name)
     const relationStatus = await checkUserRelationships(userId, relatedUser.id);
+    console.log("relationStatus",relationStatus)
     let messages = {};
     if (!relationStatus) {
-      messages = await sendMessage(
-        user,
-        relatedUser,
+      sendMessage(
+        user.id,
+        relatedUser.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      // console.log("messages", messages);
-      await createRelationship(
-        user,
-        relatedUser,
+      createRelationship(
+        user.id,
+        relatedUser.id,
         `Here’s a ${spoilType.name}, enjoy!`,
-        0,
-        messages
+        0,  // relationStatus
+        0   //spoilStatus
       );
       // console.log("relation created");
     } else {
-      messages = await sendMessage(
-        user,
-        relatedUser,
+      sendMessage(
+        user.id,
+        relatedUser.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      await updateRelationStatus(relationStatus, messages);
-      // console.log("relation already exist");
+
+       updateRelationStatus( user.id,relatedUser.id, `Here’s a ${spoilType.name}, enjoy!`);
     }
     setLoadingId("")
     SimpleToast.show("Spoil sent")
