@@ -1,38 +1,32 @@
 import { StyleSheet, View, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
-import Entypo from "react-native-vector-icons/Entypo";
 import { getMessages, updateSpoilStatus } from "../../firebase/firestore/chats";
-import { checkUserRelationships } from "../../firebase/firestore/relationships";
+import { updateRelationStatus } from "../../firebase/firestore/relationships";
 import { LoadingImage } from "../Common/LoadingImage";
 import { MyText } from "../Common/MyText";
-import Images from "assets/images";
-import moment from "moment";
 import ChatButton from "./ChatButton";
 import CustomText from "../CustomText";
 import colors from "../../util/colors";
 import {chatFormat} from "../../util/helper";
-export const ChatBody = ({ userId, relatedUserId, relationId }) => {
+export const ChatBody = ({ userId, relatedUserId}) => {
   const [messages, setMessages] = useState([]);
   useEffect(() => {
     const messageSubscriber = getMessages(userId, relatedUserId, setMessages);
-
     return () => messageSubscriber();
   }, [userId, relatedUserId]);
   const updateStatus = (message, status, index) => {
-    updateSpoilStatus(message, status);
+
+    updateSpoilStatus(message.id, status);
     if (messages.length - 1 == index) {
-      const flag = checkUserRelationships(userId, relatedUserId);
-      updateRelationStatus(flag, {
-        id: message.id,
-        text: message.text,
-        spoilStatus: status,
-        from:userId,
-        to:relatedUserId
-      });
+      updateRelationStatus(
+        userId,
+        relatedUserId,
+        status
+      );
     }
   };
   const renderMessages = ({ index, item: message }) => {
-    const isUser = message.from.id === userId;
+    const isUser = message?.from === userId;
     return (
       <View key={index} style={{ padding: 5 }}>
         <View

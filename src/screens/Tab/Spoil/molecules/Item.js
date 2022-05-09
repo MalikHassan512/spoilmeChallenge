@@ -25,7 +25,7 @@ const SpoilItem = ({spoil,userId}) => {
         }
     }
   return (
-    <TouchableOpacity  onPress={()=>navigation.navigate('Chat', {
+    <TouchableOpacity activeOpacity={0.8}  onPress={()=>navigation.navigate('Chat', {
         user:fromUser,
         relatedUser: toUser,
       })}>

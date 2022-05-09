@@ -15,12 +15,13 @@ import { sendMessage } from "../../firebase/firestore/chats";
 import {
   createRelationship,
   checkUserRelationships,
-  updateRelationStatus,
+  updateLastMessage
 } from "../../firebase/firestore/relationships";
 import colors from "../../util/colors";
 import SimpleToast from "react-native-simple-toast";
 import CustomText from "../CustomText";
 import {fromNow} from '../../util/helper'
+import { useNavigation } from "@react-navigation/native";
 export default function MapModal({
   userId,
   user,
@@ -30,6 +31,7 @@ export default function MapModal({
 }) {
   const [spoilTypes, setSpoilTypes] = useState([]);
   const [loadingId, setLoadingId] = useState(-1);
+ const navigation = useNavigation()
   useEffect(() => {
     getAllSpoilTypes()
       .then((res) => setSpoilTypes(res))
@@ -41,10 +43,9 @@ export default function MapModal({
   const handleSpoilPress = async (spoilType) => {
     setLoadingId(spoilType.name)
     const relationStatus = await checkUserRelationships(userId, relatedUser.id);
-    console.log("relationStatus",relationStatus)
-    let messages = {};
+    let lastMessage = {};
     if (!relationStatus) {
-      sendMessage(
+      lastMessage = await sendMessage(
         user.id,
         relatedUser.id,
         spoilType,
@@ -54,13 +55,12 @@ export default function MapModal({
       createRelationship(
         user.id,
         relatedUser.id,
-        `Here’s a ${spoilType.name}, enjoy!`,
         0,  // relationStatus
-        0   //spoilStatus
+        lastMessage        
       );
       // console.log("relation created");
     } else {
-      sendMessage(
+       lastMessage = await sendMessage(
         user.id,
         relatedUser.id,
         spoilType,
@@ -68,7 +68,7 @@ export default function MapModal({
         0
       );
 
-       updateRelationStatus( user.id,relatedUser.id, `Here’s a ${spoilType.name}, enjoy!`);
+      updateLastMessage( user.id,relatedUser.id,lastMessage);
     }
     setLoadingId("")
     SimpleToast.show("Spoil sent")
@@ -85,10 +85,12 @@ export default function MapModal({
       <View>
         <View style={styles.top}>
           <View style={styles.user}>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:relatedUser?.id}})}>
             <LoadingImage
               source={{ uri: relatedUser.profilePic }}
               style={styles.profilePic}
             />
+            </TouchableOpacity>
             <View>
             <MyHeading
               text={`${relatedUser.firstName} ${relatedUser.lastName}`}

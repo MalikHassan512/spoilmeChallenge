@@ -6,8 +6,6 @@ import {MyText} from '../../../components/Common/MyText';
 import {getSpoils} from '../../../firebase/firestore/spoils';
 import {useSelector} from 'react-redux';
 import {selectUser} from '../../../redux/features/userSlice';
-import {LoadingImage} from '../../../components/Common/LoadingImage';
-import {Loading} from '../../../components/Common/Loading';
 import SpoilItem from './molecules/Item';
 export const Spoil = ({navigation}) => {
   const userId = useSelector(selectUser);

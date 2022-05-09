@@ -6,15 +6,12 @@ import {
     createPost,
   } from "../../../firebase/firestore/posts";
 import CustomText from '../../../components/CustomText';
-import RadioButtonRN from 'radio-buttons-react-native';
-import Icon from "react-native-vector-icons/FontAwesome";
 import VideoPlayer from 'react-native-video-player'
 import UploadPhoto from "components/UploadPhoto";
 import CustomModal from "components/CustomModal";
 import {useSelector} from 'react-redux';
 import colors from '../../../util/colors';
 import {scale, ScaledSheet, verticalScale} from 'react-native-size-matters'
-import InputField from "components/Common/InputField";
 
 const CreatePostModal = ({visible,setVisible,loadData}) => {
   const userId = useSelector((state) => state.user.userId);
@@ -25,10 +22,8 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
   const onSubmit = async()=>{
     try {
       setLoading(true)
-      const userData= await getUser(userId)
       const data={
         userId,
-        userData,
         type:'Post',
         title,
         dataType: image.type.includes('video') ?'video' : 'image',

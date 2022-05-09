@@ -2,6 +2,7 @@ import {StyleSheet, View, Image,TouchableOpacity} from 'react-native';
 import {LoadingImage} from '../Common/LoadingImage';
 import {MyHeading} from '../Common/MyHeading';
 import React from 'react';
+import colors from '../../util/colors';
 
 export const ChatHeader = ({relatedUser, navigation,userIdProps}) => {
   return (
@@ -23,7 +24,8 @@ export const ChatHeader = ({relatedUser, navigation,userIdProps}) => {
       </View>
       <LoadingImage
         source={{uri: relatedUser.profilePic}}
-        style={styles.profilePic}
+        style={[styles.profilePic,relatedUser?.isActive && {borderColor:colors.photoBorder}]}
+
       />
     </View>
   );

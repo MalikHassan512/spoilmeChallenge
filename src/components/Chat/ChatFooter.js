@@ -5,10 +5,10 @@ import { LoadingImage } from '../Common/LoadingImage';
 import { MyTextField } from '../Common/MyTextField';
 import { MyText } from '../Common/MyText';
 import { sendMessage } from '../../firebase/firestore/chats';
-import { checkUserRelationships,updateRelationStatus } from '../../firebase/firestore/relationships';
+import { updateLastMessage,updateRelationStatus } from '../../firebase/firestore/relationships';
 import Modal from 'react-native-modal';
 
-export const ChatFooter = ({ userId, relatedUserId }) => {
+export const ChatFooter = ({ userId, relatedUserId}) => {
   const [spoilTypes, setSpoilTypes] = useState([]);
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,11 +36,10 @@ export const ChatFooter = ({ userId, relatedUserId }) => {
       setMessage('');
       closeModal();
       const messageData=await sendMessage(userId, relatedUserId, selectedSpoilType, message);
-      const flag=await checkUserRelationships(userId.id,relatedUserId.id)
-      updateRelationStatus(flag,messageData)
+      updateRelationStatus(userId,relatedUserId,0)
+      updateLastMessage(userId,relatedUserId,messageData)
     } catch (error) {
-      console.log(e);
-      alert('Error occured. Please try again');
+      console.log('handleSend line 42',error);
     }
   };
   return (

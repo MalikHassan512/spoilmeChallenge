@@ -5,7 +5,7 @@ import {height} from 'react-native-dimension'
 import Post from "components/Post";
 
 const Posts = ({route,navigation}) => {
-    const {posts,itemIndex,userId}=route?.params
+    const {posts,itemIndex,userId,user}=route?.params
     const renderEmpty = ({ item }) => {
         return (
           <View style={styles.empty}>
@@ -24,7 +24,7 @@ const Posts = ({route,navigation}) => {
             />
           );
         } else {
-          return <Post  createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+          return <Post  createdAt={item?.createdAt} userDetail={user} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
         }
       };
   return (

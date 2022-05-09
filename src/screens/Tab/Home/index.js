@@ -5,7 +5,6 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  ActivityIndicator
 } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
@@ -13,16 +12,12 @@ import Colors from "util/colors";
 import { height, width } from "react-native-dimension";
 import Post from "../../../components/Post";
 import ScreenWrapper from "../../../components/ScreenWrapper";
-import { getAllOfCollection } from "../../../firebase/HelperFunctions/HelperFunctions";
-import moment from "moment";
 import ImageView from "react-native-image-viewing";
-import auth from "@react-native-firebase/auth";
 import { Loading } from "components/Common/Loading";
 
 import { useSelector } from "react-redux";
-import {fromNow} from '../../../util/helper'
 import {
-  getPosts
+  getHomeData
 } from "../../../firebase/firestore/posts";
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
 import CreatePostModal from '../Molecules/CreatePostModal'
@@ -41,8 +36,6 @@ const Home = ({navigation}) => {
   }
   const userId = useSelector((state) => state.user.userId);
   const [pageLoading, setPageLoading] = useState(false)
-  
-
   const [stories,setStories] = useState([]);
   const [storyImages, setStoryImages] = useState([]);
   const [posts, setPosts] = useState([]);
@@ -67,78 +60,49 @@ const Home = ({navigation}) => {
     getAllSpoilTypes()
       .then((res) => setSpoilTypes(res))
       .catch((e) => {
-        console.log(e);
-        alert("Error occured");
+        console.log("getSpoilType line 62",e);
       });
   }
   const loadData = async () => {
     setPageLoading(true)
-    const users = await getAllOfCollection("users");
-    const postData = await getPosts();
-    let posts = [];
-    let stories = [];
-    postData.map(post=>{
-      if(post.type=="Post"){
-     posts.push({
-       id:post.id,
-       description:post.title,
-       postType:post.type,
-       image:post.image,
-       userData:post.userData,
-       createdAt:post.createdAt,
-       dataType:post.dataType,
-     })
-    }
-    if(post.type!="Post"){
-      if(!fromNow(post.createdAt).includes('day')){
-      stories.push({
-        id:post.id,
-        description:post.title,
-        postType:post.type,
-        image:post.image,
-        name:post.userId == userId ? "Your Story" : post.userData?.firstName
-
-      })
-    }
-    }
-    })
+    // const users = await getAllOfCollection("users");
+    const {posts,stories} = await getHomeData(userId);
     setStories(stories)
-    users.map((user) => {
-      let dob = new Date(user?.dob?.seconds * 1000);
-      let formatedDate = moment(dob).format("DD-MM-YYYY");
-      let todaysDate = moment().format("DD-MM-YYYY");
-      if (user?.id !== auth().currentUser.uid) {
-        if (formatedDate == todaysDate) {
-          posts.push({
-            id: user?.id + "BIRTHDAY",
-            postType: "BIRTHDAY",
-            description: `${user?.firstName} ${user?.lastName} has their birthday today! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`,
-            userData:user,
-          });
-        }
-        if (user?.isHired) {
-          posts.push({
-            id: user?.id + "HIRED",
-            postType: "HIRED",
-            description: `${user?.firstName} ${user?.lastName} has been hired recently! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`,
-            userData:user,
+    // users.map((user) => {
+    //   let dob = new Date(user?.dob?.seconds * 1000);
+    //   let formatedDate = moment(dob).format("DD-MM-YYYY");
+    //   let todaysDate = moment().format("DD-MM-YYYY");
+    //   if (user?.id !== auth().currentUser.uid) {
+    //     if (formatedDate == todaysDate) {
+    //       posts.push({
+    //         id: user?.id + "BIRTHDAY",
+    //         postType: "BIRTHDAY",
+    //         description: `${user?.firstName} ${user?.lastName} has their birthday today! Spoil him!`,
+    //         name: `${user?.firstName} ${user?.lastName}`,
+    //         userData:user,
+    //       });
+    //     }
+    //     if (user?.isHired) {
+    //       posts.push({
+    //         id: user?.id + "HIRED",
+    //         postType: "HIRED",
+    //         description: `${user?.firstName} ${user?.lastName} has been hired recently! Spoil him!`,
+    //         name: `${user?.firstName} ${user?.lastName}`,
+    //         userData:user,
 
-          });
-        }
-        if (user?.isEngaged) {
-          posts.push({
-            id: user?.id + "ENGAGED",
-            postType: "ENGAGED",
-            description: `${user?.firstName} ${user?.lastName} has been engaged recently! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`,
-            userData:user,
-          });
-        }
-      }
-    });
-   
+    //       });
+    //     }
+    //     if (user?.isEngaged) {
+    //       posts.push({
+    //         id: user?.id + "ENGAGED",
+    //         postType: "ENGAGED",
+    //         description: `${user?.firstName} ${user?.lastName} has been engaged recently! Spoil him!`,
+    //         name: `${user?.firstName} ${user?.lastName}`,
+    //         userData:user,
+    //       });
+    //     }
+    //   }
+    // });
     setPosts(posts);
     setRefreshing(false);
     setPageLoading(false)
@@ -173,7 +137,7 @@ const Home = ({navigation}) => {
         />
       );
     } else {
-      return <Post spoilTypes={spoilTypes} createdAt={item?.createdAt} userData={item?.userData} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+      return <Post spoilTypes={spoilTypes} createdAt={item?.createdAt} postUserId={item?.userId} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description}  />;
     }
   };
   const renderEmpty = ({ item }) => {

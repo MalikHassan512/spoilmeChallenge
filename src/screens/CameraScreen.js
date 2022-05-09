@@ -21,10 +21,8 @@ const CameraScreen = ({navigation}) => {
     const onSubmit = async()=>{
         try {
           setLoading(true)
-          const userData= await getUser(userId)
           const data={
             userId,
-            userData,
             type:'Story',
             title: '',
             dataType: image.type.includes('video') ?'video' : 'image',

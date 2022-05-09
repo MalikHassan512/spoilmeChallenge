@@ -19,24 +19,29 @@ export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
 };
 
 export const getMessages = (user1, user2, setMessages) => {
+  const id = user1 > user2 ? (user1+"__"+user2+"__") : (user2+"__"+user1+"__");
+  console.log('id',id)
   return firestore()
     .collection(`chats`)
-    .orderBy('date', 'asc')
+    .orderBy('id')
+    .startAt(id)
+    .endAt(id + '~')
     .onSnapshot(chatsSnapshot => {
       const messages = [];
-      chatsSnapshot.forEach(chatSnapshot => {
+      chatsSnapshot?.forEach(chatSnapshot => {
         const message = chatSnapshot.data();
-        if ( (message.to.id == user1 && message.from.id == user2) || (message.to.id === user2 && message.from.id === user1) )
+        console.log("message",message)
+        // if ( (message.to.id == user1 && message.from.id == user2) || (message.to.id === user2 && message.from.id === user1) )
           messages.push(message);
       });
-      setMessages(messages);
+      setMessages(messages.sort((a,b)=>a?.date?.seconds-b?.date?.seconds || 0));
     });
 };
-export const updateSpoilStatus =async(message,status)=>{
+export const updateSpoilStatus =async(id,status)=>{
   try {
-    await firestore().doc(`chats/${message.id}`).update({...message,spoilStatus:status});
+    await firestore().doc(`chats/${id}`).set({spoilStatus:status},{merge:true});
   } catch (error) {
-    
+    console.log("updateSpoilStatus", error)
   }
 }
 export const getMessageById=(id)=>{

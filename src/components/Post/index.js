@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef,useEffect } from 'react';
 import { Image, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import SimpleToast from "react-native-simple-toast";
 import styles from './styles';
@@ -17,7 +17,7 @@ import moment from 'moment';
 import {
     createRelationship,
     checkUserRelationships,
-    updateRelationStatus,
+    updateLastMessage,
   } from "../../firebase/firestore/relationships";
 import { sendMessage } from "../../firebase/firestore/chats";
 import { useSelector } from 'react-redux';
@@ -28,35 +28,45 @@ import { useNavigation } from '@react-navigation/native';
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
-    name = 'Maria Pablos',
     image,
-    userData,
+    userDetail,
     dataType,
     createdAt,
-    spoilTypes
+    spoilTypes,
+    postUserId
 }) => {
   const navigation=useNavigation()
   const videoRef = useRef(null)
   const [loadingId, setLoadingId] = useState(-1);
   const [visible, setVisible] = useState(false)
   const userId= useSelector(state=>state.user.userId)
+  const [userData, setUserData] = useState(userDetail || {})
+
+  useEffect(() => {
+    (async function() {
+      if(postUserId){
+        const response= await getUser(postUserId)
+        setUserData(response)
+      }
+    })()
+  }, [])
+  
   const handleSpoilPress = async (spoilType) => {
     setLoadingId(spoilType.name)
-    const user= await getUser(userId)
     const relationStatus = await checkUserRelationships(userId, userData.id);
     let messages = {};
     if (!relationStatus) {
       messages = await sendMessage(
-        user,
-        userData,
+        userId,
+        userData.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
       // console.log("messages", messages);
       await createRelationship(
-        user,
-        userData,
+        userId,
+        userData.id,
         `Here’s a ${spoilType.name}, enjoy!`,
         0,
         messages
@@ -64,13 +74,13 @@ const Post = ({
       // console.log("relation created");
     } else {
       messages = await sendMessage(
-        user,
-        userData,
+        userId,
+        userData.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      await updateRelationStatus(relationStatus, messages);
+      await updateLastMessage(userId,userData.id, messages);
       // console.log("relation already exist");
     }
     setLoadingId("")

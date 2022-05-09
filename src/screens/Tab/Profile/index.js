@@ -22,8 +22,7 @@ import {useSelector} from 'react-redux'
 import { height, width } from "react-native-dimension";
 import Colors from "util/colors";
 import HomeHeader from 'components/HomeHeader'
-import {getProfilePosts } from "../../../firebase/firestore/posts";
-import { ActivityIndicator } from "react-native-paper";
+import {getPosts } from "../../../firebase/firestore/posts";
 import VideoPlayer from 'react-native-video-player';
 import CreatePostModal from '../Molecules/CreatePostModal'
 import MapModal from "components/Map/MapModal";
@@ -94,7 +93,7 @@ export const Profile = ({ navigation,route }) => {
    
   }
   const loadData = async () => {
-    const postData = await getProfilePosts(userId)
+    const postData = await getPosts(userId)
     setPosts(postData);
     setLoading(false)
     setRefreshing(false)
@@ -130,7 +129,7 @@ export const Profile = ({ navigation,route }) => {
             <CustomText  fontWeight={'bold'} label={relation?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Relations'}   />
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:0,userId})} style={{alignItems:'center'}}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:0,userId,user})} style={{alignItems:'center'}}>
             <CustomText  fontWeight={'bold'} label={posts?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Posts'}   />
           </TouchableOpacity>
@@ -165,7 +164,7 @@ export const Profile = ({ navigation,route }) => {
           renderItem={({item,index}) => {
             return(
               <>
-              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index,userId})} style={styles.imageContainer}>
+              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index, userId,user})} style={styles.imageContainer}>
                 {item?.dataType=='video' ?
                  <VideoPlayer video={{uri:item.image}} style={styles.image} /> :
                  <Image style={styles.image} source={{uri:item.image}} />
