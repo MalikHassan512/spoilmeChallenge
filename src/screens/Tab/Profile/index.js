@@ -16,8 +16,9 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import PopupModal from "../../../components/Common/PopupModal";
+import RelationModal from "../../../components/Common/RelationModal";
 import {getUser } from "../../../firebase/firestore/users";
-import {getUserRelationships} from '../../../firebase/firestore/relationships'
+import {getUserRelationships,checkUserRelationships,updateRelationStatus} from '../../../firebase/firestore/relationships'
 import {useSelector} from 'react-redux'
 import { height, width } from "react-native-dimension";
 import Colors from "util/colors";
@@ -41,7 +42,8 @@ export const Profile = ({ navigation,route }) => {
   const contacts =useSelector((state) => state.user.contactList);
   const [postModal, setPostModal] = useState(false)
   const [authUser, setAuthUser] = useState(null);
-  
+const [isRelationModal, setIsRelationModal] = useState(false)  
+const [relationStatus, setRelationStatus] = useState(false)
   const [modalVisible, setModalVisible] = useState(false);
   const closeModal = () => {
     setModalVisible(false);
@@ -50,7 +52,7 @@ export const Profile = ({ navigation,route }) => {
   useEffect(() => {
     setPosts([])
     getAllData()
-    
+    setLoading(true)
   }, [userId])
   
   useEffect(() => {
@@ -58,7 +60,6 @@ export const Profile = ({ navigation,route }) => {
       "blur",
       () => {
         setPosts([])
-        setLoading(true)
         navigation.setParams({userId:undefined})    
       },
       [navigation]
@@ -78,7 +79,8 @@ export const Profile = ({ navigation,route }) => {
       if(otherUserId && otherUserId!=id){
        const authUserData= await getUser(id)
        setAuthUser(authUserData)
-       
+       const relationStatus = await checkUserRelationships(id, otherUserId);
+       setRelationStatus(relationStatus)
       }else{
         setAuthUser(userData)
       }
@@ -93,11 +95,22 @@ export const Profile = ({ navigation,route }) => {
    
   }
   const loadData = async () => {
-    const postData = await getPosts(userId)
+    try {
+      const postData = await getPosts(userId)
     setPosts(postData);
     setLoading(false)
     setRefreshing(false)
+    } catch (error) {
+      console.log("loadData in profile",error)
+      setLoading(false)
+    setRefreshing(false)
+    }
+    
   };
+
+  const changeRelationStatus=(isRelationFlag)=>{
+    updateRelationStatus(id, otherUserId,isRelationFlag)
+  }
   return (
   
     loading ?
@@ -109,7 +122,6 @@ export const Profile = ({ navigation,route }) => {
         onPress={() => otherUserId ? otherUserId != id ? navigation.goBack() : setShowModal(true):setShowModal(true)}
         style={[styles.headTextCont, otherUserId ? otherUserId != id  ?  {flexDirection:'row-reverse',alignItems:'center'}:{}:{}]}
       >
-
         <CustomText label={user?.email?.split("@")?.[0]} textStyle={styles.headerText} />
        {otherUserId ? otherUserId != id ? <Ionicons name="arrow-back" style={{marginRight:5}} color="#000" size={moderateScale(19)} /> :
         <Entypo name={"chevron-down"} style={styles.headerTextIcon} />: <Entypo name={"chevron-down"} style={styles.headerTextIcon} />}
@@ -141,7 +153,7 @@ export const Profile = ({ navigation,route }) => {
     <CustomText textStyle={{textTransform:'capitalize'}} fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
   {otherUserId ?otherUserId != id  ?<View style={{flexDirection:'row',justifyContent:'space-between'}}>
     <CustomText onPress={()=>setModalVisible(true)} color={'#fff'} alignSelf={'center'} label="Spoil" container={styles.btn} />
-    <CustomText color={'#000'} alignSelf={'center'} label="Relation" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
+    <CustomText onPress={()=>setIsRelationModal(true)} color={'#000'} alignSelf={'center'} label="Relation" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
     <CustomText onPress={()=>navigation.navigate('Chat', {
                       user:authUser,
                       relatedUser:user,
@@ -194,6 +206,8 @@ export const Profile = ({ navigation,route }) => {
           modalVisible={modalVisible}
         />
       )}
+      {console.log("relationStatus",relationStatus)}
+      <RelationModal changeRelationStatus={changeRelationStatus} isRelation={relationStatus} visible={isRelationModal} setVisible={setIsRelationModal} />
   </ScrollView>
   </>
   

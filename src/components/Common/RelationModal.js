@@ -1,29 +1,17 @@
-import { View, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import { View, TouchableOpacity} from "react-native";
+import React,{useState,useEffect} from "react";
 import CustomText from "../CustomText";
 import colors from "../../util/colors";
 import { moderateScale, ScaledSheet } from "react-native-size-matters";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {reportPost,checkReportedPost} from '../../firebase/firestore/report'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+
 import Modal from 'react-native-modal'
-import SimpleToast from "react-native-simple-toast";
-const PopupModal = ({ visible, setVisible, postBy, reportBy,postId}) => {
-  const onClickReport =async()=>{
-    try {
-      setVisible(false)
-      const isReported = await checkReportedPost(reportBy,postId)
-      if(!isReported){
-        reportPost(postBy,reportBy,postId)
-        SimpleToast.show("Post reported")
-      }else{
-        SimpleToast.show("Already reported")
-      }
-      
-    } catch (error) {
-      console.log("errror onClickReport",error)
-      setVisible(false)
-    }
-  }
+const RelationModal = ({ visible, setVisible,isRelation,changeRelationStatus}) => {
+const [isRelationFlag, setIsRelationFlag] = useState(isRelation? true :false)
+ useEffect(() => {
+  setIsRelationFlag(isRelation? true :false)
+ }, [])
+ 
   return (
     <Modal 
     style={{margin: 0}}
@@ -35,28 +23,25 @@ const PopupModal = ({ visible, setVisible, postBy, reportBy,postId}) => {
         ></TouchableOpacity>
         <View style={styles.secondContainer}>
           <View style={styles.emptyView} />
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate("Setting")}
-            style={styles.settingContainer}
-          >
-            <AntDesign name="sharealt" size={moderateScale(16)} />
-            <CustomText marginLeft={10} fontWeight={'700'} label="Share" />
-          </TouchableOpacity> */}
           <TouchableOpacity
-            onPress={onClickReport}
+            onPress={()=>{
+              setIsRelationFlag(!isRelationFlag)
+              changeRelationStatus(isRelationFlag ? 2 : 1)
+              setVisible(false)
+
+            }}
             style={styles.settingContainer}
           >
-            <MaterialIcons color={colors.primary} name="report" size={moderateScale(19)} />
-            <CustomText marginLeft={10} fontWeight={'700'} color={colors.primary} label="Report"  />
+            <AntDesign color={isRelationFlag ?colors.primary  : "#000"} name={isRelationFlag ? "deleteuser" : "adduser"} size={moderateScale(18)} />
+            <CustomText color={isRelationFlag ?colors.primary  : "#000"} marginLeft={10} fontWeight={'700'} label={isRelationFlag ?"Remove relation" : "Add relation"} />
           </TouchableOpacity>
-        
         </View>
       </View>
     </Modal>
   );
 };
 
-export default PopupModal;
+export default RelationModal;
 
 const styles = ScaledSheet.create({
   firstContainer: {

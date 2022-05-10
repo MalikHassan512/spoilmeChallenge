@@ -12,7 +12,7 @@ const UploadPhoto = (props) => {
     maxWidth: 300,
     maxHeight: 300,
     mediaType:'photo',
-    quality:0.8,
+    quality:1,
     ...props.options
   };
   setImageModal(false)

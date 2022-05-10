@@ -24,7 +24,7 @@ const Posts = ({route,navigation}) => {
             />
           );
         } else {
-          return <Post  createdAt={item?.createdAt} userDetail={user} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
+          return <Post isMyPosts createdAt={item?.createdAt} userDetail={user} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description} name={item?.name} />;
         }
       };
   return (

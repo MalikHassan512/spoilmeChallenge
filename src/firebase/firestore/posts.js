@@ -57,30 +57,36 @@ export async function getHomeData(userId) {
 }
 
 export async function getPosts(userId) {
-  let data = [];
-  let querySnapshot = await firestore()
-    .collection("posts")
-    .orderBy("id")
-    .startAt(userId)
-    .endAt(userId + "~")
-    .get();
-  querySnapshot.forEach(function (doc) {
-    if (doc.exists) {
-      post = doc.data();
-        if (post.type == "Post" && post.userId == userId) {
-          data.push({
-            id: post.id,
-            description: post.title,
-            postType: post.type,
-            image: post.image,
-            userData: post.userData,
-            createdAt: post.createdAt,
-            dataType: post.dataType,
-          });
-        }
-    } else {
-      console.log("No document found!");
-    }
-  });
-  return data.sort((a, b) => a?.createdAt?.seconds - b?.date?.seconds || 0);
+  try {
+    let data = [];
+    let querySnapshot = await firestore()
+      .collection("posts")
+      .orderBy("id")
+      .startAt(userId)
+      .endAt(userId + "~")
+      .get();
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        post = doc.data();
+          if (post.type == "Post" && post.userId == userId) {
+            data.push({
+              id: post.id,
+              description: post.title,
+              postType: post.type,
+              image: post.image,
+              userData: post.userData,
+              createdAt: post.createdAt,
+              dataType: post.dataType,
+            });
+          }
+      } else {
+        console.log("No document found!");
+      }
+    });
+    return data.sort((a, b) => a?.createdAt?.seconds - b?.date?.seconds || 0);
+  } catch (error) {
+    console.log("getPosts line 37",error)
+    throw error
+  }
+ 
 }

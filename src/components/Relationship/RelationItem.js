@@ -68,7 +68,8 @@ const RelationItem = ({ index, conversation,navigation,userId}) => {
           <View>
             <MyHeading
               marginBottom={5}
-              text={`${toUser?.firstName} ${toUser?.lastName?.[0]}.`}
+              marginTop={15}
+              text={`${(toUser?.firstName || "")} ${((toUser?.lastName?.[0] || ""))}.`}
             />
             <MyText text={conversation?.lastMessage?.text} color="#C4C4C4" />
             <View>
@@ -109,8 +110,9 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: 15,
-      borderTopWidth: 1,
+      paddingTop: 6,
+      borderBottomWidth:0.3,
+      marginBottom:2,
     },
     profilePic: {
       borderRadius: 100,

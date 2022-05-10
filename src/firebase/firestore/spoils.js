@@ -46,46 +46,6 @@ export const getSpoils = (userId, setSpoils) => {
       tempSpoils.push(tempSpoilDateGroup);
 
       setSpoils(tempSpoils);
-      // const spoilData=[]
-      // spoilsSnapshot.forEach((item,index)=>{
-      //   let spoil=item.data();
-      //   console.log(index,spoilData)
-      //   let spoilDate=spoil.date.toDate();
-      //   if(spoilsSnapshot.length==1){
-      //     spoilData.push({
-      //       date:spoilDate,
-      //       data:[spoil],
-      //     })
-      //   }
-      //   if(index+1!==spoilsSnapshot.length){
-      //   let nextSpoil=spoilsSnapshot[index+1].data();
-      //   let nextSpoilDate=nextSpoil.date.toDate();
-
-      
-
-      //   if(isDateEqual(spoilDate, nextSpoilDate)){
-      //       spoilData.push({
-      //         date:spoilDate,
-      //         data:[...spoilData.data,[spoil,nextSpoil]]
-      //       })
-      //   }else{
-
-      //     spoilData.push({
-      //       date:spoilDate,
-      //       data:[spoil]
-      //     },
-      //     {
-      //       date:nextSpoilDate,
-      //       data:[nextSpoil]
-      //     }
-      //     )
-           
-      //   }
-      // }
-
-      // })
-    
-      
     });
 };
 

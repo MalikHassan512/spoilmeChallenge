@@ -33,7 +33,9 @@ const Post = ({
     dataType,
     createdAt,
     spoilTypes,
-    postUserId
+    postUserId,
+    isMyPosts,
+    postId
 }) => {
   const navigation=useNavigation()
   const videoRef = useRef(null)
@@ -112,7 +114,7 @@ const Post = ({
     }
     return (
         <View styles={styles.container}>
-          <PostOptionModal visible={visible} setVisible={setVisible} />
+          <PostOptionModal postBy={userData.id} reportBy={userId} postId={postId} visible={visible} setVisible={setVisible} />
             <View style={styles.userInfo}>
               <TouchableOpacity activeOpacity={1} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userData?.id}})} style={{flexDirection:'row',alignItems:'center'}}>
                 <Image source={userData?.profilePic?{uri:userData?.profilePic}:defualtImage} style={styles.avatar} />
@@ -121,9 +123,9 @@ const Post = ({
                     <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={{padding:'2%'}} >
+                {userId !=userData?.id &&<TouchableOpacity onPress={()=>setVisible(true)} style={{padding:'2%'}} >
                 <Entypo color={'#000'} size={moderateScale(15)} name='dots-three-vertical' />
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
             <View style={styles.post}>
               <CustomText textStyle={styles.description} label={description}  />

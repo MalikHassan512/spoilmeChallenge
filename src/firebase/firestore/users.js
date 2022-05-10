@@ -44,8 +44,14 @@ export const addUserData = async (
 };
 
 export const getUser = async userId => {
-  const user = await firestore().doc(`users/${userId}`).get();
+  try {
+    const user = await firestore().doc(`users/${userId}`).get();
   return user.data();
+  } catch (error) {
+    console.log("getUser line 51",error)
+    throw error
+  }
+  
 };
 
 export const getUsersById = async usersId => {

@@ -5,16 +5,20 @@ import { LoadingImage } from '../../../../components/Common/LoadingImage';
 import { MyHeading } from '../../../../components/Common/MyHeading';
 import { MyText } from '../../../../components/Common/MyText';
 import {getUsersById} from '../../../../firebase/firestore/users';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 const SpoilItem = ({spoil,userId}) => {
     const navigation=useNavigation();
     const [fromUser, setFromUser] = useState({});
     const [toUser, setToUser] = useState({})
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         getUsersName()
     }, [])
     const getUsersName = async()=>{
+      try {
+        setLoading(true)
         const users = await getUsersById([spoil.to,spoil.from])
         if(users[0].id == userId){
             setFromUser(users[0])
@@ -23,8 +27,16 @@ const SpoilItem = ({spoil,userId}) => {
             setFromUser(users[1])
             setToUser(users[0])
         }
+      setLoading(false)
+      } catch (error) {
+        console.log("getUsersName line 23",error);
+        setLoading(false)
+      }
     }
-  return (
+  return loading ?
+    <View style={[styles.img,{marginBottom:10,alignItems:'center',justifyContent:'center'}]}>
+      <ActivityIndicator color={'black'} />
+    </View>:
     <TouchableOpacity activeOpacity={0.8}  onPress={()=>navigation.navigate('Chat', {
         user:fromUser,
         relatedUser: toUser,
@@ -39,9 +51,9 @@ const SpoilItem = ({spoil,userId}) => {
             <MyText
               text={
                 userId != spoil.from
-                  ? `Received from ${fromUser.firstName + fromUser.lastName}`
+                  ? `Received from ${(fromUser?.firstName || "") + " "+ (fromUser?.lastName || "")}`
                   : userId == spoil.from
-                  ? `Sent to ${toUser.firstName +" "+ toUser.lastName}`
+                  ? `Sent to ${(toUser?.firstName || "") +" "+ (toUser?.lastName || "")}`
                   : null
               }
               color="gray"
@@ -49,7 +61,7 @@ const SpoilItem = ({spoil,userId}) => {
           </View>
         </View>
       </TouchableOpacity>
-  )
+  
 }
 
 export default SpoilItem

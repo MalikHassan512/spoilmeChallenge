@@ -137,7 +137,7 @@ const Home = ({navigation}) => {
         />
       );
     } else {
-      return <Post spoilTypes={spoilTypes} createdAt={item?.createdAt} postUserId={item?.userId} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description}  />;
+      return <Post postId={item?.id} spoilTypes={spoilTypes} createdAt={item?.createdAt} postUserId={item?.userId} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description}  />;
     }
   };
   const renderEmpty = ({ item }) => {

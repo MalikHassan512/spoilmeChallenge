@@ -52,7 +52,7 @@ export default function MapModal({
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      createRelationship(
+     await createRelationship(
         user.id,
         relatedUser.id,
         0,  // relationStatus
@@ -68,11 +68,10 @@ export default function MapModal({
         0
       );
 
-      updateLastMessage( user.id,relatedUser.id,lastMessage);
+     await updateLastMessage(user.id,relatedUser.id,lastMessage);
     }
     setLoadingId("")
     SimpleToast.show("Spoil sent")
-    // alert("Spoil sent");
   };
 
   return (

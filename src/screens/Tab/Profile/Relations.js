@@ -55,29 +55,29 @@ const Relations = ({ navigation,route }) => {
   //     setRelation(relationships);
   //   }
   // }, [searchText]);
-  useEffect(() => {
-    if(searchText){
-      setRelationships(
-        relatedUsers.filter((otherUser,index)=>{
-        const user = otherUser?.from?.id !== userId ? otherUser?.from : otherUser?.to;
-        const re = new RegExp(searchText.replace('.', ''));
-        return !!user?.firstName?.match(re) || !!user?.lastName?.match(re);
-      })
-      )
-    }else{
-      setRelationships(relatedUsers)
-    }
-}, [searchText]);
+//   useEffect(() => {
+//     if(searchText){
+//       setRelationships(
+//         relatedUsers.filter((otherUser,index)=>{
+//         const user = otherUser?.from?.id !== userId ? otherUser?.from : otherUser?.to;
+//         const re = new RegExp(searchText.replace('.', ''));
+//         return !!user?.firstName?.match(re) || !!user?.lastName?.match(re);
+//       })
+//       )
+//     }else{
+//       setRelationships(relatedUsers)
+//     }
+// }, [searchText]);
   return (
     <ScrollView style={styles.container}>
       <Header onBackPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})} label="Relationships" />
-      <LogoButton
+      {/* <LogoButton
         imgPath={images.search}
         imgStyle={styles.searchIcon}
         container={styles.logoButton}
         label="Search"
         onChangeText={(value) => setSearchText(value)}
-      />
+      /> */}
       <FlatList
         nestedScrollEnabled={true}
         columnWrapperStyle={{
@@ -87,10 +87,7 @@ const Relations = ({ navigation,route }) => {
         data={relationships}
         numColumns={4}
         keyExtractor={(item, index) => item + index.toString()}
-        renderItem={({ item }) => <RelationPeople item={item} />}
-        // renderItem={(element) => {
-        //   return <RelationPeople />;
-        // }}
+        renderItem={({ item }) => <RelationPeople userId={userId} item={item} />}
       />
     </ScrollView>
   );

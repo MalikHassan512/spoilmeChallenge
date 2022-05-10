@@ -107,8 +107,8 @@ useEffect(() => {
 
           if (route.name === "Spoil") {
             icon = focused
-              ? require("../assets/images/spoilClick.png")
-              : require("../assets/images/spoil.png");
+              ? require("../assets/images/wallet_red.png")
+              : require("../assets/images/wallet_black.png");
           } else if (route.name === "Relationship") {
             icon = focused
               ? require("../assets/images/heart_red.png")

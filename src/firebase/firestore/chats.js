@@ -20,7 +20,6 @@ export const sendMessage = async (from, to, spoil, text,spoilStatus=0) => {
 
 export const getMessages = (user1, user2, setMessages) => {
   const id = user1 > user2 ? (user1+"__"+user2+"__") : (user2+"__"+user1+"__");
-  console.log('id',id)
   return firestore()
     .collection(`chats`)
     .orderBy('id')
@@ -56,7 +55,6 @@ export const getLastMessages = (
 ) => {
   return firestore()
     .collection(`chats`)
-    // .where('from', 'in', [user1, user2])
     .orderBy('date', 'asc')
     .onSnapshot(chatsSnapshot => {
       const messages = [];
