@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 import ContactModal from "../../../components/ContactModal";
 import { selectUser } from "../../../redux/features/userSlice";
 const Contacts = () => {
-  const people = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   const [searchText, setSearchText] = useState("");
   const [relationships, setRelationships] = useState([]);
   const contacts = useSelector((state) => state.user.contactList);
@@ -38,13 +37,14 @@ const Contacts = () => {
         label="Search"
         onChangeText={(value) => setSearchText(value)}
       />
-      <View style={styles.socialIconContainer}>
+      {/* <View style={styles.socialIconContainer}>
         <Image style={styles.socialIcon} source={images.faceBook} />
         <Image style={styles.socialIcon} source={images.twitterIcon} />
         <Image style={styles.socialIcon} source={images.linkedinIcon} />
         <Image style={styles.socialIcon} source={images.phonIcon} />
-      </View>
+      </View> */}
       <FlatList
+      showsVerticalScrollIndicator={false}
         data={relationships}
         keyExtractor={(item, index) => item + index.toString()}
         renderItem={({ item }) => <RelationPeopleWithBtn item={item} />}

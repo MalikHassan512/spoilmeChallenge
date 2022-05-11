@@ -9,8 +9,6 @@ const UploadPhoto = (props) => {
   
   const takePhotoFromCamera = () => {
     const options = {
-    maxWidth: 300,
-    maxHeight: 300,
     mediaType:'photo',
     quality:1,
     ...props.options

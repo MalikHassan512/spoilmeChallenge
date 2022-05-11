@@ -14,7 +14,9 @@ const SpoilItem = ({spoil,userId}) => {
     const [toUser, setToUser] = useState({})
     const [loading, setLoading] = useState(false)
     useEffect(() => {
-        getUsersName()
+      if(!spoil.isAdmin){
+          getUsersName()
+        }
     }, [])
     const getUsersName = async()=>{
       try {
@@ -37,7 +39,7 @@ const SpoilItem = ({spoil,userId}) => {
     <View style={[styles.img,{marginBottom:10,alignItems:'center',justifyContent:'center'}]}>
       <ActivityIndicator color={'black'} />
     </View>:
-    <TouchableOpacity activeOpacity={0.8}  onPress={()=>navigation.navigate('Chat', {
+    <TouchableOpacity disabled={spoil.isAdmin} activeOpacity={0.8}  onPress={()=>navigation.navigate('Chat', {
         user:fromUser,
         relatedUser: toUser,
       })}>
@@ -50,6 +52,7 @@ const SpoilItem = ({spoil,userId}) => {
             <MyHeading text={spoil.name} fontSize={18} />
             <MyText
               text={
+                spoil.isAdmin ? "Received from Admin" :
                 userId != spoil.from
                   ? `Received from ${(fromUser?.firstName || "") + " "+ (fromUser?.lastName || "")}`
                   : userId == spoil.from

@@ -50,7 +50,6 @@ const [relationStatus, setRelationStatus] = useState(false)
   };
   const [image, setImage] = useState("")
   useEffect(() => {
-    setPosts([])
     getAllData()
     setLoading(true)
   }, [userId])
@@ -59,7 +58,6 @@ const [relationStatus, setRelationStatus] = useState(false)
     const unsubscribe = navigation.addListener(
       "blur",
       () => {
-        setPosts([])
         navigation.setParams({userId:undefined})    
       },
       [navigation]

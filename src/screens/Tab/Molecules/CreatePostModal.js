@@ -76,8 +76,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
            {!image ?<UploadPhoto
           handleChange={(res) => setImage(res)}
           options={{mediaType:'mixed'
-        ,  maxWidth: scale(312),
-          maxHeight: verticalScale(240),
+       
         }}
           renderButton={(handleChange)=><TouchableOpacity
             activeOpacity={0.6}
