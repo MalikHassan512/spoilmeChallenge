@@ -8,16 +8,16 @@ import {getUsersById} from '../../../../firebase/firestore/users';
 import { ActivityIndicator } from 'react-native-paper';
 
 
-const SpoilItem = ({spoil,userId}) => {
+const SpoilItem = ({spoil,userId,length}) => {
     const navigation=useNavigation();
     const [fromUser, setFromUser] = useState({});
     const [toUser, setToUser] = useState({})
     const [loading, setLoading] = useState(false)
     useEffect(() => {
-      if(!spoil.isAdmin){
+      if(spoil.isAdmin==false){
           getUsersName()
         }
-    }, [])
+    }, [length])
     const getUsersName = async()=>{
       try {
         setLoading(true)
@@ -54,7 +54,7 @@ const SpoilItem = ({spoil,userId}) => {
               text={
                 spoil.isAdmin ? "Received from Admin" :
                 userId != spoil.from
-                  ? `Received from ${(fromUser?.firstName || "") + " "+ (fromUser?.lastName || "")}`
+                  ? `Received from ${(toUser?.firstName || "") + " "+ (toUser?.lastName || "")}`
                   : userId == spoil.from
                   ? `Sent to ${(toUser?.firstName || "") +" "+ (toUser?.lastName || "")}`
                   : null

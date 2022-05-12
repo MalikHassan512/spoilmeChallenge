@@ -1,12 +1,25 @@
-import { StyleSheet, Text, View,FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View,FlatList,BackHandler } from 'react-native'
+import React,{useEffect} from 'react'
 import Header from "./Molecules/Header";
-import {height} from 'react-native-dimension'
 import Post from "components/Post";
+import { height, width } from "react-native-dimension";
 
 const Posts = ({route,navigation}) => {
     const {posts,itemIndex,userId,user}=route?.params
-    const renderEmpty = ({ item }) => {
+    useEffect(() => {
+      const backAction = () => {
+        navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userId}})
+        return true;
+      };
+    
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+    
+      return () => backHandler.remove();
+    }, []);
+    const renderEmpty = () => {
         return (
           <View style={styles.empty}>
             <Text style={styles.emptyText}>No posts available</Text>
@@ -50,5 +63,16 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         paddingHorizontal:10
-    }
+    },
+    empty: {
+      height: height(20),
+      width: width(100),
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emptyText: {
+      color: '#000',
+      fontWeight: "bold",
+      fontSize: width(4),
+    },
 })

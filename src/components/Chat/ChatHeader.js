@@ -7,7 +7,7 @@ import colors from '../../util/colors';
 export const ChatHeader = ({relatedUser, navigation,userIdProps}) => {
   return (
     <View style={styles.header}>
-      <TouchableOpacity activeOpacity={0.7} onPress={() =>{
+      <TouchableOpacity style={{width:40,height:40}} activeOpacity={0.7} onPress={() =>{
          userIdProps ?
         navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})
          :navigation.goBack()

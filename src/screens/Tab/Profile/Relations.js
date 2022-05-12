@@ -1,4 +1,4 @@
-import { View, FlatList, ScrollView } from "react-native";
+import { View, FlatList, ScrollView,BackHandler } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import React, { useState, useEffect } from "react";
 import Header from "./Molecules/Header";
@@ -68,6 +68,20 @@ const Relations = ({ navigation,route }) => {
 //       setRelationships(relatedUsers)
 //     }
 // }, [searchText]);
+
+useEffect(() => {
+  const backAction = () => {
+    navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})
+    return true;
+  };
+
+  const backHandler = BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
+
+  return () => backHandler.remove();
+}, []);
   return (
     <ScrollView style={styles.container}>
       <Header onBackPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})} label="Relationships" />
