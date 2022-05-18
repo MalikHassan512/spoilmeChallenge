@@ -14,9 +14,7 @@ const SpoilItem = ({spoil,userId,length}) => {
     const [toUser, setToUser] = useState({})
     const [loading, setLoading] = useState(false)
     useEffect(() => {
-      if(spoil.isAdmin==false){
           getUsersName()
-        }
     }, [length])
     const getUsersName = async()=>{
       try {

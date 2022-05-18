@@ -41,7 +41,7 @@ export const Spoil = ({navigation}) => {
                 )}
                 {spoilGroup.map((spoil, j) => {
                   return (
-                   <SpoilItem length={spoils.length} userId={userId} key={j} spoil={spoil} />
+                   <SpoilItem key={spoil.id+j} length={spoils.length} userId={userId} spoil={spoil} />
                   );
                 })}
               </View>

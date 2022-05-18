@@ -5692,7 +5692,7 @@ prompts@^2.0.1, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.0, prop-types@^15.8.1:
+prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.0, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -5843,6 +5843,15 @@ react-native-image-viewing@^0.2.1:
   resolved "https://registry.npmjs.org/react-native-image-viewing/-/react-native-image-viewing-0.2.1.tgz"
   integrity sha512-A34hsGJk8utKGhWU6Y4i39E38K7ls0XvSC4irfr2guP47uehyU5OjXbWG3wvC4oFVJlTMj8x+N8TL09GHeIETw==
 
+react-native-insta-story@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-insta-story/-/react-native-insta-story-1.1.7.tgz#c818cc20cc5fd342a3eacfcc0be32b2a1a03dff8"
+  integrity sha512-Qk5BRQsncl97gFT2XkxEJi9Vo/H8a5CoOWuYRMj9+rNQVxvIP/FMmg6mi96O2ay+dce46CkvCukH1HGbN+qDZQ==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-modalbox "^2.0.2"
+    react-native-swipe-gestures "^1.0.5"
+
 react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.3.1:
   version "1.3.1"
   resolved "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz"
@@ -5882,6 +5891,13 @@ react-native-modal@^13.0.0:
   dependencies:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
+
+react-native-modalbox@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-modalbox/-/react-native-modalbox-2.0.2.tgz#8a7b3d2e7be79b5d1cb9530b2c6bc535b1bc8c66"
+  integrity sha512-uSuoZ+siPPNqWGyw8NXhA/Aots7mOx2+qijFoeovequY0kczZEPZDd0ARHbzg+1cE3H3AATJEwGdkVA8lUxs0g==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-pager-view@^5.4.15:
   version "5.4.15"
@@ -5934,6 +5950,11 @@ react-native-svg@^12.1.1:
   dependencies:
     css-select "^4.2.1"
     css-tree "^1.0.0-alpha.39"
+
+react-native-swipe-gestures@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz#a172cb0f3e7478ccd681fd36b8bfbcdd098bde7c"
+  integrity sha512-Ns7Bn9H/Tyw278+5SQx9oAblDZ7JixyzeOczcBK8dipQk2pD7Djkcfnf1nB/8RErAmMLL9iXgW0QHqiII8AhKw==
 
 react-native-tab-view@^3.1.1:
   version "3.1.1"
