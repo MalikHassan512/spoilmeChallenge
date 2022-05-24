@@ -8,7 +8,6 @@ const Posts = ({ route, navigation }) => {
   const { posts, itemIndex, userId, user, loadData,postLength } = route?.params;
   const [postData, setPostData] = useState(posts)
   useEffect(() => {
-    console.log("posts",posts)
     setPostData(posts)
   }, [postLength])
   
@@ -49,6 +48,7 @@ const Posts = ({ route, navigation }) => {
     } else {
       return (
         <Post
+          setPostData={setPostData}
           loadData={loadData}
           createdAt={item?.createdAt}
           userDetail={user}
@@ -74,6 +74,7 @@ const Posts = ({ route, navigation }) => {
         }
         label={"Posts"}
       />
+      {console.log("postData",postData)}
       <FlatList
         data={postData || []}
         initialScrollIndex={itemIndex}

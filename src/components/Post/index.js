@@ -37,6 +37,7 @@ const Post = ({
     postUserId,
     loadData,
     postId,
+    setPostData,
 }) => {
   const navigation=useNavigation()
   const videoRef = useRef(null)
@@ -116,7 +117,7 @@ const Post = ({
     }
     return (
         <View styles={styles.container}>
-          <PostOptionModal setNestedReportModal={setNestedReportModal}  loadData={loadData} showDelete={userId==userData?.id} postBy={userData.id} reportBy={userId} postId={postId} visible={visible} setVisible={setVisible} />
+          <PostOptionModal setPostData={setPostData} setNestedReportModal={setNestedReportModal}  loadData={loadData} showDelete={userId==userData?.id} postBy={userData.id} reportBy={userId} postId={postId} visible={visible} setVisible={setVisible} />
             <ReportModal setParentVisible={setVisible} visible={nestedReportModal} setVisible={setNestedReportModal} postBy={userData.id} reportBy={userId} postId={postId} userEmail={userData?.email} postTitle={description} postImage={image}  />
             <View style={styles.userInfo}>
               <TouchableOpacity activeOpacity={1} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userData?.id}})} style={{flexDirection:'row',alignItems:'center'}}>

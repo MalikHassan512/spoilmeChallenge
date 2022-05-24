@@ -78,7 +78,7 @@ const RelationItem = ({ index, conversation,navigation,userId}) => {
                 onPress={async() => {
                   setRelation(1)
                   updateSpoilStatus(conversation?.lastMessage?.id, 1);
-                  updateRelationStatus(fromUser.id,toUser.id, 1)
+                  updateRelationStatus(fromUser.id,toUser?.id, 1)
                 }
                 }
                 text="Approve"
@@ -87,7 +87,7 @@ const RelationItem = ({ index, conversation,navigation,userId}) => {
                    onPress={async() => {
                     setRelation(2)
                     updateSpoilStatus(conversation?.lastMessage?.id, 2);
-                    updateRelationStatus(fromUser.id,toUser.id, 2)
+                    updateRelationStatus(fromUser.id,toUser?.id, 2)
                   }
                   }           
                             

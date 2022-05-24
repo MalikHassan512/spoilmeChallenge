@@ -14,7 +14,8 @@ const PopupModal = ({
   postId,
   showDelete,
   setNestedReportModal,
-  loadData
+  loadData,
+  setPostData
 }) => {
   const onClickReport = ()=>{
     setVisible(false)
@@ -26,6 +27,7 @@ const PopupModal = ({
       setLoader(true);
       await deletePost(postId);
       await loadData?.();
+      setPostData?.(prev=>prev.filter(item=>item.id!=postId))
       setLoader(false);
       setVisible(false);
     } catch (error) {

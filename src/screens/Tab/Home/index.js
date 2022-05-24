@@ -10,7 +10,6 @@ import ImageView from "react-native-image-viewing";
 import { Loading } from "components/Common/Loading";
 import { fromNow } from "util/helper";
 import { useIsFocused } from "@react-navigation/native";
-import firestore from "@react-native-firebase/firestore";
 import Stories from "react-native-stories-media";
 
 import { useSelector } from "react-redux";
@@ -23,23 +22,6 @@ import HomeHeader from "components/HomeHeader";
 import { useSwipe } from "../../../util/useSwipe";
 import colors from "../../../util/colors";
 
-const storyData = [
-  {
-    username: "Guilherme",
-    title: "Title story",
-    profile:
-      "https://avatars2.githubusercontent.com/u/26286830?s=460&u=5d586a3783a6edeb226c557240c0ba47294a4229&v=4",
-    stories: [
-      {
-        id: 1,
-        url: "https://images.unsplash.com/photo-1532579853048-ec5f8f15f88d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        created: "2021-01-07T03:24:00",
-      },
-    ],
-  },
-];
 const Home = ({ navigation, route }) => {
   const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6);
   const isFocused = useIsFocused();
@@ -55,7 +37,6 @@ const Home = ({ navigation, route }) => {
   const [pageLoading, setPageLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [showStory, setShowStory] = useState(false);
   const [visible, setVisible] = useState(false);
   const [spoilTypes, setSpoilTypes] = useState([]);
   const [data, setData] = useState([]);
@@ -67,7 +48,6 @@ const Home = ({ navigation, route }) => {
     }
   }, [isFocused]);
   useEffect(() => {
-    console.log("route?.params?.updateStory",route?.params?.updateStory)
     getStories();
   }, [route?.params?.updateStory]);
   const getStories = async () => {
@@ -158,7 +138,7 @@ const Home = ({ navigation, route }) => {
       <View
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        style={{ flex: 1, paddingVertical: 20 }}
+        style={{ flex: 1, }}
       >
         <HomeHeader onPlusCircle={() => setVisible(!visible)} />
 
@@ -168,7 +148,11 @@ const Home = ({ navigation, route }) => {
           loadData={loadData}
         />
         <FlatList
-          ListHeaderComponent={() => <Stories avatarStyle={{width:verticalScale(50),height:verticalScale(50)}} containerAvatarStyle={{borderColor:colors.primary}} key={"storykey"} data={data} />}
+          ListHeaderComponent={() => 
+          <View style={{marginTop:verticalScale(10),marginHorizontal:10}}>
+          <Stories avatarStyle={{width:verticalScale(55),height:verticalScale(55)}} containerAvatarStyle={{borderColor:colors.primary}} key={"storykey"} data={data} />
+          </View>
+          }
           data={posts}
           contentContainerStyle={{ paddingBottom: height(2) }}
           renderItem={renderPost}

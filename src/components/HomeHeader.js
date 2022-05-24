@@ -24,11 +24,7 @@ const HomeHeader = (props) => {
               />
             </TouchableOpacity>
 
-            <FontAwesome
-              color={Colors.darkGrey}
-              name="comment"
-              style={styles.icon}
-            />
+          
           </View>}
         </View>
   )
@@ -43,7 +39,7 @@ const styles = ScaledSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         marginHorizontal: "26@ms",
-        backgroundColor:'transparent'
+        backgroundColor:'transparent',
       },
       headerIconContainer: {
         flexDirection: "row",

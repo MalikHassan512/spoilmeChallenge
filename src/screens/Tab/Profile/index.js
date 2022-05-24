@@ -28,6 +28,7 @@ import VideoPlayer from 'react-native-video-player';
 import CreatePostModal from '../Molecules/CreatePostModal'
 import MapModal from "components/Map/MapModal";
 import { Loading } from "components/Common/Loading";
+import { useIsFocused } from "@react-navigation/native";
 
 
 export const Profile = ({ navigation,route }) => {
@@ -46,14 +47,18 @@ export const Profile = ({ navigation,route }) => {
 const [isRelationModal, setIsRelationModal] = useState(false)  
 const [relationStatus, setRelationStatus] = useState(false)
   const [modalVisible, setModalVisible] = useState(false);
+  const isFocused = useIsFocused();
+
   const closeModal = () => {
     setModalVisible(false);
   };
   const [image, setImage] = useState("")
   useEffect(() => {
-    getAllData()
-    setLoading(true)
-  }, [userId])
+    if(isFocused){
+      getAllData()
+      setLoading(true)
+    }
+  }, [userId,isFocused])
   
   useEffect(() => {
     const unsubscribe = navigation.addListener(

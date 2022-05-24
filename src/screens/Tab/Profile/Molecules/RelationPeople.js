@@ -38,7 +38,7 @@ const RelationPeople = ({ userId, item }) => {
     <View
       style={[
         styles.imgContainer,
-        toUser.isActive && { borderColor: colors.photoBorder, borderWidth: 2 },
+        toUser?.isActive && { borderColor: colors.photoBorder, borderWidth: 2 },
       ]}
     >
       <Image style={styles.img} source={{uri:toUser?.profilePic}} />
@@ -57,6 +57,7 @@ const styles = ScaledSheet.create({
   container: {
     marginBottom: "30@vs",
     alignItems: "center",
+
   },
   imgContainer: {
     width: "90@ms",
@@ -71,6 +72,7 @@ const styles = ScaledSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    borderWidth:1,
   },
   text: {
     fontSize: "14@ms",
