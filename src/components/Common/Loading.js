@@ -1,7 +1,7 @@
 import React from "react";
 import * as Progress from "react-native-progress";
 
-export const Loading = ({itemStyle, size = 100 }) => {
+export const Loading = ({color, itemStyle, size = 100 }) => {
   return (
     <Progress.Circle
       style={[{
@@ -12,6 +12,7 @@ export const Loading = ({itemStyle, size = 100 }) => {
       },itemStyle]}
       indeterminate
       size={size}
+      color={color}
     />
   );
 };

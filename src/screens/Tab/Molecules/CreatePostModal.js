@@ -59,7 +59,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
           placeholder="What’s on your mind?"
           multiline={true}
           style={styles.inputStyle}
-        />
+           />
           <View style={{ flex: 1 }} />
           {image ? (
             <View>

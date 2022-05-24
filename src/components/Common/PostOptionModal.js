@@ -1,38 +1,50 @@
 import { View, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import CustomText from "../CustomText";
 import colors from "../../util/colors";
 import { moderateScale, ScaledSheet } from "react-native-size-matters";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {reportPost,checkReportedPost} from '../../firebase/firestore/report'
-import Modal from 'react-native-modal'
-import SimpleToast from "react-native-simple-toast";
-const PopupModal = ({ visible, setVisible, postBy, reportBy,postId}) => {
-  const onClickReport =async()=>{
-    try {
-      setVisible(false)
-      const isReported = await checkReportedPost(reportBy,postId)
-      if(!isReported){
-        reportPost(postBy,reportBy,postId)
-        SimpleToast.show("Post reported")
-      }else{
-        SimpleToast.show("Already reported")
-      }
-      
-    } catch (error) {
-      console.log("errror onClickReport",error)
-      setVisible(false)
-    }
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { deletePost } from "../../firebase/firestore/posts";
+import Modal from "react-native-modal";
+import { Loading } from "components/Common/Loading";
+
+const PopupModal = ({
+  visible,
+  setVisible,
+  postId,
+  showDelete,
+  setNestedReportModal,
+  loadData
+}) => {
+  const onClickReport = ()=>{
+    setVisible(false)
+    setNestedReportModal(true)
   }
+  const [loader, setLoader] = useState(false);
+  const onClickDelete = async () => {
+    try {
+      setLoader(true);
+      await deletePost(postId);
+      await loadData?.();
+      setLoader(false);
+      setVisible(false);
+    } catch (error) {
+      console.log("onClickDelete error", error);
+      setLoader(false);
+      setVisible(false);
+    }
+  };
   return (
-    <Modal 
-    style={{margin: 0}}
-    onBackdropPress={setVisible} onBackButtonPress={setVisible} visible={visible}>
+    <Modal
+      style={{ margin: 0 }}
+      onBackdropPress={setVisible}
+      onBackButtonPress={setVisible}
+      visible={visible}
+    >
       <View style={styles.firstContainer}>
-      <TouchableOpacity
-          onPress={()=>setVisible(false)}
-          style={{ flex: 1 }}
-        ></TouchableOpacity>
+        <TouchableOpacity onPress={() => setVisible(false)} style={{ flex: 1 }}>
+          {loader && <Loading color={colors.primary} />}
+        </TouchableOpacity>
         <View style={styles.secondContainer}>
           <View style={styles.emptyView} />
           {/* <TouchableOpacity
@@ -42,14 +54,41 @@ const PopupModal = ({ visible, setVisible, postBy, reportBy,postId}) => {
             <AntDesign name="sharealt" size={moderateScale(16)} />
             <CustomText marginLeft={10} fontWeight={'700'} label="Share" />
           </TouchableOpacity> */}
-          <TouchableOpacity
-            onPress={onClickReport}
-            style={styles.settingContainer}
-          >
-            <MaterialIcons color={colors.primary} name="report" size={moderateScale(19)} />
-            <CustomText marginLeft={10} fontWeight={'700'} color={colors.primary} label="Report"  />
-          </TouchableOpacity>
-        
+          {showDelete ? (
+            <TouchableOpacity
+              onPress={(onClickDelete)}
+              style={styles.settingContainer}
+            >
+              <MaterialIcons
+                color={colors.primary}
+                name="delete"
+                size={moderateScale(19)}
+              />
+              <CustomText
+                marginLeft={10}
+                fontWeight={"700"}
+                color={colors.primary}
+                label="Delete"
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={onClickReport}
+              style={styles.settingContainer}
+            >
+              <MaterialIcons
+                color={colors.primary}
+                name="report"
+                size={moderateScale(19)}
+              />
+              <CustomText
+                marginLeft={10}
+                fontWeight={"700"}
+                color={colors.primary}
+                label="Report"
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </Modal>
@@ -73,7 +112,7 @@ const styles = ScaledSheet.create({
     position: "absolute",
     bottom: -10,
     paddingVertical: "15@vs",
-    paddingTop:'10@vs'
+    paddingTop: "10@vs",
   },
   emptyView: {
     width: "45@s",
@@ -100,5 +139,4 @@ const styles = ScaledSheet.create({
     marginRight: "12@s",
     marginLeft: "15@s",
   },
- 
 });

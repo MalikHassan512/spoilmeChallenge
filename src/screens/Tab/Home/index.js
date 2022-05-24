@@ -1,12 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import {
-  View,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-} from "react-native";
-import { ScaledSheet } from "react-native-size-matters";
+import { View, FlatList, Image, Text, TouchableOpacity } from "react-native";
+import { ScaledSheet, verticalScale } from "react-native-size-matters";
 import React, { useEffect, useState } from "react";
 import Colors from "util/colors";
 import { height, width } from "react-native-dimension";
@@ -14,122 +8,118 @@ import Post from "../../../components/Post";
 import ScreenWrapper from "../../../components/ScreenWrapper";
 import ImageView from "react-native-image-viewing";
 import { Loading } from "components/Common/Loading";
+import { fromNow } from "util/helper";
+import { useIsFocused } from "@react-navigation/native";
+import firestore from "@react-native-firebase/firestore";
+import Stories from "react-native-stories-media";
 
 import { useSelector } from "react-redux";
-import {
-  getHomeData
-} from "../../../firebase/firestore/posts";
+import { getHomeData } from "../../../firebase/firestore/posts";
+
 import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
-import CreatePostModal from '../Molecules/CreatePostModal'
-import HomeHeader from 'components/HomeHeader';
-import {useSwipe} from '../../../util/useSwipe'
+import { getAllUsers } from "../../../firebase/firestore/users";
+import CreatePostModal from "../Molecules/CreatePostModal";
+import HomeHeader from "components/HomeHeader";
+import { useSwipe } from "../../../util/useSwipe";
+import colors from "../../../util/colors";
 
-const Home = ({navigation}) => {
-  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6)
+const storyData = [
+  {
+    username: "Guilherme",
+    title: "Title story",
+    profile:
+      "https://avatars2.githubusercontent.com/u/26286830?s=460&u=5d586a3783a6edeb226c557240c0ba47294a4229&v=4",
+    stories: [
+      {
+        id: 1,
+        url: "https://images.unsplash.com/photo-1532579853048-ec5f8f15f88d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
+        type: "image",
+        duration: 2,
+        created: "2021-01-07T03:24:00",
+      },
+    ],
+  },
+];
+const Home = ({ navigation, route }) => {
+  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6);
+  const isFocused = useIsFocused();
 
-  function onSwipeLeft(){
-      console.log('SWIPE_LEFT')
+  function onSwipeLeft() {
+    console.log("SWIPE_LEFT");
   }
 
-  function onSwipeRight(){
-      navigation.navigate('CameraScreen')
+  function onSwipeRight() {
+    navigation.navigate("CameraScreen");
   }
   const userId = useSelector((state) => state.user.userId);
-  const [pageLoading, setPageLoading] = useState(false)
-  const [stories,setStories] = useState([]);
-  const [storyImages, setStoryImages] = useState([]);
+  const [pageLoading, setPageLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [showStory, setShowStory] = useState(false);
   const [visible, setVisible] = useState(false);
   const [spoilTypes, setSpoilTypes] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener(
-      "focus",
-      () => {
-    loadData();
-    getSpoilType()
-    return unsubscribe;
-  },
-  [navigation]
-);
+    if (isFocused) {
+      loadData();
+      getSpoilType();
+    }
+  }, [isFocused]);
+  useEffect(() => {
+    console.log("route?.params?.updateStory",route?.params?.updateStory)
+    getStories();
+  }, [route?.params?.updateStory]);
+  const getStories = async () => {
+    const storiesSnapShot = await getAllUsers();
+    let tempData = [];
+    storiesSnapShot?.forEach((item) => {
+      if (item?.stories) {
+        let data = {
+          user_id: item?.id,
+          profile: item?.profilePic,
+          username:
+            // userId == item?.id
+            //   ? "Your Story"
+            //   :
+               item?.firstName + " " + item?.lastName,
+          stories: item?.stories
+            ?.filter((post) => !fromNow(post.createdAt).includes("day"))
+            ?.map((post) => ({
+              url: post.story_image,
+              id: post.story_id,
+              duration: 2,
+              type: "image",
+            }))
+            .sort((a, b) => a?.createdAt?.seconds - b?.date?.seconds || 0),
+        };
+        if (data.stories.length > 0) {
+          tempData.push(data);
+        }
+      }
+    });
+    setData(tempData);
+  };
 
-  }, []);
-  const getSpoilType=() => {
+  const getSpoilType = () => {
     getAllSpoilTypes()
       .then((res) => setSpoilTypes(res))
       .catch((e) => {
-        console.log("getSpoilType line 62",e);
+        console.log("getSpoilType line 62", e);
       });
-  }
+  };
   const loadData = async () => {
-    setPageLoading(true)
-    // const users = await getAllOfCollection("users");
-    const {posts,stories} = await getHomeData(userId);
-    setStories(stories)
-    // users.map((user) => {
-    //   let dob = new Date(user?.dob?.seconds * 1000);
-    //   let formatedDate = moment(dob).format("DD-MM-YYYY");
-    //   let todaysDate = moment().format("DD-MM-YYYY");
-    //   if (user?.id !== auth().currentUser.uid) {
-    //     if (formatedDate == todaysDate) {
-    //       posts.push({
-    //         id: user?.id + "BIRTHDAY",
-    //         postType: "BIRTHDAY",
-    //         description: `${user?.firstName} ${user?.lastName} has their birthday today! Spoil him!`,
-    //         name: `${user?.firstName} ${user?.lastName}`,
-    //         userData:user,
-    //       });
-    //     }
-    //     if (user?.isHired) {
-    //       posts.push({
-    //         id: user?.id + "HIRED",
-    //         postType: "HIRED",
-    //         description: `${user?.firstName} ${user?.lastName} has been hired recently! Spoil him!`,
-    //         name: `${user?.firstName} ${user?.lastName}`,
-    //         userData:user,
-
-    //       });
-    //     }
-    //     if (user?.isEngaged) {
-    //       posts.push({
-    //         id: user?.id + "ENGAGED",
-    //         postType: "ENGAGED",
-    //         description: `${user?.firstName} ${user?.lastName} has been engaged recently! Spoil him!`,
-    //         name: `${user?.firstName} ${user?.lastName}`,
-    //         userData:user,
-    //       });
-    //     }
-    //   }
-    // });
+    setPageLoading(true);
+    const { posts } = await getHomeData(userId);
     setPosts(posts);
     setRefreshing(false);
-    setPageLoading(false)
-
-  };
-  const renderStoryAvatar = ({ item }) => {
-    return (
-      <View style={styles.storyContainer}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() =>{setStoryImages([{uri:item.image}]); setShowStory(true)}}
-          style={styles.avatarContainer}
-        >
-          <Image
-            source={{uri:item.image}}
-            style={styles.avatar}
-            resizeMode={"cover"}
-          />
-        </TouchableOpacity>
-        <Text style={styles.name}>{item?.name}</Text>
-      </View>
-    );
+    setPageLoading(false);
   };
   const renderPost = ({ item }) => {
     if (item?.postType == "MAP") {
       return (
         <Post
+          loadData={loadData}
           description={item.description}
           name={item?.name}
           postType={"MAP"}
@@ -137,38 +127,49 @@ const Home = ({navigation}) => {
         />
       );
     } else {
-      return <Post postId={item?.id} spoilTypes={spoilTypes} createdAt={item?.createdAt} postUserId={item?.userId} dataType={item?.dataType} postType={item?.postType} image={item.image} description={item.description}  />;
+      return (
+        <Post
+          loadData={loadData}
+          postId={item?.id}
+          spoilTypes={spoilTypes}
+          createdAt={item?.createdAt}
+          postUserId={item?.userId}
+          dataType={item?.dataType}
+          postType={item?.postType}
+          image={item.image}
+          description={item.description}
+        />
+      );
     }
   };
   const renderEmpty = ({ item }) => {
     return (
       <View style={styles.empty}>
-        {pageLoading ?
-        
-      <Loading  />:
-      <Text style={styles.emptyText}>No posts available</Text>
-
-      }
+        {pageLoading ? (
+          <Loading />
+        ) : (
+          <Text style={styles.emptyText}>No posts available</Text>
+        )}
       </View>
     );
   };
   return (
-    <ScreenWrapper>
-      <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ flex: 1 }}>
-      <CreatePostModal visible={visible} setVisible={setVisible} loadData={loadData} />
-        <HomeHeader onPlusCircle={() => setVisible(!visible)}  />
-        {stories.length>0 ?<FlatList
-          horizontal
-          data={stories}
-          style={styles.flatlist}
-          renderItem={renderStoryAvatar}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-        />:null
-        }
+    <>
+      <View
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{ flex: 1, paddingVertical: 20 }}
+      >
+        <HomeHeader onPlusCircle={() => setVisible(!visible)} />
+
+        <CreatePostModal
+          visible={visible}
+          setVisible={setVisible}
+          loadData={loadData}
+        />
         <FlatList
+          ListHeaderComponent={() => <Stories avatarStyle={{width:verticalScale(50),height:verticalScale(50)}} containerAvatarStyle={{borderColor:colors.primary}} key={"storykey"} data={data} />}
           data={posts}
-          style={styles.flatlist2}
           contentContainerStyle={{ paddingBottom: height(2) }}
           renderItem={renderPost}
           keyExtractor={(item) => item.id}
@@ -181,15 +182,7 @@ const Home = ({navigation}) => {
           ListEmptyComponent={renderEmpty}
         />
       </View>
-
-      <ImageView
-        images={storyImages}
-        imageIndex={0}
-        visible={showStory}
-        onRequestClose={() => setShowStory(false)}
-      />
-      
-    </ScreenWrapper>
+    </>
   );
 };
 
@@ -204,7 +197,7 @@ const styles = ScaledSheet.create({
     paddingVertical: "16@vs",
     backgroundColor: "white",
   },
- 
+
   headerContainer: {
     marginTop: "12@vs",
     flexDirection: "row",
@@ -265,16 +258,16 @@ const styles = ScaledSheet.create({
     backgroundColor: Colors.white,
     borderWidth: 1.5,
     borderColor: Colors.primary,
-    height: '60@vs',
-    width:'60@vs',
-    borderRadius: '75@vs',
+    height: "60@vs",
+    width: "60@vs",
+    borderRadius: "75@vs",
     alignItems: "center",
     justifyContent: "center",
   },
   avatar: {
-    height: '55@vs',
-    width:'55@vs',
-    borderRadius: '70@vs',
+    height: "55@vs",
+    width: "55@vs",
+    borderRadius: "70@vs",
   },
   name: {
     fontSize: width(2.8),
@@ -297,5 +290,4 @@ const styles = ScaledSheet.create({
   flatlist2: {
     // backgroundColor: 'red',
   },
-  
 });

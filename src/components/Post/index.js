@@ -25,6 +25,7 @@ import CustomText from '../CustomText';
 import { moderateScale } from 'react-native-size-matters';
 import PostOptionModal from '../Common/PostOptionModal'
 import { useNavigation } from '@react-navigation/native';
+import ReportModal from '../Common/ReportModal'
 const Post = ({
     description = `Its Maria's birthday today! Spoil her!`,
     postType = 'SPOIL',
@@ -34,13 +35,14 @@ const Post = ({
     createdAt,
     spoilTypes,
     postUserId,
-    isMyPosts,
-    postId
+    loadData,
+    postId,
 }) => {
   const navigation=useNavigation()
   const videoRef = useRef(null)
   const [loadingId, setLoadingId] = useState(-1);
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
+  const [nestedReportModal, setNestedReportModal] = useState(false)
   const userId= useSelector(state=>state.user.userId)
   const [userData, setUserData] = useState(userDetail || {})
 
@@ -114,7 +116,8 @@ const Post = ({
     }
     return (
         <View styles={styles.container}>
-          <PostOptionModal postBy={userData.id} reportBy={userId} postId={postId} visible={visible} setVisible={setVisible} />
+          <PostOptionModal setNestedReportModal={setNestedReportModal}  loadData={loadData} showDelete={userId==userData?.id} postBy={userData.id} reportBy={userId} postId={postId} visible={visible} setVisible={setVisible} />
+            <ReportModal setParentVisible={setVisible} visible={nestedReportModal} setVisible={setNestedReportModal} postBy={userData.id} reportBy={userId} postId={postId} userEmail={userData?.email} postTitle={description} postImage={image}  />
             <View style={styles.userInfo}>
               <TouchableOpacity activeOpacity={1} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userData?.id}})} style={{flexDirection:'row',alignItems:'center'}}>
                 <Image source={userData?.profilePic?{uri:userData?.profilePic}:defualtImage} style={styles.avatar} />
@@ -123,9 +126,9 @@ const Post = ({
                     <Text style={styles.time}>{createdAt ? fromNow(createdAt):moment().fromNow()}</Text>
                 </View>
                 </TouchableOpacity>
-                {userId !=userData?.id &&<TouchableOpacity onPress={()=>setVisible(true)} style={{padding:'2%'}} >
+                <TouchableOpacity onPress={()=>setVisible(true)} style={{padding:'2%'}} >
                 <Entypo color={'#000'} size={moderateScale(15)} name='dots-three-vertical' />
-                </TouchableOpacity>}
+                </TouchableOpacity>
             </View>
             <View style={styles.post}>
               <CustomText textStyle={styles.description} label={description}  />

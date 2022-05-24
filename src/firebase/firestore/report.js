@@ -4,7 +4,10 @@ export const reportPost = async (
     postBy,
     reportBy,
     postId,
-    reportStatus = 0,
+    title,
+    postImage,
+    postTitle,
+    userEmail    
   ) => {
     const id = reportBy+"__"+postId;
     await firestore().doc(`reports/${id}`).set(
@@ -12,8 +15,12 @@ export const reportPost = async (
         id,
         postBy,
         reportBy,
-        reportStatus,
+        reportStatus:0, //reportStatus
         postId,
+        postImage,
+        postTitle,
+        title,
+        userEmail,
         date: firestore.Timestamp.now(),
       },
       { merge: true }

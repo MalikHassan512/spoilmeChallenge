@@ -20,6 +20,7 @@ import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from "../../util/getLocation";
 import {changeUser,setUser} from '../../redux/features/userSlice'
+import Toast from 'react-native-simple-toast'
 import Geocoder from 'react-native-geocoding';
 Geocoder.init("AIzaSyA8Ac4lZjmu55x5PIMiDuBGHedpGm8GCq8");
 export const Signup = ({ navigation }) => {
@@ -43,7 +44,7 @@ export const Signup = ({ navigation }) => {
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [showAddressInput, setShowAddressInput] = useState(false)
+  const [showAddressInput, setShowAddressInput] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -76,8 +77,11 @@ export const Signup = ({ navigation }) => {
   }, []);
 
   const handleSubmit = async () => {
-    setLoading(true);
     setError({});
+    if (!image?.uri) {
+      Toast.show('Profile picture is required');
+      return;
+    }
     if(showAddressInput){
       // Geocoder.from(location)
       // .then(json => {
@@ -92,9 +96,10 @@ export const Signup = ({ navigation }) => {
       setError({
         password: "Password should be atleast 8 characters long",
       });
-      setLoading(false);
       return;
     }
+    setLoading(true);
+
     try {
       var tempUser = {
         firstName,
@@ -275,8 +280,7 @@ export const Signup = ({ navigation }) => {
             !lastName ||
             !gender ||
             !email ||
-            !password ||
-            !image?.uri
+            !password
           }
           loading={loading}
           onPress={handleSubmit}

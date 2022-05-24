@@ -13,11 +13,11 @@ import { verticalScale } from "react-native-size-matters";
 
 import { getUser } from "../firebase/firestore/users";
 import { uploadImage } from "../firebase/HelperFunctions/HelperFunctions";
-import { createPost } from "../firebase/firestore/posts";
+import { createStory } from "../firebase/firestore/posts";
 import { useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 const { width, height } = Dimensions.get("window");
-const CameraScreen = ({ navigation }) => {
+const CameraScreen = ({ navigation,route }) => {
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state) => state.user.userId);
@@ -28,14 +28,12 @@ const CameraScreen = ({ navigation }) => {
       const data = {
         userId,
         type: "Story",
-        title: "",
         dataType: image.type.includes("video") ? "video" : "image",
       };
-      data.image = await uploadImage(image.uri, userId);
-      await createPost(data);
+      data.story_image = await uploadImage(image.uri, userId);
+      await createStory(data);
       setLoading(false);
-
-      navigation.navigate("Tab", { screen: "Home" });
+      navigation.navigate("Tab", { screen: "Home", params:{updateStory:Math.random()}});
     } catch (error) {
       console.log("error line 38 onSubmit", error);
       setLoading(false);

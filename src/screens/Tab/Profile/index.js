@@ -29,6 +29,7 @@ import CreatePostModal from '../Molecules/CreatePostModal'
 import MapModal from "components/Map/MapModal";
 import { Loading } from "components/Common/Loading";
 
+
 export const Profile = ({ navigation,route }) => {
   const otherUserId = route?.params?.userId;
   const [showModal, setShowModal] = useState(false);
@@ -94,7 +95,7 @@ const [relationStatus, setRelationStatus] = useState(false)
   }
   const loadData = async () => {
     try {
-      const postData = await getPosts(userId)
+    const postData = await getPosts(userId)
     setPosts(postData);
     setLoading(false)
     setRefreshing(false)
@@ -139,7 +140,7 @@ const [relationStatus, setRelationStatus] = useState(false)
             <CustomText  fontWeight={'bold'} label={relation?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Relations'}   />
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:0,userId,user})} style={{alignItems:'center'}}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:0,userId,user,loadData,postLength:posts.length})} style={{alignItems:'center'}}>
             <CustomText  fontWeight={'bold'} label={posts?.length || 0} fontSize={18}  />
             <CustomText marginTop={2}  label={'Posts'}   />
           </TouchableOpacity>
@@ -149,7 +150,7 @@ const [relationStatus, setRelationStatus] = useState(false)
         </TouchableOpacity>}
     </View>
     <CustomText textStyle={{textTransform:'capitalize'}} fontWeight={'bold'} fontSize={13} label={(user?.firstName || "")  + " " + (user?.lastName || "")} />
-  {otherUserId ?otherUserId != id  ?<View style={{flexDirection:'row',justifyContent:'space-between'}}>
+    {otherUserId ?otherUserId != id  ? <View style={{flexDirection:'row',justifyContent:'space-between'}}>
     <CustomText onPress={()=>setModalVisible(true)} color={'#fff'} alignSelf={'center'} label="Spoil" container={styles.btn} />
     <CustomText onPress={()=>setIsRelationModal(true)} color={'#000'} alignSelf={'center'} label="Relation" container={[styles.btn,{backgroundColor:'#fff',borderColor:'grey',borderWidth:1}]} />
     <CustomText onPress={()=>navigation.navigate('Chat', {
@@ -174,7 +175,7 @@ const [relationStatus, setRelationStatus] = useState(false)
           renderItem={({item,index}) => {
             return(
               <>
-              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index, userId,user})} style={styles.imageContainer}>
+              <TouchableOpacity onPress={()=>navigation.navigate("Posts",{posts:posts,itemIndex:index, userId,user,loadData,postLength:posts.length})} style={styles.imageContainer}>
                 {item?.dataType=='video' ?
                  <VideoPlayer video={{uri:item.image}} style={styles.image} /> :
                  <Image style={styles.image} source={{uri:item.image}} />
