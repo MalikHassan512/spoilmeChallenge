@@ -63,7 +63,7 @@ export const Relationship = ({ navigation }) => {
       }
   }, [searchText]);
 
-  return loading ? (
+  return false ? (
     <Loading />
   ) : (
     <SafeAreaView style={styles.container}>

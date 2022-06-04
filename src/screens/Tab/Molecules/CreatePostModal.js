@@ -9,12 +9,14 @@ import CustomText from '../../../components/CustomText';
 import VideoPlayer from 'react-native-video-player'
 import UploadPhoto from "components/UploadPhoto";
 import CustomModal from "components/CustomModal";
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {currentProfileUser} from '../../../redux/features/profileSlice'
 import colors from '../../../util/colors';
 import {scale, ScaledSheet, verticalScale} from 'react-native-size-matters'
 
 const CreatePostModal = ({visible,setVisible,loadData}) => {
   const userId = useSelector((state) => state.user.userId);
+  const dispatch = useDispatch();
 
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
@@ -35,6 +37,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
       setTitle("")
       setImage("")
       setVisible(false)
+      dispatch(currentProfileUser('updateProfile'))
 
     } catch (error) {
       console.log("error line 30 onSubmit",error)

@@ -17,12 +17,14 @@ import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import { width } from "react-native-dimension";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { contactList, selectUser } from "../../../../redux/features/userSlice";
+import { currentProfileUser } from "../../../../redux/features/profileSlice";
 import { Loading } from "../../../../components/Common/Loading";
 import CustomButton from "../../../../components/Common/CustomButton";
 const Setting = ({ navigation }) => {
   const userId = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [isDisabled, setDisabled] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -98,6 +100,7 @@ const Setting = ({ navigation }) => {
       setOnSubmitLoading(false);
       
       setDisabled(true);
+      dispatch(currentProfileUser('update Profile'))
       SimpleToast.show("Profile Updated")
     } catch (e) {
       setOnSubmitLoading(false);

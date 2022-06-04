@@ -1,5 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 import userReducer from './features/userSlice';
+import profileReducer from './features/profileSlice';
 import Storage from '@react-native-community/async-storage'
 import { combineReducers } from 'redux';
 
@@ -17,10 +18,12 @@ import {
 const persistConfig = {
   key: 'root',
   storage:Storage,
+  blacklist: ['profile']
 };
 
 const reducers = combineReducers({
   user: userReducer,
+  profile: profileReducer
 });
 export const store = configureStore({
   reducer:persistReducer(persistConfig, reducers),

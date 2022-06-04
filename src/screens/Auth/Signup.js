@@ -120,18 +120,19 @@ export const Signup = ({ navigation }) => {
 
     } catch (e) {
       console.log("error line 154 handlesubmit", e);
+      setLoading(false);
+
       switch (e.code) {
         case "auth/email-already-in-use":
-          setError({ email: "Email already in use" });
+          Toast.show("Email already in use" )
           break;
         case "auth/invalid-email":
-          setError({ email: "Invalid email" });
+          Toast.show("Invalid email" )
           break;
         case "auth/weak-password":
-          setError({ password: "Weak password." });
+          Toast.show("Weak password." )
         default:
-          setLoading(false);
-          alert("Some error occured. Please try again");
+          Toast.show("Some error occured. Please try again");
       }
     }
   };
