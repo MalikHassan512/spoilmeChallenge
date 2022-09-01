@@ -4,34 +4,37 @@ import Geolocation from "react-native-geolocation-service";
 const requestLocationPermission = async (setLocation) => {
     if (Platform.OS === "ios") {
       getOneTimeLocation(setLocation);
+      return true;
     } else {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
             title: "Location Access Required",
-            message: "This App needs to Access your location for address",
+            message: "This App needs to Access your location to show you other users on map",
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getOneTimeLocation(setLocation);
+          return getOneTimeLocation(setLocation);
+           
         } else {
-          console.log("Permission Denied");
+         return false
         }
       } catch (err) {
         console.warn(err);
+        return false
       }
     }
   };
   const getOneTimeLocation = (setLocation) => {
-    Geolocation.getCurrentPosition(
-      //Will give you the current location
+    return Geolocation.getCurrentPosition(
       (position) => {
-        // console.log("positon", position);
         setLocation(position);
+        return true
       },
       (error) => {
         console.log("getOneTimeLocation", error.message);
+        return false
       },
       {
         enableHighAccuracy: false,

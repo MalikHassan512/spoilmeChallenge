@@ -5,14 +5,12 @@ import {height, width} from 'react-native-dimension';
 import Colors from '../../util/colors';
 
 const styles = ScaledSheet.create({
-  container: {
-     
-  },
+   
   post: {
     borderBottomRightRadius: width(3),
     borderBottomLeftRadius: width(3),
     paddingHorizontal: width(2),
-    paddingBottom: height(1.5),
+    paddingBottom: 0,
     backgroundColor: Colors.lightGrey,
     width: width(90),
     alignSelf: 'center'
@@ -22,13 +20,12 @@ const styles = ScaledSheet.create({
       width: width(90),
       alignSelf: 'center',
       flexDirection: 'row',
-      alignItems: 'center',
       marginTop: height(2),
       borderTopRightRadius: width(3),
       borderTopLeftRadius: width(3),
       paddingHorizontal: width(2),
-      paddingVertical: height(1.5)
-
+      paddingVertical: height(1.5),
+      justifyContent:'space-between'
   },
   imageContainer: {
     height: height(7),
@@ -36,8 +33,8 @@ const styles = ScaledSheet.create({
     borderRadius: height(3.5)
   },
   avatar: {
-      height: height(7),
-      width: height(7),
+      height: '35@vs',
+      width:'35@vs',
       borderRadius: height(3.5),
       borderWidth: 1.5,
       borderColor: Colors.white
@@ -55,11 +52,12 @@ const styles = ScaledSheet.create({
   },
   description: {
       color: Colors.black,
-      marginStart: width(3)
+      marginStart: width(3),
+      padding:width(2),
   },
   postBtn: {
       width: '95%',
-      marginTop: height(2),
+      marginVertical: height(2),
       alignSelf: 'center',
       backgroundColor: '#00000010',
       borderRadius: width(4),
@@ -83,11 +81,22 @@ const styles = ScaledSheet.create({
       marginRight: width(2)
   },
   mapImage: {
-      width: '98%',
+      width: "312@s",
       alignSelf: 'center',
-      height: height(30),
+      height: "240@vs",
       borderRadius: width(2)
-  }
+  },
+  profilePic: {
+    marginRight: 20,
+    width: 70,
+    height: 70,
+    borderWidth: 2,
+    borderRadius: 50,
+  },
+  spoilTypes: {
+    justifyContent: "center",
+    marginRight: 10,
+  },
 
 });
 export default styles;

@@ -5,15 +5,15 @@ import {deleteProfilePic, uploadProfilePic} from '../storage/profilPic';
 import {deleteAccount} from './deleteAccount';
 
 export const signupWithEmail = async user => {
-  console.log('user',user)
   const userCredentials = await auth().createUserWithEmailAndPassword(
     user.email,
     user.password,
   );
+  console.log('here after createUserWithEmailAndPassword')
   let profilePicUrl;
   try {
     profilePicUrl = await uploadProfilePic(user.profilePic,userCredentials.user.uid);
-    await addUserData(
+    const createdUserData= await addUserData(
       userCredentials.user.uid,
       user.firstName,
       user.lastName,
@@ -27,7 +27,7 @@ export const signupWithEmail = async user => {
       user.linkedin,
 
     );
-    return userCredentials.user.uid;
+    return createdUserData;
   } catch (e) {
     //if profilePicUrl is not undefined then error
     //came before it so profilePice is not saved in firebase

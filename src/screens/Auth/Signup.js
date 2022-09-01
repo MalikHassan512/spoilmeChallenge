@@ -1,15 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
   View,
-  StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
   Image,
-  PermissionsAndroid,
 } from "react-native";
 import { moderateScale, scale, ScaledSheet } from "react-native-size-matters";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -17,7 +10,6 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import InputField from "../../components/Common/InputField";
 import CustomButton from "../../components/Common/CustomButton";
 import CustomText from "../../components/Common/CustomText";
-import LogoButton from "../../components/Common/LogoButton";
 import images from "../../assets/images";
 import { useDispatch } from "react-redux";
 import { signupWithEmail } from "../../firebase/auth/signup";
@@ -27,13 +19,17 @@ import colors from "util/colors";
 import moment from "moment";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from "../../util/getLocation";
+import {changeUser,setUser} from '../../redux/features/userSlice'
+import Toast from 'react-native-simple-toast'
+import Geocoder from 'react-native-geocoding';
+Geocoder.init("AIzaSyA8Ac4lZjmu55x5PIMiDuBGHedpGm8GCq8");
 export const Signup = ({ navigation }) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const genderRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-
+  const dispatch =useDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -42,13 +38,13 @@ export const Signup = ({ navigation }) => {
   const [dob, setDob] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState('');
   const [image, setImage] = useState("");
   const [fb, setFb] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [twitter, setTwitter] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
+  const [showAddressInput, setShowAddressInput] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -69,19 +65,41 @@ export const Signup = ({ navigation }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    requestLocationPermission(setLocation);
+    (async function() {
+     const permission= await requestLocationPermission(setLocation);
+     console.log('permission',permission)
+      if(permission === false){
+        setShowAddressInput(true)
+      }
+     
+    })()
+    
   }, []);
 
   const handleSubmit = async () => {
-    setLoading(true);
     setError({});
+    if (!image?.uri) {
+      Toast.show('Profile picture is required');
+      return;
+    }
+    if(showAddressInput){
+      // Geocoder.from(location)
+      // .then(json => {
+      //   var location = json.results[0].geometry.location;
+      //   console.log(location);
+      // })
+      // .catch(error => console.warn(error));
+    }
+    
+
     if (password.length < 8) {
       setError({
         password: "Password should be atleast 8 characters long",
       });
-      setLoading(false);
       return;
     }
+    setLoading(true);
+
     try {
       var tempUser = {
         firstName,
@@ -96,23 +114,25 @@ export const Signup = ({ navigation }) => {
         twitter,
         linkedin,
       };
-      const userId = await signupWithEmail(tempUser);
-      console.log("userId", userId);
-      // dispatch(changeUser(userId));
+      const userData = await signupWithEmail(tempUser);
+      dispatch(changeUser(userData.id));
+      dispatch(setUser(userData));
+
     } catch (e) {
       console.log("error line 154 handlesubmit", e);
+      setLoading(false);
+
       switch (e.code) {
         case "auth/email-already-in-use":
-          setError({ email: "Email already in use" });
+          Toast.show("Email already in use" )
           break;
         case "auth/invalid-email":
-          setError({ email: "Invalid email" });
+          Toast.show("Invalid email" )
           break;
         case "auth/weak-password":
-          setError({ password: "Weak password." });
+          Toast.show("Weak password." )
         default:
-          setLoading(false);
-          alert("Some error occured. Please try again");
+          Toast.show("Some error occured. Please try again");
       }
     }
   };
@@ -169,7 +189,7 @@ export const Signup = ({ navigation }) => {
           setOpen={setOpen}
           setValue={setGender}
           setItems={setItems}
-          placeholder="Gender"
+          placeholder="Gender *"
           placeholderStyle={{ color: "grey" }}
           onChangeValue={() => emailRef.current.focus()}
           dropDownContainerStyle={{
@@ -177,16 +197,15 @@ export const Signup = ({ navigation }) => {
           }}
           style={{
             borderColor: "#dbdbdb",
-            // marginVertical: 10,
             marginBottom: scale(10),
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.22,
-            shadowRadius: 2.22,
-            elevation: 3,
+            // shadowColor: "#000",
+            // shadowOffset: {
+            //   width: 0,
+            //   height: 1,
+            // },
+            // shadowOpacity: 0.22,
+            // shadowRadius: 2.22,
+            // elevation: 1,
           }}
         />
         {/* <InputField label="Gender" inputStyle={styles.inputStyle} /> */}
@@ -227,7 +246,14 @@ export const Signup = ({ navigation }) => {
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
-        <LogoButton
+        {showAddressInput &&  <InputField
+            label="Address"
+            inputStyle={[styles.inputStyle,]}
+            value={location}
+            onChangeText={(newVal) => setLocation(newVal)}
+            profile
+          />}
+        {/* <LogoButton
           onChangeText={setFb}
           value={fb}
           imgPath={images.faceBook}
@@ -245,7 +271,7 @@ export const Signup = ({ navigation }) => {
           value={twitter}
           imgPath={images.twitter}
           label="Twitter link"
-        />
+        /> */}
 
         <CustomButton
           btnContainer={{ marginBottom: 23,marginTop:scale(5) }}
@@ -255,12 +281,7 @@ export const Signup = ({ navigation }) => {
             !lastName ||
             !gender ||
             !email ||
-            !password ||
-            !location ||
-            !fb ||
-            !linkedin ||
-            !twitter ||
-            !image?.uri
+            !password
           }
           loading={loading}
           onPress={handleSubmit}
@@ -352,14 +373,14 @@ const styles = ScaledSheet.create({
     marginTop: "3@s",
     justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.22,
+    // shadowRadius: 2.22,
 
-    elevation: 3,
+    // elevation: 1,
   },
 });

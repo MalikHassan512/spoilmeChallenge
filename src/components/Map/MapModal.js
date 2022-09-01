@@ -15,13 +15,13 @@ import { sendMessage } from "../../firebase/firestore/chats";
 import {
   createRelationship,
   checkUserRelationships,
-  updateRelationStatus,
+  updateLastMessage
 } from "../../firebase/firestore/relationships";
 import colors from "../../util/colors";
 import SimpleToast from "react-native-simple-toast";
 import CustomText from "../CustomText";
-import moment from "moment";
-
+import {fromNow} from '../../util/helper'
+import { useNavigation } from "@react-navigation/native";
 export default function MapModal({
   userId,
   user,
@@ -31,50 +31,47 @@ export default function MapModal({
 }) {
   const [spoilTypes, setSpoilTypes] = useState([]);
   const [loadingId, setLoadingId] = useState(-1);
+ const navigation = useNavigation()
   useEffect(() => {
     getAllSpoilTypes()
       .then((res) => setSpoilTypes(res))
       .catch((e) => {
-        console.log(e);
-        alert("Error occured");
+        console.log('error in line 37 getAllSpoilTypes',e);
       });
   }, []);
 
   const handleSpoilPress = async (spoilType) => {
     setLoadingId(spoilType.name)
     const relationStatus = await checkUserRelationships(userId, relatedUser.id);
-    let messages = {};
+    let lastMessage = {};
     if (!relationStatus) {
-      messages = await sendMessage(
-        user,
-        relatedUser,
+      lastMessage = await sendMessage(
+        user.id,
+        relatedUser.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      console.log("messages", messages);
-      await createRelationship(
-        user,
-        relatedUser,
-        `Here’s a ${spoilType.name}, enjoy!`,
-        0,
-        messages
+     await createRelationship(
+        user.id,
+        relatedUser.id,
+        0,  // relationStatus
+        lastMessage        
       );
-      console.log("relation created");
+      // console.log("relation created");
     } else {
-      messages = await sendMessage(
-        user,
-        relatedUser,
+       lastMessage = await sendMessage(
+        user.id,
+        relatedUser.id,
         spoilType,
         `Here’s a ${spoilType.name}, enjoy!`,
         0
       );
-      await updateRelationStatus(relationStatus, messages);
-      console.log("relation already exist");
+
+     await updateLastMessage(user.id,relatedUser.id,lastMessage);
     }
     setLoadingId("")
     SimpleToast.show("Spoil sent")
-    // alert("Spoil sent");
   };
 
   return (
@@ -87,15 +84,17 @@ export default function MapModal({
       <View>
         <View style={styles.top}>
           <View style={styles.user}>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:relatedUser?.id}})}>
             <LoadingImage
               source={{ uri: relatedUser.profilePic }}
               style={styles.profilePic}
             />
+            </TouchableOpacity>
             <View>
             <MyHeading
               text={`${relatedUser.firstName} ${relatedUser.lastName}`}
             />
-            <CustomText marginTop={3} color={"#A1A1A1"} label={relatedUser?.isActive ? "Active now" : `Last active ${moment(relatedUser?.lastActive || new Date()).fromNow()}`}  />
+            <CustomText marginTop={3} color={"#A1A1A1"} label={relatedUser?.isActive ? "Active now" : `Last active ${ fromNow(relatedUser?.lastActive || new Date())}`}  />
             </View>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>

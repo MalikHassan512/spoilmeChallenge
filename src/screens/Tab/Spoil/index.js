@@ -1,20 +1,15 @@
 import {SafeAreaView, View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {MyHeading} from '../../components/Common/MyHeading';
-import {MyText} from '../../components/Common/MyText';
-import {getSpoils} from '../../firebase/firestore/spoils';
+import {MyHeading} from '../../../components/Common/MyHeading';
+import {MyText} from '../../../components/Common/MyText';
+import {getSpoils} from '../../../firebase/firestore/spoils';
 import {useSelector} from 'react-redux';
-import {selectUser} from '../../redux/features/userSlice';
-import {LoadingImage} from '../../components/Common/LoadingImage';
-import {getUsersById} from '../../firebase/firestore/users';
-import {Loading} from '../../components/Common/Loading';
-
+import {selectUser} from '../../../redux/features/userSlice';
+import SpoilItem from './molecules/Item';
 export const Spoil = ({navigation}) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
-  const [users, setUsers] = useState([]);
-
   useEffect(() => {
     const spoilSubscriber = getSpoils(userId, setSpoils);
     return () => {
@@ -46,31 +41,7 @@ export const Spoil = ({navigation}) => {
                 )}
                 {spoilGroup.map((spoil, j) => {
                   return (
-                    <TouchableOpacity key={j} onPress={()=>navigation.navigate('Chat', {
-                      user:userId==spoil?.to?.id ? spoil?.to : spoil?.from,
-                      relatedUser: userId!=spoil?.to?.id ? spoil?.to : spoil?.from,
-                      relationId:spoil?.relationId || -1,
-                    })} >
-                      <View style={styles.spoilContainer}>
-                        <LoadingImage
-                          source={{uri: spoil.image}}
-                          style={styles.img}
-                        />
-                        <View>
-                          <MyHeading text={spoil.name} fontSize={18} />
-                          <MyText
-                            text={
-                              userId != spoil.from.id
-                                ? `Received from ${spoil.from.firstName}`
-                                : userId == spoil.from.id
-                                ? `Sent to ${spoil.to.firstName}`
-                                : null
-                            }
-                            color="gray"
-                          />
-                        </View>
-                      </View>
-                    </TouchableOpacity>
+                   <SpoilItem key={spoil.id+j} length={spoils.length} userId={userId} spoil={spoil} />
                   );
                 })}
               </View>
@@ -102,18 +73,5 @@ const styles = StyleSheet.create({
     width: '45%',
     borderWidth: 3,
     borderRadius: 10,
-  },
-  spoilContainer: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    marginBottom: 10,
-    alignItems:'center'
-  },
-  img: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#ECECEC',
-    marginRight: 10,
   },
 });

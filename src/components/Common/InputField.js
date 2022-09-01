@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { TextInput, Text } from "react-native-paper";
+import { TextInput, Surface } from "react-native-paper";
 import { moderateScale, ScaledSheet } from "react-native-size-matters";
 import CustomText from "./CustomText";
 import colors from "util/colors";
@@ -13,6 +13,7 @@ const InputField = ({
   inputStyle,
   onChangeText,
   errorText,
+  profile,
   returnKeyType = "next",
   keyboardType = "default",
   width = "100%",
@@ -22,17 +23,17 @@ const InputField = ({
   blurOnSubmit = false,
   secureTextEntry = false,
   disabled = false,
+  mode="outlined",
   right,
 }) => {
   return (
     <View style={styles.surface}>
-      {/* {withLabel && <CustomText label={withLabel} textStyle={styles.withLabel} />} */}
       <TextInput
-        mode="outlined"
+        mode={mode}
         outlineColor="#ebebeb"
         disabled={disabled}
         style={[styles.inputStyle, inputStyle]}
-        label={label + " *"}
+        label={label + (profile ? " " : " *")}
         right={
           right ? (
             <TextInput.Icon
@@ -78,8 +79,10 @@ const styles = ScaledSheet.create({
     color: "#878787",
     width: "300@s",
     height: "45@vs",
+    
   },
   surface: {
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -87,8 +90,6 @@ const styles = ScaledSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-
-    elevation: 3,
   },
   withLabel: {
     fontSize: "16@ms",

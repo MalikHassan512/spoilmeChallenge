@@ -11,7 +11,7 @@ export const addSpoilData = async (name, image, from, to,relationId) => {
     to,
     date: firestore.Timestamp.now(),
     relationId
-  });
+  },{merge:true});
 };
 
 export const getSpoils = (userId, setSpoils) => {
@@ -25,19 +25,17 @@ export const getSpoils = (userId, setSpoils) => {
 
   return firestore()
     .collection('spoils')
-    // .where('to', '==', `${userId}`)
     .orderBy('date', 'desc')
     .onSnapshot(spoilsSnapshot => {
       const tempSpoils = [];
       let tempDate = new Date();
       let tempSpoilDateGroup = [];
-      spoilsSnapshot.forEach((spoilSnapshot, i) => {
+      spoilsSnapshot?.forEach((spoilSnapshot, i) => {
         const tempSpoil = spoilSnapshot.data();
         const spoilDate = tempSpoil.date.toDate();
         tempSpoil.date = spoilDate;
-        if( (tempSpoil.to.id === userId || tempSpoil.from.id === userId)){
+        if( (tempSpoil.to === userId || tempSpoil.from === userId)){
         if (i !== 0 && !isDateEqual(tempDate, spoilDate)) {
-          console.log('here');
           tempSpoils.push(tempSpoilDateGroup);
           tempSpoilDateGroup = [];
           tempDate = spoilDate;
@@ -48,46 +46,6 @@ export const getSpoils = (userId, setSpoils) => {
       tempSpoils.push(tempSpoilDateGroup);
 
       setSpoils(tempSpoils);
-      // const spoilData=[]
-      // spoilsSnapshot.forEach((item,index)=>{
-      //   let spoil=item.data();
-      //   console.log(index,spoilData)
-      //   let spoilDate=spoil.date.toDate();
-      //   if(spoilsSnapshot.length==1){
-      //     spoilData.push({
-      //       date:spoilDate,
-      //       data:[spoil],
-      //     })
-      //   }
-      //   if(index+1!==spoilsSnapshot.length){
-      //   let nextSpoil=spoilsSnapshot[index+1].data();
-      //   let nextSpoilDate=nextSpoil.date.toDate();
-
-      
-
-      //   if(isDateEqual(spoilDate, nextSpoilDate)){
-      //       spoilData.push({
-      //         date:spoilDate,
-      //         data:[...spoilData.data,[spoil,nextSpoil]]
-      //       })
-      //   }else{
-
-      //     spoilData.push({
-      //       date:spoilDate,
-      //       data:[spoil]
-      //     },
-      //     {
-      //       date:nextSpoilDate,
-      //       data:[nextSpoil]
-      //     }
-      //     )
-           
-      //   }
-      // }
-
-      // })
-    
-      
     });
 };
 

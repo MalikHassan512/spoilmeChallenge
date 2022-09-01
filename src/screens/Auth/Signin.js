@@ -12,7 +12,7 @@ import {
 import { ScaledSheet } from "react-native-size-matters";
 import CustomText from "../../components/Common/CustomText";
 import InputField from "../../components/Common/InputField";
-import { signinWithEmail, signinWithGoogle } from "../../firebase/auth/signin";
+import { signinWithEmail, signinWithGoogle,onFacebookButtonPress } from "../../firebase/auth/signin";
 import {changeUserData} from "../../firebase/firestore/users";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useDispatch } from "react-redux";
@@ -21,6 +21,7 @@ import firestore from '@react-native-firebase/firestore';
 import CustomButton from "../../components/Common/CustomButton";
 import ScreenWrapper from "../../components/ScreenWrapper";
 import requestLocationPermission from '../../util/getLocation'
+import { Button } from "react-native-paper";
 export const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
@@ -40,7 +41,6 @@ export const Signin = ({ navigation }) => {
     try {
       const userId = await signinWithEmail(email.trim(), password);
       await changeUserData({id:userId,isActive:true,lastActive:firestore.Timestamp.now(),location})
-
       dispatch(changeUser(userId));
     } catch (e) {
       if (e.code) {
@@ -63,7 +63,18 @@ export const Signin = ({ navigation }) => {
 
   const onSigninWithGoogle = async () => {
     try {
-      const userId = await signinWithGoogle();
+      const {userId,userData} = await signinWithGoogle();
+      await changeUserData({
+        id:userId,
+        isActive:true,
+        lastActive:firestore.Timestamp.now(),
+        location,
+        email:userData.email,
+        firstName:userData.givenName,
+        lastName:userData.familyName,
+        profilePic:userData.photo
+      })
+
       dispatch(changeUser(userId));
     } catch (error) {
       console.log("userId", error);
@@ -78,7 +89,24 @@ export const Signin = ({ navigation }) => {
       }
     }
   };
-
+  const onSigninWithFacebook = async ()=>{
+    try {
+      const {userId,userData} = await onFacebookButtonPress();
+      await changeUserData({
+        id:userId,
+        isActive:true,
+        lastActive:firestore.Timestamp.now(),
+        location,
+        email:userData.email,
+        firstName:userData.first_name,
+        lastName:userData.last_name,
+        profilePic:userData.picture.data.url
+      })
+      dispatch(changeUser(userId));
+    } catch (error) {
+      console.log("fb error",error)
+    }
+  }
   return (
     <ScreenWrapper scrollEnabled>
       <View style={styles.mainContainer}>
@@ -125,13 +153,43 @@ export const Signin = ({ navigation }) => {
           label="Or sign in with"
           textStyle={styles.orSignInWithText}
         />
-        <View style={styles.googleBtnContainer}>
+         <Button theme={{
+           roundness:10,
+           colors:{
+             primary:'#000'
+           }
+         }}
+         labelStyle={{paddingVertical:5,}}
+         style={{marginBottom:10}}
+          uppercase={false} icon={()=><Image style={{width:20,height:20,resizeMode:'contain'}} source={require('../../assets/images/fb.png')} />} mode="outlined"  onPress={onSigninWithFacebook}>
+            Sign in with Facebook
+            </Button>
+            <Button theme={{
+           roundness:10,
+           colors:{
+             primary:'#000'
+           }
+         }}
+         labelStyle={{paddingVertical:5,paddingHorizontal:8}}
+         style={{marginBottom:10}}
+          uppercase={false} icon={()=><Image style={{width:20,height:20,resizeMode:'contain'}} source={{uri:'https://www.freepnglogos.com/uploads/google-logo-png/google-logo-icon-png-transparent-background-osteopathy-16.png'}} />} mode="outlined"   onPress={onSigninWithGoogle}>
+            Sign in with Google
+            </Button>
+        {/* <View style={styles.googleBtnContainer}>
           <GoogleSigninButton
             style={styles.googleBtn}
             onPress={onSigninWithGoogle}
             size={GoogleSigninButton.Size.Wide}
           />
-        </View>
+        </View> */}
+        {/* <View style={styles.googleBtnContainer}> */}
+          {/* <GoogleSigninButton
+            style={styles.googleBtn}
+            onPress={onSigninWithFacebook}
+            size={GoogleSigninButton.Size.Wide}
+          /> */}
+         
+        {/* </View> */}
         <View style={styles.signUpTextContainer}>
           <CustomText
             textStyle={styles.dontHaveText}

@@ -7,6 +7,7 @@ export const MyHeading = ({
   color = "black",
   fontSize = 18,
   marginBottom = 0,
+  marginTop = 0,
 }) => {
   return (
     <Text
@@ -16,6 +17,7 @@ export const MyHeading = ({
         textAlign: textAlign,
         fontWeight: "bold",
         marginBottom: marginBottom,
+        marginTop: marginTop
       }}
     >
       {text}

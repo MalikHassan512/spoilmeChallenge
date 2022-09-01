@@ -1,186 +1,172 @@
 /* eslint-disable react-native/no-inline-styles */
-import { StyleSheet, View, ScrollView, FlatList, Image, Text, TouchableOpacity } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
-import React, { useEffect, useState } from 'react';
-//components
-import Logo from "components/Logo";
-import Map from "../../../components/Common/Map";
-import TextWithIcon from "../../../components/Common/TextWithIcon";
-//icons
-import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-//Molecules
-import { Heading, Box, ImagesContainer, OpportunityBox } from './Molecules';
-import Images from 'assets/images';
-import Colors from 'util/colors';
-import CustomText from 'components/CustomText'
-import defualtImage from '../../../assets/images/defaultImage.jpg'
-import { height, width } from 'react-native-dimension'
-import Post from '../../../components/Post';
-import ScreenWrapper from '../../../components/ScreenWrapper';
-import { getAllOfCollection } from '../../../firebase/HelperFunctions/HelperFunctions'
-import moment from 'moment';
+import { View, FlatList, Image, Text, TouchableOpacity } from "react-native";
+import { ScaledSheet, verticalScale } from "react-native-size-matters";
+import React, { useEffect, useState } from "react";
+import Colors from "util/colors";
+import { height, width } from "react-native-dimension";
+import Post from "../../../components/Post";
+import ScreenWrapper from "../../../components/ScreenWrapper";
 import ImageView from "react-native-image-viewing";
-import auth from '@react-native-firebase/auth'
-const Home = () => {
+import { Loading } from "components/Common/Loading";
+import { fromNow } from "util/helper";
+import { useIsFocused } from "@react-navigation/native";
+import Stories from "react-native-stories-media";
 
-  const [stories, setStories] = useState([
-    {
-      id: '1',
-      title: 'Your story',
-      image: defualtImage
-    },
-    {
-      id: '2',
-      title: 'Carla',
-      image: defualtImage
-    },
-    {
-      id: '3',
-      title: 'Steven',
-      image: defualtImage
-    },
-    {
-      id: '4',
-      title: 'Terry',
-      image: defualtImage
-    },
-    {
-      id: '5',
-      title: 'Steven',
-      image: defualtImage
-    },
-    {
-      id: '6',
-      title: 'Terry',
-      image: defualtImage
-    },
-  ])
-  const [storyImages, setStoryImages] = useState([
-    {
-      uri: "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      uri: "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      uri: "https://wallpaperaccess.com/full/3678503.png",
-    },
-  ])
-  const [posts, setPosts] = useState([])
-  const [refreshing, setRefreshing] = useState(false)
-  const [showStory, setShowStory] = useState(false)
+import { useSelector } from "react-redux";
+import { getHomeData } from "../../../firebase/firestore/posts";
+
+import { getAllSpoilTypes } from "../../../firebase/firestore/spoils";
+import { getAllUsers } from "../../../firebase/firestore/users";
+import CreatePostModal from "../Molecules/CreatePostModal";
+import HomeHeader from "components/HomeHeader";
+import { useSwipe } from "../../../util/useSwipe";
+import colors from "../../../util/colors";
+
+const Home = ({ navigation, route }) => {
+  const { onTouchStart, onTouchEnd } = useSwipe(onSwipeLeft, onSwipeRight, 6);
+  const isFocused = useIsFocused();
+
+  function onSwipeLeft() {
+    console.log("SWIPE_LEFT");
+  }
+
+  function onSwipeRight() {
+    navigation.navigate("CameraScreen");
+  }
+  const userId = useSelector((state) => state.user.userId);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [spoilTypes, setSpoilTypes] = useState([]);
+  const [data, setData] = useState([]);
+
   useEffect(() => {
-    loadData()
-  }, [])
-  const loadData = async () => {
-    const users = await getAllOfCollection('users')
-    let posts = []
-    users.map(user => {
-      let dob = new Date(user?.dob?.seconds * 1000)
-      let formatedDate = moment(dob).format('DD-MM-YYYY')
-      let todaysDate = moment().format('DD-MM-YYYY')
-      if (user?.id !== auth().currentUser.uid) {
-        if (formatedDate == todaysDate) {
-          posts.push({
-            id: user?.id + 'BIRTHDAY',
-            postType: 'BIRTHDAY',
-            description: `${user?.firstName} ${user?.lastName} has their birthday today! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`
-          })
-        }
-        if (user?.isHired) {
-          posts.push({
-            id: user?.id + 'HIRED',
-            postType: 'HIRED',
-            description: `${user?.firstName} ${user?.lastName} has been hired recently! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`
-          })
-        }
-        if (user?.isEngaged) {
-          posts.push({
-            id: user?.id + 'ENGAGED',
-            postType: 'ENGAGED',
-            description: `${user?.firstName} ${user?.lastName} has been engaged recently! Spoil him!`,
-            name: `${user?.firstName} ${user?.lastName}`
-          })
+    if (isFocused) {
+      loadData();
+      getSpoilType();
+    }
+  }, [isFocused]);
+  useEffect(() => {
+    getStories();
+  }, [route?.params?.updateStory]);
+  const getStories = async () => {
+    const storiesSnapShot = await getAllUsers();
+    let tempData = [];
+    storiesSnapShot?.forEach((item) => {
+      if (item?.stories) {
+        let data = {
+          user_id: item?.id,
+          profile: item?.profilePic,
+          username:
+            // userId == item?.id
+            //   ? "Your Story"
+            //   :
+               item?.firstName + " " + item?.lastName,
+          stories: item?.stories
+            ?.filter((post) => !fromNow(post.createdAt).includes("day"))
+            ?.map((post) => ({
+              url: post.story_image,
+              id: post.story_id,
+              duration: 2,
+              type: "image",
+            }))
+            .sort((a, b) => a?.createdAt?.seconds - b?.date?.seconds || 0),
+        };
+        if (data.stories.length > 0) {
+          tempData.push(data);
         }
       }
-    })
-    posts.push({ postType: 'MAP' })
-    setPosts(posts)
-    setRefreshing(false)
-  }
-  const renderStoryAvatar = ({ item }) => {
-    return (
-      <View style={styles.storyContainer}>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => setShowStory(true)} style={styles.avatarContainer}>
-          <Image source={defualtImage} style={styles.avatar} resizeMode={'cover'} />
-        </TouchableOpacity>
-        <Text style={styles.name}>{item?.title}</Text>
-      </View >
-    )
-  }
+    });
+    setData(tempData);
+  };
+
+  const getSpoilType = () => {
+    getAllSpoilTypes()
+      .then((res) => setSpoilTypes(res))
+      .catch((e) => {
+        console.log("getSpoilType line 62", e);
+      });
+  };
+  const loadData = async () => {
+    setPageLoading(true);
+    const { posts } = await getHomeData(userId);
+    setPosts(posts);
+    setRefreshing(false);
+    setPageLoading(false);
+  };
   const renderPost = ({ item }) => {
-    if (item?.postType == 'MAP') {
+    if (item?.postType == "MAP") {
       return (
-        <Post description={item.description} name={item?.name} postType={'MAP'} />
-      )
+        <Post
+          loadData={loadData}
+          description={item.description}
+          name={item?.name}
+          postType={"MAP"}
+          spoilTypes={spoilTypes}
+        />
+      );
     } else {
       return (
-        <Post description={item.description} name={item?.name} />
-      )
+        <Post
+          loadData={loadData}
+          postId={item?.id}
+          spoilTypes={spoilTypes}
+          createdAt={item?.createdAt}
+          postUserId={item?.userId}
+          dataType={item?.dataType}
+          postType={item?.postType}
+          image={item.image}
+          description={item.description}
+        />
+      );
     }
-  }
+  };
   const renderEmpty = ({ item }) => {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyText}>No posts available</Text>
+        {pageLoading ? (
+          <Loading />
+        ) : (
+          <Text style={styles.emptyText}>No posts available</Text>
+        )}
       </View>
-    )
-  }
+    );
+  };
   return (
-    <ScreenWrapper>
-      <View style={{ flex: 1 }}>
-        <View style={styles.headerContainer}>
-          <Logo />
-          <View style={styles.headerIconContainer}>
-            <AntDesign color={Colors.darkGrey} name="heart" style={styles.icon} />
-            <AntDesign color={Colors.darkGrey} name="pluscircle" style={styles.icon} />
-            <FontAwesome color={Colors.darkGrey} name="comment" style={styles.icon} />
-          </View>
-        </View>
-        <FlatList
-          horizontal
-          data={stories}
-          style={styles.flatlist}
-          renderItem={renderStoryAvatar}
-          keyExtractor={item => item.id}
-          showsHorizontalScrollIndicator={false}
+    <>
+      <View
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{ flex: 1, }}
+      >
+        <HomeHeader onPlusCircle={() => setVisible(!visible)} />
+
+        <CreatePostModal
+          visible={visible}
+          setVisible={setVisible}
+          loadData={loadData}
         />
         <FlatList
+          ListHeaderComponent={() => 
+          <View style={{marginTop:verticalScale(10),marginHorizontal:10}}>
+          <Stories avatarStyle={{width:verticalScale(55),height:verticalScale(55)}} containerAvatarStyle={{borderColor:colors.primary}} key={"storykey"} data={data} />
+          </View>
+          }
           data={posts}
-          style={styles.flatlist2}
           contentContainerStyle={{ paddingBottom: height(2) }}
           renderItem={renderPost}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           refreshing={refreshing}
           showsVerticalScrollIndicator={false}
           onRefresh={() => {
-            setRefreshing(true)
-            loadData()
+            setRefreshing(true);
+            loadData();
           }}
           ListEmptyComponent={renderEmpty}
         />
       </View>
-      <ImageView
-        images={storyImages}
-        imageIndex={0}
-        visible={showStory}
-        onRequestClose={() => setShowStory(false)}
-      />
-    </ScreenWrapper>
+    </>
   );
 };
 
@@ -195,6 +181,7 @@ const styles = ScaledSheet.create({
     paddingVertical: "16@vs",
     backgroundColor: "white",
   },
+
   headerContainer: {
     marginTop: "12@vs",
     flexDirection: "row",
@@ -212,24 +199,24 @@ const styles = ScaledSheet.create({
     marginEnd: "25@vs",
   },
   opportunityBox: {
-    marginStart: '25@vs',
-    marginEnd: '27@vs',
-    flexDirection: 'column'
+    marginStart: "25@vs",
+    marginEnd: "27@vs",
+    flexDirection: "column",
   },
   empty: {
     height: height(20),
     width: width(100),
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'baseline'
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "baseline",
   },
   icon: {
-    fontSize: '23@ms',
-    marginStart: '23@ms',
+    fontSize: "23@ms",
+    marginStart: "23@ms",
   },
   mapImages: {
     width: "97@s",
@@ -248,43 +235,43 @@ const styles = ScaledSheet.create({
   },
   emptyText: {
     color: Colors.black,
-    fontWeight: 'bold',
-    fontSize: width(4)
+    fontWeight: "bold",
+    fontSize: width(4),
   },
   avatarContainer: {
     backgroundColor: Colors.white,
     borderWidth: 1.5,
-    borderColor: Colors.green,
-    height: height(7),
-    width: height(7),
-    borderRadius: height(3.5),
-    alignItems: 'center',
-    justifyContent: 'center'
+    borderColor: Colors.primary,
+    height: "60@vs",
+    width: "60@vs",
+    borderRadius: "75@vs",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
-    height: height(6),
-    width: height(6),
-    borderRadius: height(3.5),
+    height: "55@vs",
+    width: "55@vs",
+    borderRadius: "70@vs",
   },
   name: {
     fontSize: width(2.8),
     color: Colors.black,
-    alignSelf: 'center',
-    marginTop: height(0.5)
+    alignSelf: "center",
+    marginTop: height(0.5),
   },
   storyContainer: {
     paddingHorizontal: width(2),
-    marginRight: width(1)
+    marginRight: width(1),
   },
   flatlist: {
     marginLeft: width(2),
     marginTop: height(1),
     height: height(14),
-    flexGrow: 0
+    flexGrow: 0,
 
     // backgroundColor: 'yellow'
   },
   flatlist2: {
     // backgroundColor: 'red',
-  }
+  },
 });

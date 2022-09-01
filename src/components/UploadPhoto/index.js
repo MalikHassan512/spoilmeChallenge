@@ -6,14 +6,14 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 const UploadPhoto = (props) => {
   const [imageModal, setImageModal] = useState(false);
   const [image, setImage] = useState('')
-  const options = {
-    maxWidth: 300,
-    maxHeight: 300,
-    mediaType:'photo',
-    quality:0.3,
-  };
+  
   const takePhotoFromCamera = () => {
-    setImageModal(false)
+    const options = {
+    mediaType:'photo',
+    quality:1,
+    ...props.options
+  };
+  setImageModal(false)
     setTimeout(async() => {
       const {assets:[result]} = await launchCamera(options);
       setImage(result)
@@ -24,9 +24,15 @@ const UploadPhoto = (props) => {
   };
 
   const takePhotoFromLibrary = async() => {
+    const options = {
+      mediaType:'photo',
+      quality:0.8,
+      ...props.options
+    };
     setImageModal(false)
     const {assets:[result]}= await launchImageLibrary(options);
     setImage(result)
+    console.log("takePhotoFromLibrary",result)
     props.handleChange(result)
   };
   const ModalIcons = ({ source, title, onPress }) => {
@@ -40,7 +46,8 @@ const UploadPhoto = (props) => {
     );
   };
     return (
-        <View style={styles.container}>
+        <View style={!props.renderButton && styles.container}>
+         {!props.renderButton ?  <>
         <View style={props.imageContainer}>
             <Image
               source={image ? {uri:image.uri} :props.image ? {uri:props.image} :   (props.placeholder || {uri:"https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png"})}
@@ -50,6 +57,9 @@ const UploadPhoto = (props) => {
         {!props.disabled &&  <TouchableOpacity activeOpacity={0.6} style={[styles.iconStyle,props.iconStyle]} onPress={() => setImageModal(true)} >
           <Entypo name="camera" color={props.iconColor || 'black'} size={17} />
           </TouchableOpacity>}
+          </>:
+          props.renderButton(() => setImageModal(true))
+}
           <Modal transparent={true} visible={imageModal} animationType="slide">
         <TouchableOpacity
           style={styles.headModalContainer}

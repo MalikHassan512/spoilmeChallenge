@@ -2,11 +2,17 @@ import {StyleSheet, View, Image,TouchableOpacity} from 'react-native';
 import {LoadingImage} from '../Common/LoadingImage';
 import {MyHeading} from '../Common/MyHeading';
 import React from 'react';
+import colors from '../../util/colors';
 
-export const ChatHeader = ({relatedUser, navigation}) => {
+export const ChatHeader = ({relatedUser, navigation,userIdProps}) => {
   return (
     <View style={styles.header}>
-      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={{width:40,height:40}} activeOpacity={0.7} onPress={() =>{
+         userIdProps ?
+        navigation.navigate('ProfileStack',{screen:'Profile',params:{userId:userIdProps}})
+         :navigation.goBack()
+        
+      }}>
         <Image source={require('../../assets/images/back.png')} />
       </TouchableOpacity>
       <View>
@@ -18,7 +24,8 @@ export const ChatHeader = ({relatedUser, navigation}) => {
       </View>
       <LoadingImage
         source={{uri: relatedUser.profilePic}}
-        style={styles.profilePic}
+        style={[styles.profilePic,relatedUser?.isActive && {borderColor:colors.photoBorder}]}
+
       />
     </View>
   );

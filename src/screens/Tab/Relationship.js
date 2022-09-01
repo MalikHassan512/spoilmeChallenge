@@ -24,7 +24,6 @@ export const Relationship = ({ navigation }) => {
   const [relationships, setRelationships] = useState([]);
   const [relatedUsers, setRelatedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [lastMessages, setLastMessages] = useState([]);
   const [searchText, setSearchText] = useState("");
   const userId = useSelector(selectUser);
   React.useEffect(() => {
@@ -33,7 +32,6 @@ export const Relationship = ({ navigation }) => {
       () => {
         setLoading(true);
         getRelations()
-        // Return the function to unsubscribe from the event so it gets removed on unmount
         return unsubscribe;
       },
       [navigation]
@@ -51,55 +49,6 @@ export const Relationship = ({ navigation }) => {
       alert("Error occured. Please Try again");
     })
     .finally(() => setLoading(false));
-  // useEffect(() => {
-  //   const getRelatedUsers = async () => {
-  //     const tempRelatedUsersId = [];
-  //     for (let relationship of relationships) {
-  //       tempRelatedUsersId.push(
-  //         userId === relationship.user1
-  //           ? relationship.user2
-  //           : relationship.user1,
-  //       );
-  //     }
-  //     if (tempRelatedUsersId.length === 0) return;
-  //     const tempRelatedUsers = await getUsersById(tempRelatedUsersId);
-  //     tempRelatedUsers.filter(relatedUser => {
-  //       if (relatedUser) return relatedUser;
-  //     });
-  //     setRelatedUsers(tempRelatedUsers);
-  //     setFilteredUsers(tempRelatedUsers);
-  //     setLoading(false);
-  //   };
-  //   getRelatedUsers().catch(e => {
-  //     console.log(e);
-  //     setLoading(false);
-  //     alert('Error occured. Please Try again');
-  //   });
-  // }, [relationships]);
-
-  // useEffect(() => {
-  //   if (relatedUsers.length > 0) {
-  //     const subscribers = [];
-  //     relatedUsers.forEach((relatedUser, i) => {
-  //       subscribers.push(
-  //         getLastMessages(
-  //           userId,
-  //           relatedUser.id,
-  //           i,
-  //           lastMessages,
-  //           setLastMessages,
-  //         ),
-  //       );
-  //     });
-  //     setLastMessageSubscribers(subscribers);
-  //     return () => {
-  //       lastMessageSubscribers.forEach(lastMessageSubscriber =>
-  //         lastMessageSubscriber(),
-  //       );
-  //     };
-  //   }
-  // }, [relatedUsers]);
-
   useEffect(() => {
       if(searchText){
         setRelationships(
@@ -114,19 +63,21 @@ export const Relationship = ({ navigation }) => {
       }
   }, [searchText]);
 
-  return loading ? (
+  return false ? (
     <Loading />
   ) : (
     <SafeAreaView style={styles.container}>
-      <RelationshipHeader
+      {/* <RelationshipHeader
         searchText={searchText}
         setSearchText={setSearchText}
-      />
+      /> */}
+      <View style={styles.logoContainer}>
+      <Image style={{width:125,height:31}} source={require('../../assets/images/logo.png')} />
+      </View>
       <UserList
         loading={loading}
         userId={userId}
         getRelations={getRelations}
-        lastMessages={lastMessages}
         otherUsers={relationships}
         navigation={navigation}
       />
@@ -142,5 +93,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  logoContainer: {
+    marginVertical: 20,
+    alignSelf:'center'
   },
 });

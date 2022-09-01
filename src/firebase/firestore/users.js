@@ -16,7 +16,7 @@ export const addUserData = async (
   linkedin,
 
 ) => {
-  await firestore().doc(`users/${id}`).set({
+  const user={
     id,
     firstName,
     lastName,
@@ -35,12 +35,23 @@ export const addUserData = async (
     isActive:true,
     isScrapedfb: false,
     isScrapedli: false,
-  });
+  }
+  
+   await firestore().collection('users')
+   .doc(id)
+   .set(user, { merge: true })
+   return user;
 };
 
 export const getUser = async userId => {
-  const user = await firestore().doc(`users/${userId}`).get();
+  try {
+    const user = await firestore().doc(`users/${userId}`).get();
   return user.data();
+  } catch (error) {
+    console.log("getUser line 51",error)
+    throw error
+  }
+  
 };
 
 export const getUsersById = async usersId => {
@@ -95,9 +106,12 @@ export const getUsersByLocation = async (latitude, longitude, setUsers) => {
 };
 
 export const changeUserData = async (user) => {
-  console.log(user);
+  // console.log(user);
   try {
-  await firestore().doc(`users/${user.id}`).update(user);
+  await firestore()
+  .collection('users')
+        .doc(user.id)
+        .set(user, { merge: true })
   } catch (error) {
    console.log('changeUserData error',error) 
   }

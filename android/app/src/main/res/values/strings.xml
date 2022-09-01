@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">spoil</string>
+    <string name="app_name">Spoil Me</string>
+
+<string name="facebook_app_id">1646153029065165</string>
+<string name="fb_login_protocol_scheme">fb1646153029065165</string>
+<string name="facebook_client_token">af5c7a2a0a0fc3ecf3dd14ca59384d9e</string>
+
+
 </resources>
