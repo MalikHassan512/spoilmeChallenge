@@ -4,8 +4,8 @@ import { Profile } from "../screens/Tab/Profile";
 import Relations from "../screens/Tab/Profile/Relations";
 import ContactsScreen from "../screens/Tab/Profile/Contacts";
 import { Relationship } from "../screens/Tab/Relationship";
-import { Map } from "../screens/Tab/Map";
-import Home from "../screens/Tab/Home";
+// import { Map } from "../screens/Tab/Map";
+// import Home from "../screens/Tab/Home";
 import { Spoil } from "../screens/Tab/Spoil";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -112,11 +112,13 @@ useEffect(() => {
             icon = focused
               ? require("../assets/images/heart_red.png")
               : require("../assets/images/heart_black.png");
-          } else if (route.name === "Map") {
-            icon = focused
-              ? require("../assets/images/map_red.png")
-              : require("../assets/images/map_black.png");
-          } else if (route.name === "ProfileStack") {
+          } 
+          // else if (route.name === "Map") {
+          //   icon = focused
+          //     ? require("../assets/images/map_red.png")
+          //     : require("../assets/images/map_black.png");
+          // } 
+          else if (route.name === "ProfileStack") {
             icon = focused
               ? require("../assets/images/avatar_red.png")
               : require("../assets/images/avatar_black.png");
@@ -140,12 +142,12 @@ useEffect(() => {
         tabBarActiveTintColor: "#C71F1E",
         tabBarInactiveTintColor: "#000",
       })}
-      initialRouteName="Spoil"
+      initialRouteName="ProfileStack"
     >
       {/* <Tab.Screen name="Home" component={Home} /> */}
       <Tab.Screen name="Spoil" component={Spoil} />
       <Tab.Screen name="Relationship" component={Relationship} />
-      <Tab.Screen name="Map" component={Map} />
+      {/* <Tab.Screen name="Map" component={Map} /> */}
       <Tab.Screen
         name="ProfileStack"
         component={ProfileStack}
