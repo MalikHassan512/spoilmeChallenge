@@ -31,8 +31,9 @@ const Home = ({ navigation, route }) => {
   }
 
   function onSwipeRight() {
-    navigation.navigate("CameraScreen");
+    // navigation.navigate("CameraScreen");
   }
+  
   const userId = useSelector((state) => state.user.userId);
   const [pageLoading, setPageLoading] = useState(false);
   const [posts, setPosts] = useState([]);

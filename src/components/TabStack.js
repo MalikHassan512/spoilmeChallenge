@@ -24,7 +24,6 @@ import Contacts from 'react-native-contacts';
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
-
 export function TabStack() {
 const userId= useSelector(state=>state.user.userId)
 const appState = useRef(AppState.currentState);
@@ -121,11 +120,12 @@ useEffect(() => {
             icon = focused
               ? require("../assets/images/avatar_red.png")
               : require("../assets/images/avatar_black.png");
-          } else if (route.name === "Home") {
-            icon = focused
-            ? require("../assets/images/home_red.png")
-            : require("../assets/images/home_black.png");
-          }
+          } 
+          // else if (route.name === "Home") {
+          //   icon = focused
+          //   ? require("../assets/images/home_red.png")
+          //   : require("../assets/images/home_black.png");
+          // }
           return (
             <Image
               style={{
@@ -140,9 +140,9 @@ useEffect(() => {
         tabBarActiveTintColor: "#C71F1E",
         tabBarInactiveTintColor: "#000",
       })}
-      initialRouteName="Home"
+      initialRouteName="Spoil"
     >
-      <Tab.Screen name="Home" component={Home} />
+      {/* <Tab.Screen name="Home" component={Home} /> */}
       <Tab.Screen name="Spoil" component={Spoil} />
       <Tab.Screen name="Relationship" component={Relationship} />
       <Tab.Screen name="Map" component={Map} />
