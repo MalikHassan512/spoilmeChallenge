@@ -28,7 +28,7 @@ export const Spoil = ({navigation}) => {
             <MyHeading text="Your balance" fontSize={15} />
           </LinearGradient>
           <View style={[styles.infoContainer, {backgroundColor: 'red'}]}>
-            <MyHeading text="25" color="white" fontSize={25} />
+            <MyHeading text={spoils.length} color="white" fontSize={25} />
             <MyHeading text="Spoils available" color="white" fontSize={15} />
           </View>
         </View>
