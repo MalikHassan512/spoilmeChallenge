@@ -24,7 +24,7 @@ export const Spoil = ({navigation}) => {
           <LinearGradient
             style={styles.infoContainer}
             colors={['#FFE37E', '#FFBC08']}>
-            <MyHeading text="$14" fontSize={25} />
+            <MyHeading text="$0" fontSize={25} />
             <MyHeading text="Your balance" fontSize={15} />
           </LinearGradient>
           <View style={[styles.infoContainer, {backgroundColor: 'red'}]}>

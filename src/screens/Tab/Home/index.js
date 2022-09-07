@@ -181,6 +181,7 @@ const styles = ScaledSheet.create({
     flex: 1,
     paddingVertical: "16@vs",
     backgroundColor: "white",
+    
   },
 
   headerContainer: {

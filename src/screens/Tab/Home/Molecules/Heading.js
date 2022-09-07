@@ -21,14 +21,17 @@ const styles = ScaledSheet.create({
   container:{
     flexDirection:'row',
     justifyContent:'space-between',
-    marginVertical:'15@vs'
+    marginVertical:'15@vs',
+  
   },
   iconContainer:{
     alignItems:'center',
-    flexDirection:'row'
+    flexDirection:'row',
+    
   },
   icon: {
     fontSize: '22@ms',
     color:Colors.primary,
+    
   },
 })

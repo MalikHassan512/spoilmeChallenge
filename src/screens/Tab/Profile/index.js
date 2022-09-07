@@ -6,6 +6,7 @@ import {
   FlatList,
   RefreshControl,
   Image,
+  SafeAreaView
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomText from "../../../components/CustomText";
@@ -128,7 +129,7 @@ export const Profile = ({ navigation, route }) => {
       <Loading />
     </View>
   ) : (
-    <>
+    <SafeAreaView>
       <HomeHeader
         hideIcon={otherUserId ? otherUserId != id : false}
         onPlusCircle={() => setPostModal(true)}
@@ -248,7 +249,7 @@ export const Profile = ({ navigation, route }) => {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate("Contacts", { userId })}
+                // onPress={() => navigation.navigate("Contacts", { userId })}
                 style={{ alignItems: "center" }}
               >
                 <CustomText
@@ -405,7 +406,7 @@ export const Profile = ({ navigation, route }) => {
           setVisible={setIsRelationModal}
         />
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 const renderEmpty = () => {

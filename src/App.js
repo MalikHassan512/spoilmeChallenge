@@ -15,7 +15,8 @@ import { Loading } from "./components/Common/Loading";
 import { TabStack } from "./components/TabStack";
 import { CreateRelationship } from "./screens/CreateRelationship";
 import React, { useState, useEffect } from "react";
-import { PersistGate } from 'redux-persist/integration/react'
+import { PersistGate } from 'redux-persist/integration/react';
+import { SafeAreaView } from 'react-native';
 // import CameraScreen from './screens/CameraScreen'
 
 const Main = () => {
@@ -69,11 +70,16 @@ const Main = () => {
 };
 const App = () => {
   return (
+
+   
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+      
       <Main />
+      
       </PersistGate>
     </Provider>
+  
   );
 };
 

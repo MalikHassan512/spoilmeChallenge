@@ -29,6 +29,7 @@ export const ImagesContainer = props => {
 const styles = ScaledSheet.create({
   container: {
     flexDirection: 'row',
+    
   },
 
 });

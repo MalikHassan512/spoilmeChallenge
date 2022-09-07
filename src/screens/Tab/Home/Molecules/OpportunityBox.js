@@ -44,6 +44,7 @@ const styles = ScaledSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginBottom: "10@vs",
+    
   },
   profile: {
     width: "36@ms",
