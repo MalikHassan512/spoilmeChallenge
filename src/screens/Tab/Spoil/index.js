@@ -60,12 +60,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+
   },
   infosContainer: {
     width: '100%',
     marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    
   },
   infoContainer: {
     padding: 20,
