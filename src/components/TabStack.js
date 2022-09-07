@@ -142,7 +142,7 @@ useEffect(() => {
         tabBarActiveTintColor: "#C71F1E",
         tabBarInactiveTintColor: "#000",
       })}
-      initialRouteName="ProfileStack"
+      initialRouteName="Spoil"
     >
       {/* <Tab.Screen name="Home" component={Home} /> */}
       <Tab.Screen name="Spoil" component={Spoil} />
