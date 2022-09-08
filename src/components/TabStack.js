@@ -117,8 +117,6 @@ export function TabStack() {
               style={{
                 width: scale(23),
                 height: verticalScale(18),
-                // backgroundColor:'red',
-                marginBottom:'50px'
               }}
               resizeMode={"contain"}
               source={icon}
