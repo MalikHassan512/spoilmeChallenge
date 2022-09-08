@@ -150,7 +150,7 @@ export const Map = ({ navigation }) => {
                         height: 0,
                         borderLeftWidth: 6,
                         borderRightWidth: 6,
-                        borderTopWidth: 10,
+                        borderTopWidth: 14,
                         borderColor: "transparent",
                         borderTopColor: "white",
                         alignSelf: "center",
@@ -160,6 +160,171 @@ export const Map = ({ navigation }) => {
                 )
               );
             })}
+
+            
+{/* marker for the spoil */}
+            <Marker
+              // key={index}
+              // onPress={() => {
+              //   setModalVisible(!modalVisible);
+              //   setSelectedRelatedUser(relatedUser);
+              // }}
+              coordinate={{
+                latitude: 47.369522,
+                longitude: 8.539151
+               
+              }}
+            >
+             <View
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: 8,
+                  borderRadius: 28,
+                }} 
+              >
+                <LoadingImage
+                  style={{ width: 40, height: 40, borderRadius: 30 }}
+                  source={require('../../assets/images/spoil4.jpeg')}
+                />
+              </View>
+              <View
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeftWidth: 6,
+                  borderRightWidth: 6,
+                  borderTopWidth: 13,
+                  borderColor: "transparent",
+                  borderTopColor: "#000000",
+                  alignSelf: "center",
+                }}
+              ></View>
+            </Marker>
+
+
+
+
+            <Marker
+              // key={index}
+              // onPress={() => {
+              //   setModalVisible(!modalVisible);
+              //   setSelectedRelatedUser(relatedUser);
+              // }}
+              coordinate={{
+                latitude: 47.364765,
+                longitude: 8.515981
+              }}
+            >
+             <View
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: 8,
+                  borderRadius: 28,
+                }} 
+              >
+                <LoadingImage
+                  style={{ width: 40, height: 40, borderRadius: 30 }}
+                  source={require('../../assets/images/spoil3.png')}
+                />
+              </View>
+              <View
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeftWidth: 6,
+                  borderRightWidth: 6,
+                  borderTopWidth: 13,
+                  borderColor: "transparent",
+                  borderTopColor: "#000000",
+                  alignSelf: "center",
+                }}
+              ></View>
+            </Marker>
+
+
+            <Marker
+              // key={index}
+              // onPress={() => {
+              //   setModalVisible(!modalVisible);
+              //   setSelectedRelatedUser(relatedUser);
+              // }}
+              coordinate={{
+                latitude: 47.37097302867282,
+                longitude: 8.540081489474195
+              }}
+            >
+             <View
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: 8,
+                  borderRadius: 28,
+                }} 
+              >
+                <LoadingImage
+                  style={{ width: 40, height: 40, borderRadius: 30 }}
+                  source={require('../../assets/images/spoil2.png')}
+                />
+              </View>
+              <View
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeftWidth: 6,
+                  borderRightWidth: 6,
+                  borderTopWidth: 13,
+                  borderColor: "transparent",
+                  borderTopColor: "#000000",
+                  alignSelf: "center",
+                }}
+              ></View>
+            </Marker>
+
+
+
+
+
+            <Marker
+              // key={index}
+              // onPress={() => {
+              //   setModalVisible(!modalVisible);
+              //   setSelectedRelatedUser(relatedUser);
+              // }}
+              coordinate={{
+                latitude: 47.36963076068066,
+                longitude: 8.539137577852953
+              }}
+            >
+             <View
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: 8,
+                  borderRadius: 28,
+                }} 
+              >
+                <LoadingImage
+                  style={{ width: 40, height: 40, borderRadius: 30 }}
+                  source={require('../../assets/images/spoil1.png')}
+                />
+              </View>
+              <View
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeftWidth: 6,
+                  borderRightWidth: 6,
+                  borderTopWidth: 13,
+                  borderColor: "transparent",
+                  borderTopColor: "#000000",
+                  alignSelf: "center",
+                }}
+              ></View>
+            </Marker>
+{/* marker for the spoil */}
+
+
+
+
+
           </MapView>
         </>
       ) : loading ? (
