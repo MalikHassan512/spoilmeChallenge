@@ -1,12 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  Image,
-  SafeAreaView,
-  Text,
-} from "react-native";
+import { View, StyleSheet, Dimensions, ScrollView, Image, SafeAreaView, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import React, { useState, useEffect } from "react";
 import { getUserRelationships } from "../../firebase/firestore/relationships";
@@ -17,7 +9,7 @@ import { LoadingImage } from "../../components/Common/LoadingImage";
 import MapModal from "../../components/Map/MapModal";
 import Header from "../../components/Header";
 import SimpleToast from "react-native-simple-toast";
-import requestLocationPermission  from '../../util/getLocation'
+import requestLocationPermission from "../../util/getLocation";
 import { changeUserData } from "../../firebase/firestore/users";
 import { Loading } from "components/Common/Loading";
 
@@ -35,63 +27,62 @@ export const Map = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [user, setUser] = useState({});
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const closeModal = () => {
     setModalVisible(false);
   };
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true)
-      getUser(userId).then(async (user) => {
-        if (user) {
-          setUser(user);
-            if(user?.location?.coords){
+      setLoading(true);
+      getUser(userId)
+        .then(async (user) => {
+          if (user) {
+            setUser(user);
+            if (user?.location?.coords) {
               setRegion({
-                latitude: user?.location?.coords?.latitude ||  31.3914008,
+                latitude: user?.location?.coords?.latitude || 31.3914008,
                 longitude: user?.location.coords?.longitude || 32.8377671,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               });
-            }else{
-            const permission = await requestLocationPermission(async(location)=>{
-              setRegion({
-                latitude:location?.coords?.latitude ||  31.3914008,
-                longitude:location.coords?.longitude || 32.8377671,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              });
-             await changeUserData({
-                id: userId,
-                location: location,
-              });
-              })
-              if(!permission){
+            } else {
+              const permission = await requestLocationPermission(async (location) => {
                 setRegion({
-                  latitude:  31.3914008,
+                  latitude: location?.coords?.latitude || 31.3914008,
+                  longitude: location.coords?.longitude || 32.8377671,
+                  latitudeDelta: LATITUDE_DELTA,
+                  longitudeDelta: LONGITUDE_DELTA,
+                });
+                await changeUserData({
+                  id: userId,
+                  location: location,
+                });
+              });
+              if (!permission) {
+                setRegion({
+                  latitude: 31.3914008,
                   longitude: 32.8377671,
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 });
               }
             }
-          getAllUsers().then((users) => setRelatedUsers(users));
-        } else {
-
-          setRegion({
-            latitude:31.3914008,
-            longitude: 32.8377671,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          });
-        }
-        setLoading(false)
-
-      }).catch(error=>{
-        console.log('map error line 90',error)
-        setLoading(false)
-      });
-
+            getAllUsers().then((users) => setRelatedUsers(users));
+          } else {
+            setRegion({
+              latitude: 31.3914008,
+              longitude: 32.8377671,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            });
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log("map error line 90", error);
+          setLoading(false);
+        });
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -99,86 +90,85 @@ export const Map = ({ navigation }) => {
   }, [navigation]);
   const searchedUser = () => {
     getAllUsers().then((users) => {
-      let user = users.find((user) =>user.id!=userId && user?.email?.split("@")?.[0] == searchText.trim().toLowerCase());
-      if(user){
-      setRegion({
-        latitude: user.location.coords.latitude,
-        longitude: user.location.coords.longitude,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      });
-    }else{
-      SimpleToast.show("User not found")
-    }
+      let user = users.find(
+        (user) => user.id != userId && user?.email?.split("@")?.[0] == searchText.trim().toLowerCase()
+      );
+      if (user) {
+        setRegion({
+          latitude: user.location.coords.latitude,
+          longitude: user.location.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        });
+      } else {
+        SimpleToast.show("User not found");
+      }
     });
   };
   return (
     <SafeAreaView style={styles.container}>
-      {(region && relatedUsers) ? (
+      {region && relatedUsers ? (
         <>
           <Header
-          searchedUser={searchedUser}
-          searchText={searchText}
-          setSearchText={setSearchText}
-          sImgContainerStyle={styles.searchIcon}
-          sImgPath={require("../../assets/images/search.png")}
-          containerStyle={styles.headerContainer}
-        />
-        <MapView
-          style={{ width: "100%", height: "100%" }}
-          region={region}
-          onRegionChangeComplete={setRegion}
-        >
-          {relatedUsers.map((relatedUser, index) => {
-            return (
-              userId != relatedUser?.id && (
-                <Marker
-                  key={index}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setSelectedRelatedUser(relatedUser);
-                  }}
-                  coordinate={{
-                    latitude: relatedUser?.location?.coords?.latitude || 32.2,
-                    longitude: relatedUser?.location?.coords?.longitude || 32.4,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      padding: 10,
-                      borderRadius: 15,
+            searchedUser={searchedUser}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            sImgContainerStyle={styles.searchIcon}
+            sImgPath={require("../../assets/images/search.png")}
+            containerStyle={styles.headerContainer}
+          />
+          <MapView style={{ width: "100%", height: "100%" }} region={region} onRegionChangeComplete={setRegion}>
+            {relatedUsers.map((relatedUser, index) => {
+              return (
+                userId != relatedUser?.id && (
+                  <Marker
+                    key={index}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      setSelectedRelatedUser(relatedUser);
+                    }}
+                    coordinate={{
+                      latitude: relatedUser?.location?.coords?.latitude || 32.2,
+                      longitude: relatedUser?.location?.coords?.longitude || 32.4,
                     }}
                   >
-                    <LoadingImage
-                      style={{ width: 50, height: 50, borderRadius: 50 }}
-                      source={{ uri: relatedUser.profilePic }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      width: 0,
-                      height: 0,
-                      borderLeftWidth: 6,
-                      borderRightWidth: 6,
-                      borderTopWidth: 10,
-                      borderColor: "transparent",
-                      borderTopColor: "white",
-                      alignSelf: "center",
-                    }}
-                  ></View>
-                </Marker>
-              )
-            );
-          })}
-        </MapView>
+                    <View
+                      style={{
+                        backgroundColor: "white",
+                        padding: 10,
+                        borderRadius: 15,
+                      }}
+                    >
+                      <LoadingImage
+                        style={{ width: 50, height: 50, borderRadius: 50 }}
+                        source={{ uri: relatedUser.profilePic }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        width: 0,
+                        height: 0,
+                        borderLeftWidth: 6,
+                        borderRightWidth: 6,
+                        borderTopWidth: 10,
+                        borderColor: "transparent",
+                        borderTopColor: "white",
+                        alignSelf: "center",
+                      }}
+                    ></View>
+                  </Marker>
+                )
+              );
+            })}
+          </MapView>
         </>
-      ):
-      loading ? <Loading  /> :
-          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-            <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
-          </View>
-      }
+      ) : loading ? (
+        <Loading />
+      ) : (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text style={styles.emptyText}>Please enable location permission from setting to use this feature</Text>
+        </View>
+      )}
       {selectedRelatedUser && (
         <MapModal
           userId={userId}
@@ -219,10 +209,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   emptyText: {
-    color: '#000',
+    color: "#000",
     fontWeight: "bold",
     fontSize: 22,
-    paddingHorizontal:20,
-    textAlign:'center'
+    paddingHorizontal: 20,
+    textAlign: "center",
   },
 });
