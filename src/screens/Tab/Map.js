@@ -21,6 +21,11 @@ import requestLocationPermission  from '../../util/getLocation'
 import { changeUserData } from "../../firebase/firestore/users";
 import { Loading } from "components/Common/Loading";
 
+import Geolocation from 'react-native-geolocation-service';
+import RNPermissions, {request,check, NotificationOption, Permission, PERMISSIONS,RESULTS} from 'react-native-permissions';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+
 const { width, height } = Dimensions.get("window");
 
 const ASPECT_RATIO = width / height;
@@ -28,6 +33,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA + ASPECT_RATIO;
 
 export const Map = ({ navigation }) => {
+  const [currentUserLocation,setCurrentUserLocation] = useState(null);
   const [region, setRegion] = useState(null);
   const userId = useSelector(selectUser);
   const [relatedUsers, setRelatedUsers] = useState([]);
@@ -40,21 +46,50 @@ export const Map = ({ navigation }) => {
     setModalVisible(false);
   };
 
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setLoading(true)
       getUser(userId).then(async (user) => {
         if (user) {
           setUser(user);
+          console.log("setting user as user exists");
+
             if(user?.location?.coords){
+              console.log("in if condition")
+              console.log("setting user as user exists");
+              
+          console.log(user?.location?.coords?.latitude);
+          console.log(user?.location?.coords?.longitude);
+
+          await requestLocationPermission(async(location)=>{
+            console.log("logging location")              
+            console.log(location)
+            setRegion({
+              latitude:location?.coords?.latitude ||  31.3914008,
+              longitude:location.coords?.longitude || 32.8377671,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            });
+           await changeUserData({
+              id: userId,
+              location: location,
+            });
+            });
+
               setRegion({
-                latitude: user?.location?.coords?.latitude ||  31.3914008,
-                longitude: user?.location.coords?.longitude || 32.8377671,
+                latitude: user?.location?.coords?.latitude ,
+                longitude: user?.location.coords?.longitude,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
               });
-            }else{
+            }
+            else {
+              console.log("In else");
+
             const permission = await requestLocationPermission(async(location)=>{
+              console.log("logging location")              
+              console.log(location)
               setRegion({
                 latitude:location?.coords?.latitude ||  31.3914008,
                 longitude:location.coords?.longitude || 32.8377671,
@@ -66,6 +101,7 @@ export const Map = ({ navigation }) => {
                 location: location,
               });
               })
+              setLoading(false)
               if(!permission){
                 setRegion({
                   latitude:  31.3914008,
@@ -112,8 +148,9 @@ export const Map = ({ navigation }) => {
     }
     });
   };
+
   return (
-    <SafeAreaView style={styles.container}>
+    loading ? <Loading  /> : <SafeAreaView style={styles.container}>
       {(region && relatedUsers) ? (
         <>
           <Header

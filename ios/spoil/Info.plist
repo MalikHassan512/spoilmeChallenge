@@ -38,7 +38,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires access to your contacts.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires access to your location for it to function.</string>
+	<string>Location Permission</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -14,6 +14,7 @@
 		75DD8095B0E39A06F0A88C8F /* libPods-spoil-spoilTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DDAD6C37314414259216FDE /* libPods-spoil-spoilTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		90EA85EA727F3A1652DAC052 /* libPods-spoil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2680AC3C43C32419A1B89DB8 /* libPods-spoil.a */; };
+		9361864D28CB431800E4DEB7 /* location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9361864C28CB431800E4DEB7 /* location.swift */; };
 		9B7AA74727D9282D003A6595 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9B7AA74627D9282D003A6595 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,8 @@
 		7F950932655CC22D59A2586A /* Pods-spoil.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-spoil.release.xcconfig"; path = "Target Support Files/Pods-spoil/Pods-spoil.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = spoil/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		876A3A00D42432AB2618B8BC /* Pods-spoil-spoilTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-spoil-spoilTests.release.xcconfig"; path = "Target Support Files/Pods-spoil-spoilTests/Pods-spoil-spoilTests.release.xcconfig"; sourceTree = "<group>"; };
+		9361864B28CB431800E4DEB7 /* spoil-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "spoil-Bridging-Header.h"; sourceTree = "<group>"; };
+		9361864C28CB431800E4DEB7 /* location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = location.swift; sourceTree = "<group>"; };
 		9B7AA74627D9282D003A6595 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -118,6 +121,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9361864C28CB431800E4DEB7 /* location.swift */,
 				9B7AA74627D9282D003A6595 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* spoil */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -125,6 +129,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D2DDB7BAD7655147FEA94CFA /* Pods */,
+				9361864B28CB431800E4DEB7 /* spoil-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -204,14 +209,14 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1340;
 					};
 				};
 			};
@@ -428,6 +433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9361864D28CB431800E4DEB7 /* location.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -448,13 +454,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 15DFDB147DCC8898FFD1D26E /* Pods-spoil-spoilTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = spoilTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -475,10 +482,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 876A3A00D42432AB2618B8BC /* Pods-spoil-spoilTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = spoilTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -502,7 +510,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = L34Z97C5D6;
+				DEVELOPMENT_TEAM = K47594B38D;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = spoil/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -515,8 +523,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.spoil;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spoil.test;
 				PRODUCT_NAME = spoil;
+				SWIFT_OBJC_BRIDGING_HEADER = "spoil-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -530,7 +539,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = L34Z97C5D6;
+				DEVELOPMENT_TEAM = K47594B38D;
 				INFOPLIST_FILE = spoil/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -542,8 +551,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.spoil;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spoil.test;
 				PRODUCT_NAME = spoil;
+				SWIFT_OBJC_BRIDGING_HEADER = "spoil-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -598,7 +608,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -656,7 +666,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
