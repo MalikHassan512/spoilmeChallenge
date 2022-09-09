@@ -290,8 +290,9 @@ export const Map = ({ navigation }) => {
               //   setSelectedRelatedUser(relatedUser);
               // }}
               coordinate={{
-                latitude: 47.36963076068066,
-                longitude: 8.539137577852953
+                latitude: 47.5442273286375,
+                longitude: 7.5909516067007585
+                
               }}
             >
              <View
