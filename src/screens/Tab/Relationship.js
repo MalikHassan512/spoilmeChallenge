@@ -41,6 +41,7 @@ export const Relationship = ({ navigation }) => {
   const getRelations = () =>
   getUserRelationships(userId)
     .then((res) => {
+      res = res.reverse();
       setRelationships(res);
       setRelatedUsers(res)
     })
