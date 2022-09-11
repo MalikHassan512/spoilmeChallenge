@@ -58,20 +58,23 @@ const RelationItem = ({ index, conversation,navigation,userId}) => {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-around",
+            justifyContent: "space-between",
+            width:"100%"
           }}
         >
-          <LoadingImage
-            style={[styles.profilePic,toUser?.isActive && {borderColor:colors.photoBorder,borderWidth:3}]}
-            source={{ uri: toUser?.profilePic }}
-          />
-          <View>
+          <View width="20%">
+            <LoadingImage
+              style={[styles.profilePic,toUser?.isActive && {borderColor:colors.photoBorder,borderWidth:3}]}
+              source={{ uri: toUser?.profilePic }}
+            />
+          </View>
+          <View width="80%" >
             <MyHeading
               marginBottom={5}
               marginTop={15}
               text={`${(toUser?.firstName || "")} ${((toUser?.lastName?.[0] || ""))}.`}
             />
-            <MyText text={conversation?.lastMessage?.text} color="#C4C4C4" />
+            <MyText text={conversation?.lastMessage?.text} color="#C4C4C4"  />
             <View>
             {relation == 0 && conversation?.lastMessage?.from !== userId? <View style={{ flexDirection: "row" }}>
               <ChatButton

@@ -1,13 +1,15 @@
 import React from 'react';
-import {Text,} from 'react-native';
+import {Text} from 'react-native';
 
 export const MyText = ({
   text,
   textAlign = 'left',
   color = 'black',
-  numberOfLines,
+  numberOfLines=1,
   marginBottom,
   marginTop,
+  paddingLeft = 10,
+  paddingBottom= 10,
   fontSize,
   textStyle
 }) => {
@@ -17,10 +19,13 @@ export const MyText = ({
       style={[textStyle,{
         fontSize: fontSize,
         color: color,
+        paddingLeft: paddingLeft,
+        paddingBottom: paddingBottom,
         textAlign: textAlign,
         marginBottom: marginBottom,
         marginTop: marginTop,
-      }]}>
+      }]}
+      >
       {text}
     </Text>
   );
