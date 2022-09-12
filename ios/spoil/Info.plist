@@ -43,6 +43,8 @@
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to your photos to upload images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to your camera to upload images.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
