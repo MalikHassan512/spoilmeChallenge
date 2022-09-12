@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>spoil</string>
+	<string>Spoil:me</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,6 +35,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to your camera to upload images.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires access to your contacts.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -43,8 +45,6 @@
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to your photos to upload images.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>This app requires access to your camera to upload images.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
