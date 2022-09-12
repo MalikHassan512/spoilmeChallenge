@@ -13,6 +13,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {currentProfileUser} from '../../../redux/features/profileSlice'
 import colors from '../../../util/colors';
 import {scale, ScaledSheet, verticalScale} from 'react-native-size-matters'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const CreatePostModal = ({visible,setVisible,loadData}) => {
   const userId = useSelector((state) => state.user.userId);
@@ -48,12 +49,14 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
   }
  
   return (
+    
     <CustomModal isModalVisible={visible} setModalVisible={()=>{
         setVisible(false)
         setTitle("")
         setImage("")
       }}>
         <View style={styles.modalContainer}>
+        <KeyboardAwareScrollView>
           <CustomText label="Create Post" textStyle={styles.CreatePostTitle} />
             
           <TextInput
@@ -86,7 +89,7 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
             onPress={handleChange}
           >
             <CustomText
-              label="Upload"
+              label="Select Photo"
               container={styles.uploadImageContainer}
               textStyle={styles.uploadimageText}
             />
@@ -108,8 +111,10 @@ const CreatePostModal = ({visible,setVisible,loadData}) => {
         }
         
         </View>
+        </KeyboardAwareScrollView>
         </View>
       </CustomModal>
+      
   )
 }
 
@@ -119,7 +124,7 @@ const styles = ScaledSheet.create({
     modalContainer: {
         backgroundColor: colors.white,
         width: "100%",
-        height: "95%",
+        minHeight: "40%",
         alignSelf: "center",
         borderRadius: "10@s",
       },
@@ -151,7 +156,7 @@ const styles = ScaledSheet.create({
         width: "45%",
         alignItems: "center",
         justifyContent:'center',
-        marginVertical: "10@s",
+        marginVertical: "34@s",
       },
       uploadimageText: {
         color: colors.white,
@@ -159,7 +164,7 @@ const styles = ScaledSheet.create({
         alignSelf:'center'
       },
       image: {
-        width: "312@s",
+        width: "285@s",
       alignSelf: 'center',
       height: "240@vs",
       borderRadius: 10
