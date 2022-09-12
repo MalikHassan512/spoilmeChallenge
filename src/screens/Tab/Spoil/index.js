@@ -1,13 +1,19 @@
-import {SafeAreaView, View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import LinearGradient from 'react-native-linear-gradient';
-import {MyHeading} from '../../../components/Common/MyHeading';
-import {MyText} from '../../../components/Common/MyText';
-import {getSpoils} from '../../../firebase/firestore/spoils';
-import {useSelector} from 'react-redux';
-import {selectUser} from '../../../redux/features/userSlice';
-import SpoilItem from './molecules/Item';
-export const Spoil = ({navigation}) => {
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import LinearGradient from "react-native-linear-gradient";
+import { MyHeading } from "../../../components/Common/MyHeading";
+import { MyText } from "../../../components/Common/MyText";
+import { getSpoils } from "../../../firebase/firestore/spoils";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../redux/features/userSlice";
+import SpoilItem from "./molecules/Item";
+export const Spoil = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
   useEffect(() => {
@@ -23,25 +29,38 @@ export const Spoil = ({navigation}) => {
         <View style={styles.infosContainer}>
           <LinearGradient
             style={styles.infoContainer}
-            colors={['#FFE37E', '#FFBC08']}>
+            colors={["#FFE37E", "#FFBC08"]}
+          >
             <MyHeading text="$0" fontSize={25} />
             <MyHeading text="Your balance" fontSize={15} />
           </LinearGradient>
-          <View style={[styles.infoContainer, {backgroundColor: 'red'}]}>
+          <View style={[styles.infoContainer, { backgroundColor: "red" }]}>
             <MyHeading text={spoils.length} color="white" fontSize={25} />
-            <MyHeading text="Spoils available" color="white" fontSize={15} />
+            {spoils.length == 1 ? (
+              <MyHeading text="Spoil available" color="white" fontSize={15} />
+            ) : (
+              <MyHeading text="Spoils available" color="white" fontSize={15} />
+            )}
           </View>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           {spoils.map((spoilGroup, i) => {
             return (
-              <View key={i} style={{marginVertical: 5}}>
+              <View key={i} style={{ marginVertical: 5 }}>
                 {spoilGroup.length > 0 && (
-                  <MyHeading marginBottom={10} text={spoilGroup[0].date.toDateString()} />
+                  <MyHeading
+                    marginBottom={10}
+                    text={spoilGroup[0].date.toDateString()}
+                  />
                 )}
                 {spoilGroup.map((spoil, j) => {
                   return (
-                   <SpoilItem key={spoil.id+j} length={spoils.length} userId={userId} spoil={spoil} />
+                    <SpoilItem
+                      key={spoil.id + j}
+                      length={spoils.length}
+                      userId={userId}
+                      spoil={spoil}
+                    />
                   );
                 })}
               </View>
@@ -58,21 +77,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
     marginHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   infosContainer: {
-    width: '100%',
+    width: "100%",
     marginVertical: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   infoContainer: {
     padding: 20,
     paddingLeft: 10,
-    width: '45%',
+    width: "45%",
     borderWidth: 3,
     borderRadius: 10,
   },
