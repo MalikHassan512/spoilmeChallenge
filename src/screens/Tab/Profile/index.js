@@ -74,6 +74,7 @@ export const Profile = ({ navigation, route }) => {
   }, [userId, isFocused]);
 
   useEffect(() => {
+    getAllData();
     const unsubscribe = navigation.addListener(
       "blur",
       () => {

@@ -21,9 +21,10 @@ const PopupModal = ({ visible, onPress, bgPress }) => {
       lastActive: firestore.Timestamp.now(),
     });
     signout();
+    onPress();
   };
   return (
-    <Modal visible={visible} transparent={true}>
+    <Modal visible={visible} transparent={true} >
       <View style={styles.firstContainer}>
         <TouchableOpacity
           onPress={bgPress}
