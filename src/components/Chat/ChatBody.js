@@ -32,7 +32,7 @@ export const ChatBody = ({ userId, relatedUserId}) => {
         <View
           style={{
             alignSelf: isUser ? "flex-end" : "flex-start",
-            width: "70%",
+            width: "75%",
           }}
         >
           <View

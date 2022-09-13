@@ -90,9 +90,11 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   spoil: {
-    height: 80,
-    width: 80,
+    height: 70,
+    width: 70,
     marginRight: 20,
+    borderRadius:45,
+    backgroundColor:'white'
   },
   modal: {
     backgroundColor: 'white',
