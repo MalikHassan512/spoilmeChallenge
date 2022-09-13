@@ -1,39 +1,36 @@
-import { NavigationContainer,DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Signup } from "./screens/Auth/Signup";
 import { Signin } from "./screens/Auth/Signin";
 import { ForgotPassword } from "./screens/Auth/ForgotPassword";
 import { Chat } from "./screens/Chat";
 import { Provider } from "react-redux";
-import { store,persistor } from "./redux/store";
+import { store, persistor } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  changeUser,
-} from "./redux/features/userSlice";
+import { changeUser } from "./redux/features/userSlice";
 import { checkAuth } from "./firebase/auth/checkAuth";
 import { Loading } from "./components/Common/Loading";
 import { TabStack } from "./components/TabStack";
 import { CreateRelationship } from "./screens/CreateRelationship";
 import React, { useState, useEffect } from "react";
-import { PersistGate } from 'redux-persist/integration/react';
-import { SafeAreaView } from 'react-native';
+import { PersistGate } from "redux-persist/integration/react";
+import { SafeAreaView, View } from "react-native";
+
 // import CameraScreen from './screens/CameraScreen'
 
 const Main = () => {
   const dispatch = useDispatch();
-  const userId = useSelector(state=>state.user.userId);
+  const userId = useSelector((state) => state.user.userId);
   const Stack = createNativeStackNavigator();
   const [loading, setLoading] = useState(true);
-  const theme= {
+  const theme = {
     ...DefaultTheme,
-    colors:{
+    colors: {
       ...DefaultTheme.colors,
-      background:'#fff'
-    }
-  }
+      background: "#fff",
+    },
+  };
 
-  
- 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -70,16 +67,13 @@ const Main = () => {
 };
 const App = () => {
   return (
-
-   
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-      
-      <Main />
-      
+        <SafeAreaView style={{ flex: 1 }}>
+          <Main />
+        </SafeAreaView>
       </PersistGate>
     </Provider>
-  
   );
 };
 
