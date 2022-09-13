@@ -50,8 +50,9 @@ const Main = () => {
     <NavigationContainer theme={theme}>
       {!userId ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+           <Stack.Screen name="Signin" component={Signin} />
           <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Signin" component={Signin} />
+         
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
       ) : (

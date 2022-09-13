@@ -29,6 +29,7 @@ export const getMessages = (user1, user2, setMessages) => {
       const messages = [];
       chatsSnapshot?.forEach(chatSnapshot => {
         const message = chatSnapshot.data();
+        // console.log(message.text)
         // console.log("message",message)
         // if ( (message.to.id == user1 && message.from.id == user2) || (message.to.id === user2 && message.from.id === user1) )
           messages.push(message);

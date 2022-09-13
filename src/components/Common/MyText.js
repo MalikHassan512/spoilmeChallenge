@@ -5,7 +5,7 @@ export const MyText = ({
   text,
   textAlign = 'left',
   color = 'black',
-  numberOfLines=1,
+  numberOfLines,
   marginBottom,
   marginTop,
   paddingLeft = 10,

@@ -89,24 +89,24 @@ export const Signin = ({ navigation }) => {
       }
     }
   };
-  const onSigninWithFacebook = async ()=>{
-    try {
-      const {userId,userData} = await onFacebookButtonPress();
-      await changeUserData({
-        id:userId,
-        isActive:true,
-        lastActive:firestore.Timestamp.now(),
-        location,
-        email:userData.email,
-        firstName:userData.first_name,
-        lastName:userData.last_name,
-        profilePic:userData.picture.data.url
-      })
-      dispatch(changeUser(userId));
-    } catch (error) {
-      console.log("fb error",error)
-    }
-  }
+  // const onSigninWithFacebook = async ()=>{
+  //   try {
+  //     const {userId,userData} = await onFacebookButtonPress();
+  //     await changeUserData({
+  //       id:userId,
+  //       isActive:true,
+  //       lastActive:firestore.Timestamp.now(),
+  //       location,
+  //       email:userData.email,
+  //       firstName:userData.first_name,
+  //       lastName:userData.last_name,
+  //       profilePic:userData.picture.data.url
+  //     })
+  //     dispatch(changeUser(userId));
+  //   } catch (error) {
+  //     console.log("fb error",error)
+  //   }
+  // }
   return (
     <ScreenWrapper scrollEnabled>
       <View style={styles.mainContainer}>
@@ -153,7 +153,7 @@ export const Signin = ({ navigation }) => {
           label="Or sign in with"
           textStyle={styles.orSignInWithText}
         />
-         <Button theme={{
+         {/* <Button theme={{
            roundness:10,
            colors:{
              primary:'#000'
@@ -163,7 +163,7 @@ export const Signin = ({ navigation }) => {
          style={{marginBottom:10}}
           uppercase={false} icon={()=><Image style={{width:20,height:20,resizeMode:'contain'}} source={require('../../assets/images/fb.png')} />} mode="outlined"  onPress={onSigninWithFacebook}>
             Sign in with Facebook
-            </Button>
+            </Button> */}
             <Button theme={{
            roundness:10,
            colors:{
@@ -198,7 +198,7 @@ export const Signin = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <CustomText
               textStyle={styles.signUpHereText}
-              label="Sign up here"
+              label="Sign up"
             />
           </TouchableOpacity>
         </View>
@@ -261,13 +261,14 @@ const styles = ScaledSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: "80@vs",
+    marginTop:"20@vs"
   },
   dontHaveText: {
     color: "#878787",
-    fontSize: "16@ms",
+    fontSize: "14@ms",
   },
   signUpHereText: {
     color: "#C71F1E",
-    fontSize: "16@ms",
+    fontSize: "14@ms",
   },
 });

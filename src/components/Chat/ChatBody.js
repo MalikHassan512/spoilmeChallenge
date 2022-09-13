@@ -32,7 +32,7 @@ export const ChatBody = ({ userId, relatedUserId}) => {
         <View
           style={{
             alignSelf: isUser ? "flex-end" : "flex-start",
-            width: "60%",
+            width: "70%",
           }}
         >
           <View
@@ -42,11 +42,11 @@ export const ChatBody = ({ userId, relatedUserId}) => {
               isUser && {
                 backgroundColor: "white",
                 borderColor: "#E8E8E8",
-                borderWidth: 2,
+                borderWidth: 1,
               },
             ]}
           >
-            <MyText text={message.text} />
+            <MyText text={message.text} numberOfLines={1} />
             {message.spoilStatus === 0 && !isUser ? (
               <View style={{ flexDirection: "row" }}>
                 <ChatButton
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
     padding: 20,
-    minHeight: 100,
+    minHeight: 40,
     justifyContent: "center",
     alignItems: "center",
   },
