@@ -95,6 +95,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				9B7AA74627D9282D003A6595 /* GoogleService-Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -122,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				9361864C28CB431800E4DEB7 /* location.swift */,
-				9B7AA74627D9282D003A6595 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* spoil */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* spoilTests */,
