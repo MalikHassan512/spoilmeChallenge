@@ -32,13 +32,18 @@ export function TabStack() {
         const contacts = await Contacts.getAll();
         dispatch(contactList(contacts));
       } else {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-          title: "Spoil Me Contacts Permission",
-          message: "Spoil Me Need Access to Your contacts " + "to send users Spoils.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        });
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          {
+            title: "Spoil Me Contacts Permission",
+            message:
+              "Spoil Me Need Access to Your contacts " +
+              "to send users Spoils.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           const contacts = await Contacts.getAll();
           dispatch(contactList(contacts));
@@ -53,7 +58,10 @@ export function TabStack() {
   useEffect(() => {
     requestContacts();
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
         console.log("App has come to the foreground!");
       }
 
@@ -95,17 +103,21 @@ export function TabStack() {
           let icon;
 
           if (route.name === "Spoil") {
-            icon = focused ? require("../assets/images/wallet_red.png") : require("../assets/images/wallet_black.png");
+            icon = focused
+              ? require("../assets/images/wallet_red.png")
+              : require("../assets/images/wallet_black.png");
           } else if (route.name === "Relationship") {
-            icon = focused ? require("../assets/images/heart_red.png") : require("../assets/images/heart_black.png");
-          }
-          else if (route.name === "Map") {
+            icon = focused
+              ? require("../assets/images/heart_red.png")
+              : require("../assets/images/heart_black.png");
+          } else if (route.name === "Map") {
             icon = focused
               ? require("../assets/images/map_red.png")
               : require("../assets/images/map_black.png");
-          }
-          else if (route.name === "ProfileStack") {
-            icon = focused ? require("../assets/images/avatar_red.png") : require("../assets/images/avatar_black.png");
+          } else if (route.name === "ProfileStack") {
+            icon = focused
+              ? require("../assets/images/avatar_red.png")
+              : require("../assets/images/avatar_black.png");
           }
           // else if (route.name === "Home") {
           //   icon = focused
@@ -116,14 +128,14 @@ export function TabStack() {
             <Image
               style={{
                 width: scale(23),
-                height: verticalScale(18),
+                height: scale(18),
               }}
               resizeMode={"contain"}
               source={icon}
-  
             />
           );
         },
+
         tabBarActiveTintColor: "#C71F1E",
         tabBarInactiveTintColor: "#000",
       })}

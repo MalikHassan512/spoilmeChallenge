@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, View } from "react-native";
 import { MyText } from "../Common/MyText";
 import { MyHeading } from "../Common/MyHeading";
-import RelationItem from './RelationItem'
+import RelationItem from "./RelationItem";
 export const UserList = ({
   otherUsers,
   userId,
@@ -10,14 +10,13 @@ export const UserList = ({
   navigation,
   loading,
 }) => {
-  
   return (
     <FlatList
       style={{ paddingHorizontal: 20 }}
       data={otherUsers}
       refreshing={loading}
       onRefresh={getRelations}
-      keyExtractor={(item,index)=>item?.id+index.toString()}
+      keyExtractor={(item, index) => item?.id + index.toString()}
       ListEmptyComponent={() =>
         !loading ? (
           <View style={{ marginTop: "30%" }}>
@@ -35,8 +34,14 @@ export const UserList = ({
           <></>
         )
       }
-      renderItem={({item,index})=><RelationItem navigation={navigation} userId={userId} conversation={item} index={index}  />}
+      renderItem={({ item, index }) => (
+        <RelationItem
+          navigation={navigation}
+          userId={userId}
+          conversation={item}
+          index={index}
+        />
+      )}
     />
   );
 };
-

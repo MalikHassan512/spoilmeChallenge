@@ -31,17 +31,20 @@ export const createStory = async (post) => {
       }),
     });
 };
-export const deletePost = async (id)=>{
+export const deletePost = async (id) => {
   try {
-  return await firestore().collection("posts").doc(id).get().then(querySnapshot=>{
-    querySnapshot.ref.delete();
-  });
+    return await firestore()
+      .collection("posts")
+      .doc(id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.ref.delete();
+      });
   } catch (error) {
-      console.log("deletePost",error)
-      throw error;
+    console.log("deletePost", error);
+    throw error;
   }
-
-}
+};
 export async function getHomeData(userId) {
   let posts = [];
   let stories = [];
@@ -83,6 +86,7 @@ export async function getHomeData(userId) {
 
 export async function getPosts(userId) {
   try {
+    console.log("Getting posts");
     let data = [];
     let querySnapshot = await firestore()
       .collection("posts")

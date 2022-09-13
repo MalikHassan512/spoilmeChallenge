@@ -22,9 +22,10 @@ export const createRelationship = async (
 
 export const getUserRelationships = async (userId) => {
   try {
+    console.log("Fetching relationships from firestore");
     const result = await firestore()
       .collection(`relationships`)
-      .orderBy("date", "asc")
+      .orderBy("date", "desc")
       .get();
     const relationships = [];
     result.forEach((item, index) => {
@@ -34,8 +35,8 @@ export const getUserRelationships = async (userId) => {
     });
     return relationships;
   } catch (error) {
-    console.log("getUserRelationships line 37",error)
-    throw error
+    console.log("getUserRelationships line 37", error);
+    throw error;
   }
 };
 

@@ -6,7 +6,7 @@ import {
   FlatList,
   RefreshControl,
   Image,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomText from "../../../components/CustomText";
@@ -87,6 +87,7 @@ export const Profile = ({ navigation, route }) => {
 
   const getAllData = async () => {
     try {
+      console.log("In getAllData function");
       setLoading(true);
       dispatch(currentProfileUser(userId));
       const relation = await getUserRelationships(userId);
@@ -103,6 +104,8 @@ export const Profile = ({ navigation, route }) => {
       }
       setImage(userData?.profilePic);
       await loadData();
+      setRefreshing(false);
+      setLoading(false);
     } catch (error) {
       console.log("profile error", error);
       setRefreshing(false);
