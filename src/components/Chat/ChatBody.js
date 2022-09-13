@@ -32,7 +32,7 @@ export const ChatBody = ({ userId, relatedUserId}) => {
         <View
           style={{
             alignSelf: isUser ? "flex-end" : "flex-start",
-            width: "75%",
+            minWidth: "50%",
           }}
         >
           <View
@@ -46,7 +46,7 @@ export const ChatBody = ({ userId, relatedUserId}) => {
               },
             ]}
           >
-            <MyText text={message.text} numberOfLines={1} />
+            <MyText text={message.text} />
             {message.spoilStatus === 0 && !isUser ? (
               <View style={{ flexDirection: "row" }}>
                 <ChatButton
@@ -61,20 +61,21 @@ export const ChatBody = ({ userId, relatedUserId}) => {
             ) : message.spoilStatus === 1 && !isUser ? (
               <CustomText
                 color={colors.green}
-                textStyle={{ bottom: -20, right: 25 }}
+                textStyle={{ bottom: -7, right: 25 }}
                 fontSize={10}
                 label="You've accepted this spoil"
               />
             ) : message.spoilStatus === 2 && !isUser ? (
               <CustomText
                 color={colors.primary}
-                textStyle={{ bottom: -20, right: 25 }}
+                textStyle={{ bottom: -7, right: 25 }}
                 fontSize={10}
                 label="You've rejected this spoil"
               />
             ) : null}
           </View>
           <MyText
+          
             textStyle={isUser && { alignSelf: "flex-end" }}
             text={`${isUser ? "Sent on" : "Received on"}  ${
               chatFormat(message.date,"M.D.YY hh:MM")
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F3F3",
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-    padding: 20,
+    padding: 10,
     minHeight: 40,
     justifyContent: "center",
     alignItems: "center",

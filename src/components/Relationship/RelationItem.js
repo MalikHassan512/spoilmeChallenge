@@ -74,7 +74,8 @@ const RelationItem = ({ index, conversation,navigation,userId}) => {
               marginTop={15}
               text={`${(toUser?.firstName || "")} ${((toUser?.lastName?.[0] || ""))}.`}
             />
-            <MyText text={conversation?.lastMessage?.text} color="#C4C4C4"  />
+            <MyText text={conversation?.lastMessage?.text} color="#C4C4C4" numberOfLines={1}  />
+            {/* NOT REALLY WORKING */}
             <View>
             {relation == 0 && conversation?.lastMessage?.from !== userId? <View style={{ flexDirection: "row" }}>
               <ChatButton
