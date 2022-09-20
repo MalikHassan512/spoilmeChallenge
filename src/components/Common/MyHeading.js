@@ -1,6 +1,5 @@
 import React from "react";
 import { Text } from "react-native";
-
 export const MyHeading = ({
   text,
   textAlign = "left",
@@ -19,7 +18,7 @@ export const MyHeading = ({
         textAlign: textAlign,
         fontWeight: "bold",
         marginBottom: marginBottom,
-        marginTop: marginTop
+        marginTop: marginTop,
       }}
     >
       {text}

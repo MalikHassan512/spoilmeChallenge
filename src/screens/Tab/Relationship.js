@@ -32,8 +32,17 @@ export const Relationship = ({ navigation }) => {
   const getRelations = () =>
     getUserRelationships(userId)
       .then((res) => {
-        setRelationships(res);
-        setRelatedUsers(res);
+        if (isFocused) {
+          console.log(
+            "Is focused is true hence setting relationships and related users"
+          );
+          setRelationships(res);
+          setRelatedUsers(res);
+        } else {
+          console.log(
+            "Went out of focus hence not setting relationships and related users"
+          );
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -42,12 +51,19 @@ export const Relationship = ({ navigation }) => {
       .finally(() => setLoading(false));
 
   useEffect(() => {
+    let isCancelled = false;
+
     if (isFocused) {
-      setLoading(true);
       getRelations();
+      if (!isCancelled) {
+        setLoading(true);
+      }
     } else {
       console.log("Focusing on relation screen is false");
     }
+    return () => {
+      isCancelled = true;
+    };
   }, [isFocused]);
 
   useEffect(() => {
