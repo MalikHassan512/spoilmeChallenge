@@ -3,29 +3,31 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Text,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import LinearGradient from "react-native-linear-gradient";
 import { MyHeading } from "../../../components/Common/MyHeading";
 
-import { getSpoils, getUserSpoils } from "../../../firebase/firestore/spoils";
+import {
+  getSpoils,
+  getUserSpoils,
+  getUserSpoilsOwned,
+} from "../../../firebase/firestore/spoils";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/features/userSlice";
 import SpoilItem from "./molecules/Item";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
-import { BlurView } from "@react-native-community/blur";
 import { useIsFocused } from "@react-navigation/native";
 
-// import Modal from "react-native-modal";
+import SpoilTransferModal from "../../../components/SpoilTransferModal";
+import WalletModal from "../../../components/WalletModal";
 
 export const Spoil = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
   const [userSpoils, setUserSpoils] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -50,80 +52,13 @@ export const Spoil = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View>
-        <BlurView
-          blurType="dark"
-          blurAmount={10}
-          reducedTransparencyFallbackColor="white"
-        >
-          <Modal
-            useNativeDriver={true}
-            animationType="fade"
-            transparent={true}
-            hardwareAccelerated={true}
-            visible={isModalVisible}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View
-                  style={{
-                    padding: 30,
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 25,
-                    }}
-                  >
-                    Spoils you own
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    maxHeight: "80%",
-                    minHeight: "40%",
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                  }}
-                >
-                  <ScrollView>
-                    {userSpoils.map((spoilGroup, i) => {
-                      return (
-                        <View key={i}>
-                          {spoilGroup.map((spoil, j) => {
-                            return (
-                              <SpoilItem
-                                setModalVisible={setModalVisible}
-                                key={spoil.id + j}
-                                length={spoils.length}
-                                userId={userId}
-                                spoil={spoil}
-                                showQRMenu={true}
-                              />
-                            );
-                          })}
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-                <Pressable onPress={toggleModal}>
-                  <Text
-                    style={{
-                      color: "#1e90ff",
-
-                      fontSize: 20,
-                    }}
-                  >
-                    Back
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
-        </BlurView>
-
+        <WalletModal
+          userSpoils={userSpoils}
+          isModalVisible={isModalVisible}
+          toggleModal={toggleModal}
+          setModalVisible={setModalVisible}
+          userId={userId}
+        />
         <MyHeading text="Your Spoils" fontSize={23} />
         <View style={styles.infosContainer}>
           <LinearGradient

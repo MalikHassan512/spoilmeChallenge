@@ -1,4 +1,5 @@
 import firestore from "@react-native-firebase/firestore";
+import { isEqualIcon } from "react-native-paper/lib/typescript/components/Icon";
 import uuid from "react-native-uuid";
 
 export const addSpoilData = async (name, image, from, to, relationId) => {
@@ -15,6 +16,17 @@ export const addSpoilData = async (name, image, from, to, relationId) => {
     },
     { merge: true }
   );
+
+  // // adding a spoil to the users spoil collection if sent through chat
+  // await firestore()
+  //   .collection("users")
+  //   .doc(to)
+  //   .collection("spoilsOwned")
+  //   .doc(id)
+  //   .set({
+  //     spoilID: id,
+  //     date: firestore.Timestamp.now(),
+  //   });
 };
 
 export const getSpoils = (userId, setSpoils) => {
@@ -51,6 +63,38 @@ export const getSpoils = (userId, setSpoils) => {
       setSpoils(tempSpoils);
     });
 };
+
+// export const getUserSpoilsOwned = async (userId, setSpoils) => {
+//   console.log("My user id is: ", userId);
+
+//   const tempSpoils = [];
+//   var spoilsData = [];
+
+//   var getIDs = firestore()
+//     .collection("users")
+//     .doc(userId)
+//     .collection("spoilsOwned")
+//     .onSnapshot((spoilsSnapshot) => {
+//       spoilsSnapshot?.forEach(async (spoilSnapshot, i) => {
+//         var data = spoilSnapshot.data();
+//         var temporarySpoil = await firestore()
+//           .collection("spoils")
+//           .doc(data.spoilID)
+//           .get();
+
+//         var tempSpoilDateGroup = [];
+
+//         if (i !== 0) {
+//           tempSpoils.push(tempSpoilDateGroup);
+//           tempSpoilDateGroup.push((tempDate = temporarySpoil.data().date));
+//         }
+
+//         tempSpoils.push(temporarySpoil);
+//         console.log("Temporary spoil isss: ", temporarySpoil.data().id);
+//       });
+//       setSpoils(tempSpoils);
+//     });
+// };
 
 export const getUserSpoils = (userId, setSpoils) => {
   const isDateEqual = (date1, date2) => {
