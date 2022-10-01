@@ -15,20 +15,25 @@ import {
   getUserSpoilsOwned,
 } from "../../../firebase/firestore/spoils";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../../redux/features/userSlice";
+import { selectUser, setUser } from "../../../redux/features/userSlice";
 import SpoilItem from "./molecules/Item";
 import { useIsFocused } from "@react-navigation/native";
 
-import SpoilTransferModal from "../../../components/SpoilTransferModal";
 import WalletModal from "../../../components/WalletModal";
 
 export const Spoil = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
+  const [userOwnedSpoilTest, setUserOwnedSpoilTest] = useState([]);
+
   const [userSpoils, setUserSpoils] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
 
   const isFocused = useIsFocused();
+
+  const [walletModelKey, setWalletModelKey] = useState(
+    "wallet-modal-key-" + Math.floor(Math.random() * 10)
+  );
 
   useEffect(() => {
     const spoilSubscriber = getSpoils(userId, setSpoils);
@@ -41,11 +46,12 @@ export const Spoil = ({ navigation }) => {
     if (isFocused) {
       console.log("Fetching user spoils");
       getUserSpoils(userId, setUserSpoils);
+      getUserSpoilsOwned(userId, setUserOwnedSpoilTest);
     }
   }, [isFocused]);
 
   const toggleModal = () => {
-    console.log("Toggling modal to: ", isModalVisible);
+    // console.log("Toggling modal to: ", isModalVisible);
     setModalVisible(!isModalVisible);
   };
 
@@ -53,7 +59,8 @@ export const Spoil = ({ navigation }) => {
     <SafeAreaView style={styles.outerContainer}>
       <View>
         <WalletModal
-          userSpoils={userSpoils}
+          // userOwnedSpoils={userSpoils}
+          userOwnedSpoils={userOwnedSpoilTest}
           isModalVisible={isModalVisible}
           toggleModal={toggleModal}
           setModalVisible={setModalVisible}
@@ -73,8 +80,14 @@ export const Spoil = ({ navigation }) => {
             onPress={toggleModal}
           >
             <View>
-              <MyHeading text={userSpoils.length} color="white" fontSize={25} />
-              {spoils.length == 1 ? (
+              {/* <MyHeading text={userSpoils.length} color="white" fontSize={25} /> */}
+              <MyHeading
+                text={userOwnedSpoilTest.length}
+                color="white"
+                fontSize={25}
+              />
+
+              {userOwnedSpoilTest.length == 1 ? (
                 <MyHeading text="Spoil available" color="white" fontSize={15} />
               ) : (
                 <MyHeading
@@ -87,7 +100,7 @@ export const Spoil = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {spoils.map((spoilGroup, i) => {
+          {userSpoils.map((spoilGroup, i) => {
             return (
               <View key={i} style={{ marginVertical: 5 }}>
                 {spoilGroup.length > 0 && (

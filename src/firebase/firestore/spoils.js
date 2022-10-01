@@ -2,6 +2,8 @@ import firestore from "@react-native-firebase/firestore";
 import { isEqualIcon } from "react-native-paper/lib/typescript/components/Icon";
 import uuid from "react-native-uuid";
 
+var isAsyncDone = false;
+
 export const addSpoilData = async (name, image, from, to, relationId) => {
   const id = uuid.v4();
   await firestore().doc(`spoils/${id}`).set(
@@ -17,16 +19,16 @@ export const addSpoilData = async (name, image, from, to, relationId) => {
     { merge: true }
   );
 
-  // // adding a spoil to the users spoil collection if sent through chat
-  // await firestore()
-  //   .collection("users")
-  //   .doc(to)
-  //   .collection("spoilsOwned")
-  //   .doc(id)
-  //   .set({
-  //     spoilID: id,
-  //     date: firestore.Timestamp.now(),
-  //   });
+  // adding a spoil to the users spoil collection if sent through chat
+  await firestore()
+    .collection("users")
+    .doc(to)
+    .collection("spoilsOwned")
+    .doc(id)
+    .set({
+      spoilID: id,
+      date: firestore.Timestamp.now(),
+    });
 };
 
 export const getSpoils = (userId, setSpoils) => {
@@ -64,37 +66,54 @@ export const getSpoils = (userId, setSpoils) => {
     });
 };
 
-// export const getUserSpoilsOwned = async (userId, setSpoils) => {
-//   console.log("My user id is: ", userId);
+const fetchSpoilDoc = async (spoilId) => {
+  var spoil = await firestore().collection("spoils").doc(spoilId).get();
+  return spoil;
+};
 
-//   const tempSpoils = [];
-//   var spoilsData = [];
+const fetchAllSpoilsWithID = async (spoilsID) => {
+  var tempSpoils = [];
 
-//   var getIDs = firestore()
-//     .collection("users")
-//     .doc(userId)
-//     .collection("spoilsOwned")
-//     .onSnapshot((spoilsSnapshot) => {
-//       spoilsSnapshot?.forEach(async (spoilSnapshot, i) => {
-//         var data = spoilSnapshot.data();
-//         var temporarySpoil = await firestore()
-//           .collection("spoils")
-//           .doc(data.spoilID)
-//           .get();
+  for (const spoilID of spoilsID) {
+    var spoil = await firestore().collection("spoils").doc(spoilID).get();
+    tempSpoils.push(spoil.data());
+  }
+  return tempSpoils;
+};
 
-//         var tempSpoilDateGroup = [];
+export const getUserSpoilsOwned = async (userId, setUserOwnedSpoils) => {
+  let tempUserOwnedSpoilsIDs = [];
 
-//         if (i !== 0) {
-//           tempSpoils.push(tempSpoilDateGroup);
-//           tempSpoilDateGroup.push((tempDate = temporarySpoil.data().date));
-//         }
+  console.log("My user id is: ", userId);
 
-//         tempSpoils.push(temporarySpoil);
-//         console.log("Temporary spoil isss: ", temporarySpoil.data().id);
-//       });
-//       setSpoils(tempSpoils);
-//     });
-// };
+  firestore()
+    .collection("users")
+    .doc(userId)
+    .collection("spoilsOwned")
+    .onSnapshot(
+      (spoilsSnapshot) => {
+        // TODO value only updates when wallet is tapped, hence
+
+        spoilsSnapshot?.forEach((spoilSnapshot, i) => {
+          var data = spoilSnapshot.data();
+          tempUserOwnedSpoilsIDs.push(data.spoilID);
+        });
+
+        // console.log("Spoils Owned IDs are: ", tempUserOwnedSpoilsIDs);
+
+        fetchAllSpoilsWithID(tempUserOwnedSpoilsIDs).then((spoils) => {
+          // console.log(
+          //   "After fetching spoils notw setting these spoils: ",
+          //   spoils
+          // );
+          setUserOwnedSpoils(spoils);
+        });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+};
 
 export const getUserSpoils = (userId, setSpoils) => {
   const isDateEqual = (date1, date2) => {
@@ -127,6 +146,7 @@ export const getUserSpoils = (userId, setSpoils) => {
       });
       tempSpoils.push(tempSpoilDateGroup);
 
+      console.log("temp spoils is: ", tempSpoils);
       setSpoils(tempSpoils);
     });
 };

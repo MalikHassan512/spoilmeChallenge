@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import SpoilItem from "../../screens/Tab/Spoil/molecules/Item";
+import { Loading } from "../Common/Loading";
 
 const WalletModal = (props) => {
   return (
@@ -39,29 +40,33 @@ const WalletModal = (props) => {
             style={{
               maxHeight: "80%",
               minHeight: "40%",
+              height: "60%",
               paddingTop: 20,
               paddingBottom: 20,
             }}
           >
             <ScrollView>
-              {props.userSpoils.map((spoilGroup, i) => {
-                return (
-                  <View key={i}>
-                    {spoilGroup.map((spoil, j) => {
-                      return (
+              {props.userOwnedSpoils.length == 0
+                ? console.log(
+                    "No user owned spoil, userOwnedSpoil lenght is in ScrollView: ",
+                    props.userOwnedSpoils.length
+                  )
+                : props.userOwnedSpoils.map((data, i) => {
+                    return data == null ? (
+                      <Loading />
+                    ) : (
+                      <View key={i}>
                         <SpoilItem
                           setModalVisible={props.setModalVisible}
-                          key={spoil.id + j}
-                          length={spoil.length}
-                          userId={props.userId}
-                          spoil={spoil}
+                          key={data.id}
+                          length={data.length}
+                          userId={data.userId}
+                          spoil={data}
                           showQRMenu={true}
                         />
-                      );
-                    })}
-                  </View>
-                );
-              })}
+                      </View>
+                    );
+                  })}
             </ScrollView>
           </View>
           <Pressable onPress={props.toggleModal}>
