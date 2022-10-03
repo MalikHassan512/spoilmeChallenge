@@ -74,16 +74,14 @@ const fetchSpoilDoc = async (spoilId) => {
 const fetchAllSpoilsWithID = async (spoilsID) => {
   var tempSpoils = [];
 
-  for (const spoilID of spoilsID) {
-    var spoil = await firestore().collection("spoils").doc(spoilID).get();
+  for (const spoilId of spoilsID) {
+    var spoil = await firestore().collection("spoils").doc(spoilId).get();
     tempSpoils.push(spoil.data());
   }
   return tempSpoils;
 };
 
 export const getUserSpoilsOwned = async (userId, setUserOwnedSpoils) => {
-  let tempUserOwnedSpoilsIDs = [];
-
   console.log("My user id is: ", userId);
 
   firestore()
@@ -93,6 +91,7 @@ export const getUserSpoilsOwned = async (userId, setUserOwnedSpoils) => {
     .onSnapshot(
       (spoilsSnapshot) => {
         // TODO value only updates when wallet is tapped, hence
+        let tempUserOwnedSpoilsIDs = [];
 
         spoilsSnapshot?.forEach((spoilSnapshot, i) => {
           var data = spoilSnapshot.data();
@@ -151,6 +150,22 @@ export const getUserSpoils = (userId, setSpoils) => {
     });
 };
 
+export const getAllSpoilMeUsers = async (setSpoiMeUsers) => {
+  firestore()
+    .collection("users")
+    .onSnapshot((userSnapshot) => {
+      let users = [];
+
+      userSnapshot?.forEach((userSnapshot) => {
+        const userData = userSnapshot.data();
+        console.log("User data is: ", userData);
+        users.push(userData);
+      });
+
+      setSpoiMeUsers(users);
+    });
+};
+
 export const getSpoilType = async (name) => {
   const spoilType = await firestore().doc(`spoilTypes/${name}`).get();
   return spoilType.data();
@@ -161,4 +176,77 @@ export const getAllSpoilTypes = async () => {
   let spoilTypes = [];
   rawSpoilTypes.forEach((rawSpoilType) => spoilTypes.push(rawSpoilType.data()));
   return spoilTypes;
+};
+
+const doesUserOwnSpoil = async (ownerID, spoilID) => {
+  return await firestore()
+    .collection("users")
+    .doc(ownerID)
+    .collection("spoilsOwned")
+    .doc(spoilID)
+    .get();
+};
+
+const checkIfSpoilExists = async (spoilID) => {
+  return await firestore().collection("spoils").doc(spoilID).get();
+};
+export const transferUserSpoil = async (ownerID, receiverID, spoilID) => {
+  // check if the spoilID is owned by the owner
+
+  console.log(
+    "Inside transfer user spoil, ownerId is: ",
+    ownerID,
+    " receiverId is: ",
+    receiverID,
+    " spoilId is: ",
+    spoilID
+  );
+
+  checkIfSpoilExists(spoilID).then((checkSpoil) => {
+    let checkSpoilData = checkSpoil.data();
+
+    if (checkSpoilData.id != null) {
+      doesUserOwnSpoil(ownerID, spoilID).then((fethcedSpoil) => {
+        let fethcedSpoilData = fethcedSpoil.data();
+
+        if (fethcedSpoilData.spoilID != null) {
+          console.log("User does own this spoil :)");
+
+          // delete spoil from users spoilOwned collection
+
+          let userOwnedSpoilDocRef = firestore()
+            .collection("users")
+            .doc(ownerID)
+            .collection("spoilsOwned")
+            .where("spoilID", "==", fethcedSpoilData.spoilID);
+          userOwnedSpoilDocRef.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              console.log(
+                "Deleitng doc reference from userOwnedSpoils collection"
+              );
+              doc.ref.delete().then((value) => {
+                console.log("After deleting doc value is: ", value);
+              });
+            });
+          });
+
+          // now that the doc has been removed, add the spoil to the receivers spoilsOwned Collection
+
+          let transferSpoil = firestore()
+            .collection("users")
+            .doc(receiverID)
+            .collection("spoilsOwned")
+            .doc(spoilID)
+            .set({
+              spoilID: spoilID,
+              date: Date.now(),
+            });
+
+          console.log("Spoil has been transfered to: ", receiverID);
+        } else {
+          console.log("User doesnot own this spoil :!");
+        }
+      });
+    }
+  });
 };

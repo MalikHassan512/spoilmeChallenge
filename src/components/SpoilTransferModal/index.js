@@ -90,7 +90,7 @@ const SpoilTransferModal = (props) => {
 
             <Button
               color="#ff3333"
-              // onPress={props.respoilModal}
+              onPress={props.respoilModal}
               title="Respoil"
             />
           </View>

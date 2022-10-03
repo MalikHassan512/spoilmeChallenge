@@ -16,6 +16,7 @@ import { ActivityIndicator } from "react-native-paper";
 import SpoilTransferModal from "../../../../components/SpoilTransferModal";
 import { Relationship } from "../../Relationship";
 import QRModal from "../../../../components/QRModal";
+import RespoilModal from "../../../../components/RespoilModal";
 
 const SpoilItem = ({
   spoil,
@@ -96,31 +97,6 @@ const SpoilItem = ({
         }
       }}
     >
-      <Modal
-        useNativeDriver={true}
-        animationType="slide"
-        presentationStyle="formSheet"
-        hardwareAccelerated={true}
-        visible={respoilModalVisible}
-      >
-        <View>
-          <Relationship />
-        </View>
-        <View>
-          <Pressable onPress={() => setRespoilModalVisible(false)}>
-            <Text
-              style={{
-                color: "#1e90ff",
-
-                fontSize: 20,
-              }}
-            >
-              Back
-            </Text>
-          </Pressable>
-        </View>
-      </Modal>
-
       <SpoilTransferModal
         userSpoil={spoil}
         isSpoilTransferModalVisible={showSpoilTransferModal}
@@ -128,6 +104,11 @@ const SpoilItem = ({
         respoilModal={toggleRespoilModal}
       />
 
+      <RespoilModal
+        isRespoilModalVisible={respoilModalVisible}
+        setRespoilModalVisible={setRespoilModalVisible}
+        userSpoil={spoil}
+      />
       <QRModal
         showQr={showQr}
         spoil={spoil}
