@@ -1,8 +1,81 @@
 import firestore from "@react-native-firebase/firestore";
 import { isEqualIcon } from "react-native-paper/lib/typescript/components/Icon";
 import uuid from "react-native-uuid";
+import database from "@react-native-firebase/database";
 
 var isAsyncDone = false;
+
+export const testSpoils = (userId) => {
+  var tempSpoils = [
+    {
+      spoilID: "e7b0deb6-1294-4deb-a286-aa66af6882a0",
+      date: "September 15, 2022 at 5:11:38 PM UTC+5",
+    },
+    {
+      spoilID: "f01e7de0-f2ef-4c9f-ab8b-ab1b4b95d96c",
+      date: "September 15, 2022 at 5:11:38 PM UTC+5",
+    },
+    {
+      spoilID: "f30e6b54-7644-4454-815c-9305771b7b11",
+      date: "September 15, 2022 at 5:11:38 PM UTC+5",
+    },
+    {
+      spoilID: "f7b027d5-4d51-4205-b9f8-bcfe9b970aa4",
+      date: "September 15, 2022 at 5:11:38 PM UTC+5",
+    },
+    {
+      spoilID: "60b786c7-d69b-46df-a209-c1c9dbf4979a",
+      date: "September 15, 2022 at 5:11:38 PM UTC+5",
+    },
+  ];
+
+  tempSpoils.forEach((spoil) => {
+    firestore()
+      .collection("users")
+      .doc(userId)
+      .collection("spoilsOwned")
+      .doc(spoil.spoilID)
+      .set(spoil);
+  });
+};
+export const setUserSpoilTransactionDataActive = async (ownerId, spoilId) => {
+  console.log("ownerId is: ", ownerId);
+  console.log("spoilId is: ", spoilId);
+
+  console.log("Setting spoil Transaction to true");
+
+  database()
+    .ref(`/spoilsOwned/${spoilId}`)
+    .set({
+      currentOwner: ownerId,
+      inTransaction: true,
+    })
+    .then(() => console.log("inTransaction set to true"));
+};
+
+export const getUserSpoilTransactionDataStatus = async (
+  ownerID,
+  spoilId,
+  setTranscationStatus
+) => {
+  console.log("inside getUserSpoilTransactionStatus ownerId is: ", ownerID);
+  console.log("inside getUserSpoilTransactionStatus spoilId is: ", spoilId);
+
+  let isAlreadySet = false;
+
+  database()
+    .ref(`/spoilsOwned/${spoilId}`)
+    .on("value", (snapshot) => {
+      let transactionData = snapshot.val();
+      console.log("spoilID realtime data is: ", transactionData);
+      if (transactionData) {
+        setTranscationStatus(transactionData.inTransaction);
+      }
+      console.log("Stop listneing");
+      return () =>
+        database().ref(`/spoilsOwned/${spoilId}`).off("value", onValueChange);
+    });
+};
 
 export const addSpoilData = async (name, image, from, to, relationId) => {
   const id = uuid.v4();
@@ -145,7 +218,7 @@ export const getUserSpoils = (userId, setSpoils) => {
       });
       tempSpoils.push(tempSpoilDateGroup);
 
-      console.log("temp spoils is: ", tempSpoils);
+      // console.log("temp spoils is: ", tempSpoils);
       setSpoils(tempSpoils);
     });
 };
@@ -158,7 +231,7 @@ export const getAllSpoilMeUsers = async (setSpoiMeUsers) => {
 
       userSnapshot?.forEach((userSnapshot) => {
         const userData = userSnapshot.data();
-        console.log("User data is: ", userData);
+        // console.log("User data is: ", userData);
         users.push(userData);
       });
 
@@ -190,6 +263,7 @@ const doesUserOwnSpoil = async (ownerID, spoilID) => {
 const checkIfSpoilExists = async (spoilID) => {
   return await firestore().collection("spoils").doc(spoilID).get();
 };
+
 export const transferUserSpoil = async (ownerID, receiverID, spoilID) => {
   // check if the spoilID is owned by the owner
 

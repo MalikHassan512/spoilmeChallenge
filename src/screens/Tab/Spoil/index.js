@@ -13,6 +13,7 @@ import {
   getSpoils,
   getUserSpoils,
   getUserSpoilsOwned,
+  testSpoils,
 } from "../../../firebase/firestore/spoils";
 import { useSelector } from "react-redux";
 import { selectUser, setUser } from "../../../redux/features/userSlice";
@@ -31,20 +32,14 @@ export const Spoil = ({ navigation }) => {
 
   const isFocused = useIsFocused();
 
-  const [walletModelKey, setWalletModelKey] = useState(
-    "wallet-modal-key-" + Math.floor(Math.random() * 10)
-  );
-
   useEffect(() => {
-    const spoilSubscriber = getSpoils(userId, setSpoils);
-    return () => {
-      spoilSubscriber();
-    };
+    getSpoils(userId, setSpoils);
+    // testSpoils(userId);
   }, [userId]);
 
   useEffect(() => {
     if (isFocused) {
-      console.log("Fetching user spoils");
+      console.log("On Spoil screen:  Fetching user spoils");
       getUserSpoils(userId, setUserSpoils);
       getUserSpoilsOwned(userId, setUserOwnedSpoilTest);
     }
