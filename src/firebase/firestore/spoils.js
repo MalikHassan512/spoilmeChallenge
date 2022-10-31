@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore";
+import firestore, { firebase } from "@react-native-firebase/firestore";
 import { isEqualIcon } from "react-native-paper/lib/typescript/components/Icon";
 import uuid from "react-native-uuid";
 import database from "@react-native-firebase/database";
@@ -301,19 +301,27 @@ export const transferUserSpoil = async (ownerID, receiverID, spoilID) => {
               doc.ref.delete().then((value) => {
                 console.log("After deleting doc value is: ", value);
               });
+              doc.ref.update({
+                date: firebase.firestore.Timestamp.now(),
+              });
             });
           });
 
           // now that the doc has been removed, add the spoil to the receivers spoilsOwned Collection
 
+          // update transcation date
+          firestore().collection("spoils").doc(spoilID).update({
+            date: firebase.firestore.Timestamp.now(),
+          });
+
           let transferSpoil = firestore()
-            .collection("users")
+            .collection("merchants")
             .doc(receiverID)
             .collection("spoilsOwned")
             .doc(spoilID)
             .set({
               spoilID: spoilID,
-              date: Date.now(),
+              date: firebase.firestore.Timestamp.now(),
             });
 
           console.log("Spoil has been transfered to: ", receiverID);

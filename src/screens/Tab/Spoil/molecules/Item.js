@@ -32,6 +32,16 @@ const SpoilItem = ({
   setModalVisible,
   showQRMenu = false,
 }) => {
+  const [_spoil, setSpoil] = useState(spoil);
+
+  useEffect(() => {
+    if (spoil) {
+      setSpoil(spoil);
+    } else {
+      setSpoil(null);
+    }
+  }, [spoil]);
+
   const currentUserId = useSelector(selectUser);
   const navigation = useNavigation();
   const [fromUser, setFromUser] = useState({});
@@ -147,16 +157,21 @@ const SpoilItem = ({
       ) : (
         <></>
       )}
-      <RespoilModal
-        isRespoilModalVisible={respoilModalVisible}
-        setRespoilModalVisible={setRespoilModalVisible}
-        userSpoil={spoil}
-      />
-      <QRModal
-        showQr={showQr}
-        spoil={spoil}
-        setQRVisibility={setQRVisibility}
-      />
+
+      {_spoil && (
+        <>
+          <RespoilModal
+            isRespoilModalVisible={respoilModalVisible}
+            setRespoilModalVisible={setRespoilModalVisible}
+            userSpoil={_spoil}
+          />
+          <QRModal
+            showQr={showQr}
+            spoil={_spoil}
+            setQRVisibility={setQRVisibility}
+          />
+        </>
+      )}
 
       <View style={styles.spoilContainer}>
         <LoadingImage source={{ uri: spoil.image }} style={styles.img} />

@@ -20,6 +20,7 @@ import { contactList } from "../redux/features/userSlice";
 import Contacts from "react-native-contacts";
 
 const Tab = createMaterialTopTabNavigator();
+
 const Stack = createNativeStackNavigator();
 
 export function TabStack() {
