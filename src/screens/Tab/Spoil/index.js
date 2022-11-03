@@ -3,30 +3,37 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Text,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import LinearGradient from "react-native-linear-gradient";
 import { MyHeading } from "../../../components/Common/MyHeading";
 
-import { getSpoils, getUserSpoils } from "../../../firebase/firestore/spoils";
+import {
+  getSpoils,
+  getUserSpoils,
+  getUserSpoilsOwned,
+} from "../../../firebase/firestore/spoils";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../../redux/features/userSlice";
+import { selectUser, setUser } from "../../../redux/features/userSlice";
 import SpoilItem from "./molecules/Item";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
-import { BlurView } from "@react-native-community/blur";
 import { useIsFocused } from "@react-navigation/native";
 
-// import Modal from "react-native-modal";
+import WalletModal from "../../../components/WalletModal";
 
 export const Spoil = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
+  const [userOwnedSpoilTest, setUserOwnedSpoilTest] = useState([]);
+
   const [userSpoils, setUserSpoils] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+
   const isFocused = useIsFocused();
+
+  const [walletModelKey, setWalletModelKey] = useState(
+    "wallet-modal-key-" + Math.floor(Math.random() * 10)
+  );
 
   useEffect(() => {
     
@@ -44,91 +51,26 @@ export const Spoil = ({ navigation }) => {
     if (isFocused) {
       console.log("Fetching user spoils");
       getUserSpoils(userId, setUserSpoils);
+      getUserSpoilsOwned(userId, setUserOwnedSpoilTest);
     }
   }, [isFocused]);
 
   const toggleModal = () => {
-    console.log("Toggling modal to: ", isModalVisible);
+    // console.log("Toggling modal to: ", isModalVisible);
     setModalVisible(!isModalVisible);
   };
 
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View>
-        <BlurView
-          blurType="dark"
-          blurAmount={10}
-          reducedTransparencyFallbackColor="white"
-        >
-          <Modal
-            useNativeDriver={true}
-            animationType="fade"
-            transparent={true}
-            hardwareAccelerated={true}
-            visible={isModalVisible}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View
-                  style={{
-                    padding: 30,
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 25,
-                    }}
-                  >
-                    Spoils you own
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    maxHeight: "80%",
-                    minHeight: "40%",
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                  }}
-                >
-                  <ScrollView>
-                    {userSpoils.map((spoilGroup, i) => {
-                      return (
-                        <View key={i}>
-                          {spoilGroup.map((spoil, j) => {
-                            return (
-                              <SpoilItem
-                                setModalVisible={setModalVisible}
-                                key={spoil.id + j}
-                                length={spoils.length}
-                                userId={userId}
-                                spoil={spoil}
-                                showQRMenu={true}
-                              />
-                            );
-                          })}
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-                <Pressable onPress={toggleModal}>
-                  <Text
-                    style={{
-                      color: "#1e90ff",
-
-                      fontSize: 20,
-                    }}
-                  >
-                    Back
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>
-        </BlurView>
-
+        <WalletModal
+          // userOwnedSpoils={userSpoils}
+          userOwnedSpoils={userOwnedSpoilTest}
+          isModalVisible={isModalVisible}
+          toggleModal={toggleModal}
+          setModalVisible={setModalVisible}
+          userId={userId}
+        />
         <MyHeading text="Your Spoils" fontSize={23} />
         <View style={styles.infosContainer}>
           <LinearGradient style={styles.infoContainer} colors={["#FFE37E", "#FFBC08"]}>
@@ -140,8 +82,14 @@ export const Spoil = ({ navigation }) => {
             onPress={toggleModal}
           >
             <View>
-              <MyHeading text={userSpoils.length} color="white" fontSize={25} />
-              {spoils.length == 1 ? (
+              {/* <MyHeading text={userSpoils.length} color="white" fontSize={25} /> */}
+              <MyHeading
+                text={userOwnedSpoilTest.length}
+                color="white"
+                fontSize={25}
+              />
+
+              {userOwnedSpoilTest.length == 1 ? (
                 <MyHeading text="Spoil available" color="white" fontSize={15} />
               ) : (
                 <MyHeading
@@ -154,10 +102,7 @@ export const Spoil = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {
-            //this actually gives the date, has nothing to do with the spoils -_- 
-           spoils.length > 0 ? 
-          spoils.map((spoilGroup, i) => {
+          {userSpoils.map((spoilGroup, i) => {
             return (
               <View key={i} style={{ marginVertical: 5 }}>
                 {spoilGroup.length > 0 && <MyHeading marginBottom={10} text={spoilGroup[0].date.toDateString()} />}

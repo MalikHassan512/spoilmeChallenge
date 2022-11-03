@@ -7,13 +7,16 @@ import {
   Text,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useLinkProps, useNavigation } from "@react-navigation/native";
 import { LoadingImage } from "../../../../components/Common/LoadingImage";
 import { MyHeading } from "../../../../components/Common/MyHeading";
 import { MyText } from "../../../../components/Common/MyText";
 import { getUsersById } from "../../../../firebase/firestore/users";
 import { ActivityIndicator } from "react-native-paper";
-import QRCode from "react-native-qrcode-svg";
+import SpoilTransferModal from "../../../../components/SpoilTransferModal";
+import { Relationship } from "../../Relationship";
+import QRModal from "../../../../components/QRModal";
+import RespoilModal from "../../../../components/RespoilModal";
 
 const SpoilItem = ({
   spoil,
@@ -26,7 +29,24 @@ const SpoilItem = ({
   const [fromUser, setFromUser] = useState({});
   const [toUser, setToUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showSpoilTransferModal, setSpoilTransferModalVisiblity] =
+    useState(false);
   const [showQr, setQRVisibility] = useState(false);
+  const [respoilModalVisible, setRespoilModalVisible] = useState(false);
+
+  const toggleRespoilModal = () => {
+    setSpoilTransferModalVisiblity(!showSpoilTransferModal);
+    // console.log("Show spoil transfer modal is: ", showSpoilTransferModal);
+
+    setRespoilModalVisible(!respoilModalVisible);
+    // console.log("Toggling respoil modal: ", respoilModalVisible);
+  };
+
+  const toggleQRModal = () => {
+    setSpoilTransferModalVisiblity(!showSpoilTransferModal);
+    // console.log("Show spoil transfer modal is: ", showSpoilTransferModal);
+    setQRVisibility(!showQr);
+  };
 
   useEffect(() => {
     getUsersName();
@@ -64,7 +84,8 @@ const SpoilItem = ({
       activeOpacity={0.8}
       onPress={() => {
         if (showQRMenu) {
-          setQRVisibility(!showQr);
+          setSpoilTransferModalVisiblity(!showSpoilTransferModal);
+          // setQRVisibility(!showQr);
         } else {
           if (setModalVisible) {
             setModalVisible(false);
@@ -76,41 +97,24 @@ const SpoilItem = ({
         }
       }}
     >
-      <Modal
-        useNativeDriver={true}
-        animationType="fade"
-        transparent={true}
-        hardwareAccelerated={true}
-        visible={showQr}
-      >
-        <View style={styles.bottomView}>
-          <View style={styles.modalView}>
-            <QRCode value={spoil.id} logo={spoil.image} size={200} />
-          </View>
-          <Pressable onPress={() => setQRVisibility(!showQr)}>
-            <View
-              style={{
-                minWidth: "80%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                backgroundColor: "white",
-                borderRadius: 20,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#1e90ff",
-                  padding: 25,
-                  fontSize: 20,
-                }}
-              >
-                Back
-              </Text>
-            </View>
-          </Pressable>
-        </View>
-      </Modal>
+      <SpoilTransferModal
+        userSpoil={spoil}
+        isSpoilTransferModalVisible={showSpoilTransferModal}
+        toggleSpoilTransferModal={toggleQRModal}
+        respoilModal={toggleRespoilModal}
+      />
+
+      <RespoilModal
+        isRespoilModalVisible={respoilModalVisible}
+        setRespoilModalVisible={setRespoilModalVisible}
+        userSpoil={spoil}
+      />
+      <QRModal
+        showQr={showQr}
+        spoil={spoil}
+        setQRVisibility={setQRVisibility}
+      />
+
       <View style={styles.spoilContainer}>
         <LoadingImage source={{ uri: spoil.image }} style={styles.img} />
         <View>

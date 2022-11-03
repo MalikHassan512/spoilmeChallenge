@@ -22,7 +22,7 @@ export const createRelationship = async (
 
 export const getUserRelationships = async (userId) => {
   try {
-    console.log("Fetching relationships from firestore");
+    // console.log("Fetching relationships from firestore");
     const result = await firestore()
       .collection(`relationships`)
       .orderBy("date", "desc")
