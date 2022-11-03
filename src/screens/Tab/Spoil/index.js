@@ -16,6 +16,8 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/features/userSlice";
 import SpoilItem from "./molecules/Item";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { BlurView } from "@react-native-community/blur";
+import { useIsFocused } from "@react-navigation/native";
 
 // import Modal from "react-native-modal";
 
@@ -23,6 +25,8 @@ export const Spoil = ({ navigation }) => {
   const userId = useSelector(selectUser);
   const [spoils, setSpoils] = useState([]);
   const [userSpoils, setUserSpoils] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     
@@ -30,15 +34,18 @@ export const Spoil = ({ navigation }) => {
     // console.log(spoils)
   
     const spoilSubscriber = getSpoils(userId, setSpoils);
-    const userSpoils = getUserSpoils(userId, setUserSpoils);
     return () => {
       spoilSubscriber();
-      userSpoils();
     };
   
   }, [userId]);
 
-  const [isModalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    if (isFocused) {
+      console.log("Fetching user spoils");
+      getUserSpoils(userId, setUserSpoils);
+    }
+  }, [isFocused]);
 
   const toggleModal = () => {
     console.log("Toggling modal to: ", isModalVisible);
@@ -48,72 +55,79 @@ export const Spoil = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.outerContainer}>
       <View>
-        <Modal
-          useNativeDriver={true}
-          animationType="fade"
-          transparent={true}
-          hardwareAccelerated={true}
-          visible={isModalVisible}
+        <BlurView
+          blurType="dark"
+          blurAmount={10}
+          reducedTransparencyFallbackColor="white"
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View
-                style={{
-                  padding: 30,
-                  borderBottomWidth: 1,
-                }}
-              >
-                <Text
+          <Modal
+            useNativeDriver={true}
+            animationType="fade"
+            transparent={true}
+            hardwareAccelerated={true}
+            visible={isModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View
                   style={{
-                    fontWeight: "bold",
-                    fontSize: 25,
+                    padding: 30,
+                    borderBottomWidth: 1,
                   }}
                 >
-                  Spoils you own
-                </Text>
-              </View>
-              <View
-                style={{
-                  maxHeight: "80%",
-                  minHeight: "40%",
-                  paddingTop: 20,
-                  paddingBottom: 20,
-                }}
-              >
-                <ScrollView>
-                  {userSpoils.map((spoilGroup, i) => {
-                    return (
-                      <View key={i}>
-                        {spoilGroup.map((spoil, j) => {
-                          return (
-                            <SpoilItem
-                              setModalVisible={setModalVisible}
-                              key={spoil.id + j}
-                              length={spoils.length}
-                              userId={userId}
-                              spoil={spoil}
-                            />
-                          );
-                        })}
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-              <Pressable onPress={toggleModal}>
-                <Text
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 25,
+                    }}
+                  >
+                    Spoils you own
+                  </Text>
+                </View>
+                <View
                   style={{
-                    color: "#1e90ff",
+                    maxHeight: "80%",
+                    minHeight: "40%",
+                    paddingTop: 20,
+                    paddingBottom: 20,
+                  }}
+                >
+                  <ScrollView>
+                    {userSpoils.map((spoilGroup, i) => {
+                      return (
+                        <View key={i}>
+                          {spoilGroup.map((spoil, j) => {
+                            return (
+                              <SpoilItem
+                                setModalVisible={setModalVisible}
+                                key={spoil.id + j}
+                                length={spoils.length}
+                                userId={userId}
+                                spoil={spoil}
+                                showQRMenu={true}
+                              />
+                            );
+                          })}
+                        </View>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+                <Pressable onPress={toggleModal}>
+                  <Text
+                    style={{
+                      color: "#1e90ff",
 
-                    fontSize: 20,
-                  }}
-                >
-                  Back
-                </Text>
-              </Pressable>
+                      fontSize: 20,
+                    }}
+                  >
+                    Back
+                  </Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        </BlurView>
 
         <MyHeading text="Your Spoils" fontSize={23} />
         <View style={styles.infosContainer}>
@@ -148,7 +162,15 @@ export const Spoil = ({ navigation }) => {
               <View key={i} style={{ marginVertical: 5 }}>
                 {spoilGroup.length > 0 && <MyHeading marginBottom={10} text={spoilGroup[0].date.toDateString()} />}
                 {spoilGroup.map((spoil, j) => {
-                  return <SpoilItem key={spoil.id + j} length={spoils.length} userId={userId} spoil={spoil} />;
+                  return (
+                    <SpoilItem
+                      key={spoil.id + j}
+                      length={spoils.length}
+                      userId={userId}
+                      spoil={spoil}
+                      showQRMenu={false}
+                    />
+                  );
                 })}
               </View>
             );
