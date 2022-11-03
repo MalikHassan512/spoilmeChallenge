@@ -35,8 +35,43 @@ export const getSpoils = (userId, setSpoils) => {
         const tempSpoil = spoilSnapshot.data();
         const spoilDate = tempSpoil.date.toDate();
         tempSpoil.date = spoilDate;
-        if (tempSpoil.to === userId || tempSpoil.from === userId) {
+        if (tempSpoil.from === userId) {
           if (i !== 0 && !isDateEqual(tempDate, spoilDate)) {
+            tempSpoils.push(tempSpoilDateGroup);
+            tempSpoilDateGroup = [];
+            tempDate = spoilDate;
+          }
+          tempSpoilDateGroup.push(tempSpoil);
+        }
+      });
+      tempSpoils.push(tempSpoilDateGroup);
+
+      setSpoils(tempSpoils);
+    });
+};
+
+export const getUserSpoils = (userId, setSpoils) => {
+  const isDateEqual = (date1, date2) => {
+    return (
+      date1.getDay() === date2.getDay() &&
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth()
+    );
+  };
+
+  return firestore()
+    .collection("spoils")
+    .orderBy("date", "desc")
+    .onSnapshot((spoilsSnapshot) => {
+      const tempSpoils = [];
+      let tempDate = new Date();
+      let tempSpoilDateGroup = [];
+      spoilsSnapshot?.forEach((spoilSnapshot, i) => {
+        const tempSpoil = spoilSnapshot.data();
+        const spoilDate = tempSpoil.date.toDate();
+        tempSpoil.date = spoilDate;
+        if (tempSpoil.to === userId) {
+          if (i !== 0) {
             tempSpoils.push(tempSpoilDateGroup);
             tempSpoilDateGroup = [];
             tempDate = spoilDate;
