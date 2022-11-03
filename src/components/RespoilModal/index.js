@@ -25,16 +25,17 @@ import { useSelector } from "react-redux";
 
 const RespoilModal = (props) => {
   const userId = useSelector(selectUser);
-  const isFocused = useIsFocused();
+  const [_isFocused, setIsFocused] = useState(true);
   const [allSpoilMeUsers, setAllSpoilMeUsers] = useState([]);
 
-  if (isFocused) {
+  if (_isFocused) {
+    console.log("isFocused is: ", _isFocused);
     useEffect(() => {
       getAllSpoilMeUsers(setAllSpoilMeUsers);
-    }, [isFocused]);
+    }, [_isFocused]);
   }
 
-  return (
+  return _isFocused ? (
     <Modal
       useNativeDriver={true}
       animationType="slide"
@@ -125,6 +126,8 @@ const RespoilModal = (props) => {
         </Pressable>
       </View>
     </Modal>
+  ) : (
+    <></>
   );
 };
 

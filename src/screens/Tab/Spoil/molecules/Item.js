@@ -5,6 +5,7 @@ import {
   Modal,
   Pressable,
   Text,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLinkProps, useNavigation } from "@react-navigation/native";
@@ -17,6 +18,12 @@ import SpoilTransferModal from "../../../../components/SpoilTransferModal";
 import { Relationship } from "../../Relationship";
 import QRModal from "../../../../components/QRModal";
 import RespoilModal from "../../../../components/RespoilModal";
+import {
+  getUserSpoilTransactionDataStatus,
+  setUserSpoilTransactionDataActive,
+} from "../../../../firebase/firestore/spoils";
+import { selectUser } from "../../../../redux/features/userSlice";
+import { useSelector } from "react-redux";
 
 const SpoilItem = ({
   spoil,
@@ -25,6 +32,17 @@ const SpoilItem = ({
   setModalVisible,
   showQRMenu = false,
 }) => {
+  const [_spoil, setSpoil] = useState(spoil);
+
+  useEffect(() => {
+    if (spoil) {
+      setSpoil(spoil);
+    } else {
+      setSpoil(null);
+    }
+  }, [spoil]);
+
+  const currentUserId = useSelector(selectUser);
   const navigation = useNavigation();
   const [fromUser, setFromUser] = useState({});
   const [toUser, setToUser] = useState({});
@@ -33,6 +51,7 @@ const SpoilItem = ({
     useState(false);
   const [showQr, setQRVisibility] = useState(false);
   const [respoilModalVisible, setRespoilModalVisible] = useState(false);
+  const [transactionStatus, setTranscationStatus] = useState(true);
 
   const toggleRespoilModal = () => {
     setSpoilTransferModalVisiblity(!showSpoilTransferModal);
@@ -43,6 +62,14 @@ const SpoilItem = ({
   };
 
   const toggleQRModal = () => {
+    setUserSpoilTransactionDataActive(currentUserId, spoil.id).then(() => {
+      getUserSpoilTransactionDataStatus(
+        currentUserId,
+        spoil.id,
+        setTranscationStatus
+      );
+    });
+
     setSpoilTransferModalVisiblity(!showSpoilTransferModal);
     // console.log("Show spoil transfer modal is: ", showSpoilTransferModal);
     setQRVisibility(!showQr);
@@ -104,16 +131,47 @@ const SpoilItem = ({
         respoilModal={toggleRespoilModal}
       />
 
-      <RespoilModal
-        isRespoilModalVisible={respoilModalVisible}
-        setRespoilModalVisible={setRespoilModalVisible}
-        userSpoil={spoil}
-      />
-      <QRModal
-        showQr={showQr}
-        spoil={spoil}
-        setQRVisibility={setQRVisibility}
-      />
+      {transactionStatus == false ? (
+        Alert.alert(
+          "Spoil Transcation",
+          "Spoil has succesfully been transferred",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                setTranscationStatus(true);
+                setQRVisibility(false);
+                setModalVisible(false);
+                console.log("OK Pressed");
+              },
+            },
+          ],
+          {
+            cancelable: true,
+            onDismiss: () =>
+              Alert.alert(
+                "This alert was dismissed by tapping outside of the alert dialog."
+              ),
+          }
+        )
+      ) : (
+        <></>
+      )}
+
+      {_spoil && (
+        <>
+          <RespoilModal
+            isRespoilModalVisible={respoilModalVisible}
+            setRespoilModalVisible={setRespoilModalVisible}
+            userSpoil={_spoil}
+          />
+          <QRModal
+            showQr={showQr}
+            spoil={_spoil}
+            setQRVisibility={setQRVisibility}
+          />
+        </>
+      )}
 
       <View style={styles.spoilContainer}>
         <LoadingImage source={{ uri: spoil.image }} style={styles.img} />
