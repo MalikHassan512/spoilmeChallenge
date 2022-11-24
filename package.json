@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios --port=8088",
-    "start": "react-native start --port=8088",
+    "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
   },
